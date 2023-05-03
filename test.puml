@@ -1,20 +1,7 @@
 @startuml
-(*) --> "ViewEntryLevelSystemCall"
-"ViewEntryLevelSystemCall" --> "aName"
-"aName" --> "DatabaseLoadInventory"
-"DatabaseLoadInventory" --> "aName"
-"aName" --> "RETURN"
-"RETURN" --> "DatabaseLoadInventory"
-"DatabaseLoadInventory" --> "RETURN"
-"RETURN" --> "ViewEntryLevelSystemCall"
-"ViewEntryLevelSystemCall" --> "BuyEntryLevelSystemCall"
-"BuyEntryLevelSystemCall" --> "aName"
-"aName" --> "aName"
-"aName" --> "StoreUserDataCall"
-"StoreUserDataCall" --> "aName"
-"aName" --> "save data"
-"save data" --> "StoreUserDataCall"
-"StoreUserDataCall" --> "BuyEntryLevelSystemCall"
-"BuyEntryLevelSystemCall" --> (*)
-
+rectangle "ScanCertificate" as 0
+rectangle "RequestToken" as 1
+rectangle "StoreTestResult" as 2
+rectangle "EnterTestResults" as 3
+0 --> 1
 @enduml
