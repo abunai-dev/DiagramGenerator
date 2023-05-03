@@ -15,4 +15,6 @@
 "aName" --> "save data"
 "save data" --> "StoreUserDataCall"
 "StoreUserDataCall" --> "BuyEntryLevelSystemCall"
+"BuyEntryLevelSystemCall" --> (*)
+
 @enduml

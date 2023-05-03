@@ -17,6 +17,7 @@ import net.sourceforge.plantuml.FileFormat;
 import net.sourceforge.plantuml.FileFormatOption;
 import net.sourceforge.plantuml.SourceStringReader;
 
+import org.palladiosimulator.pcm.repository.Parameter;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.CallingSEFFActionSequenceElement;
@@ -26,8 +27,8 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.p
 public class Main {
 	public static void main(String[] args) {
 		var projectName = "org.palladiosimulator.dataflow.confidentiality.analysis.testmodels";
-		final var usageModelPath = Paths.get("models", "BranchingOnlineShop", "default.usagemodel").toString();
-		final var allocationPath = Paths.get("models", "BranchingOnlineShop", "default.allocation").toString();
+		final var usageModelPath = Paths.get("models", "CoronaWarnApp", "default.usagemodel").toString();
+		final var allocationPath = Paths.get("models", "CoronaWarnApp", "default.allocation").toString();
 		StandalonePCMDataFlowConfidentialtyAnalysis analysis = new StandalonePCMDataFlowConfidentialtyAnalysis(
 				projectName, Activator.class, usageModelPath, allocationPath);
 		analysis.initalizeAnalysis();
@@ -39,28 +40,45 @@ public class Main {
 		for (ActionSequence actionSequence : actionSequences) {
 			String source = "@startuml\n(*) --> ";
 			String previousEntityName = null;
+			String previousParameterString = null;
 
 			List<AbstractActionSequenceElement<?>> elements = actionSequence.getElements();
 
+			int edgeCounter = 0;
+
 			for (AbstractActionSequenceElement<?> element : elements) {
-				String name = "";
-				if (element instanceof CallingUserActionSequenceElement) {
-					name = ((CallingUserActionSequenceElement) element).getElement().getEntityName();
-				} else if (element instanceof SEFFActionSequenceElement) {
-					name = ((AbstractActionImpl) ((SEFFActionSequenceElement) element).getElement()).getEntityName();
-				} else {
-					throw new Error();
+				String name = EntityUtility.getEntityId(element);
+				String parameterString = null;
+
+				if (element instanceof SEFFActionSequenceElement
+						|| element instanceof CallingSEFFActionSequenceElement) {
+					List<Parameter> parameters = ((SEFFActionSequenceElement) element).getParameter();
+					for (Parameter parameter : parameters) {
+						if (parameterString == null) {
+							parameterString = parameter.getParameterName();
+						} else {
+
+							parameterString += ", " + parameter.getParameterName();
+						}
+					}
 				}
 
 				if (previousEntityName == null) {
-					source += "\"" + name + "\"\n";
+					source += "[" + Integer.toString(edgeCounter) + " - " + parameterString + "] \"" + name + "\"\n";
 				} else {
-					source += "\"" + previousEntityName + "\" --> \"" + name + "\"\n";
+					source += PlantUMLUtility.concatActivityDiagramElements(previousEntityName, name,
+							Integer.toString(edgeCounter) + " - " + parameterString);
 				}
 
 				previousEntityName = name;
+				previousParameterString = parameterString;
+				edgeCounter++;
 			}
 
+			if (previousEntityName != null) {
+				source += "\"" + previousEntityName + "\" --> [" + Integer.toString(edgeCounter) + " - "
+						+ previousParameterString + "] (*)\n";
+			}
 			source += "@enduml";
 
 			SourceStringReader reader = new SourceStringReader(source);
@@ -77,13 +95,16 @@ public class Main {
 			final String svg = new String(os.toByteArray(), Charset.forName("UTF-8"));
 
 			try {
-				BufferedWriter writer = new BufferedWriter(new FileWriter("output/action-sequence_" + counter + ".svg"));
+				BufferedWriter writer = new BufferedWriter(
+						new FileWriter("output/action-sequence_" + counter + ".svg"));
 				writer.write(svg);
 				writer.close();
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
+
+			System.out.println(source);
 
 			counter++;
 		}
