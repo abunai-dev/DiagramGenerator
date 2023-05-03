@@ -40,6 +40,7 @@ public class Main {
 		for (ActionSequence actionSequence : actionSequences) {
 			String source = "@startuml\n(*) --> ";
 			String previousEntityName = null;
+			String previousEntityId = null;
 			String previousParameterString = null;
 
 			List<AbstractActionSequenceElement<?>> elements = actionSequence.getElements();
@@ -47,7 +48,14 @@ public class Main {
 			int edgeCounter = 0;
 
 			for (AbstractActionSequenceElement<?> element : elements) {
-				String name = EntityUtility.getEntityId(element);
+				String name = EntityUtility.getEntityName(element);
+				if (name == "aName") {
+					var i = 1;
+				}
+				String id = EntityUtility.getEntityId(element);
+				if (id.equalsIgnoreCase("_umC4ULK8Ee2Y1pKtbIeM6Q")) {
+					var i = 1;
+				}
 				String parameterString = null;
 
 				if (element instanceof SEFFActionSequenceElement
@@ -64,20 +72,22 @@ public class Main {
 				}
 
 				if (previousEntityName == null) {
-					source += "[" + Integer.toString(edgeCounter) + " - " + parameterString + "] \"" + name + "\"\n";
+					source += "[" + Integer.toString(edgeCounter) + " - " + parameterString + "] \"" + name + " (" + id
+							+ ")" + "\"\n";
 				} else {
-					source += PlantUMLUtility.concatActivityDiagramElements(previousEntityName, name,
+					source += PlantUMLUtility.concatActivityDiagramElements(previousEntityName+ " (" + previousEntityId + ")", name + " (" + id + ")",
 							Integer.toString(edgeCounter) + " - " + parameterString);
 				}
 
 				previousEntityName = name;
 				previousParameterString = parameterString;
+				previousEntityId = id;
 				edgeCounter++;
 			}
 
 			if (previousEntityName != null) {
-				source += "\"" + previousEntityName + "\" --> [" + Integer.toString(edgeCounter) + " - "
-						+ previousParameterString + "] (*)\n";
+				source += "\"" + previousEntityName + " (" + previousEntityId + ")" + "\" --> ["
+						+ Integer.toString(edgeCounter) + " - " + previousParameterString + "] (*)\n";
 			}
 			source += "@enduml";
 
