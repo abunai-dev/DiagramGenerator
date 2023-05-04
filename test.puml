@@ -1,7 +1,638 @@
 @startuml
-rectangle "ScanCertificate" as 0
-rectangle "RequestToken" as 1
-rectangle "StoreTestResult" as 2
-rectangle "EnterTestResults" as 3
+rectangle "RequestTeleTAN" as 0
+rectangle "GetTeleTAN" as 1
 0 --> 1
+rectangle "GetTeleTAN" as 2
+1 --> 2
+rectangle "GenerateTeleTAN" as 3
+2 --> 3
+rectangle "GenerateTeleTAN" as 4
+3 --> 4
+rectangle "GenerateTeleTAN" as 5
+4 --> 5
+rectangle "GenerateTeleTAN" as 6
+5 --> 6
+6 --> 7
+rectangle "ReturnTeleTAN" as 8
+7 --> 8
+8 --> 9
+rectangle "ReturnTeleTAN" as 10
+9 --> 10
+10 --> 11
+rectangle "RequestLabStatistics" as 12
+rectangle "GetStats" as 13
+12 --> 13
+rectangle "GetStats" as 14
+13 --> 14
+rectangle "ReturnStats" as 15
+14 --> 15
+rectangle "ReturnStats" as 16
+15 --> 16
+16 --> 17
+rectangle "ReturnStats" as 18
+17 --> 18
+18 --> 19
+rectangle "EnterTestResults" as 20
+rectangle "RegisterResult" as 21
+20 --> 21
+rectangle "RegisterResult" as 22
+21 --> 22
+rectangle "StoreTestResult" as 23
+22 --> 23
+rectangle "StoreTestResult" as 24
+23 --> 24
+rectangle "aName" as 25
+24 --> 25
+25 --> 26
+26 --> 27
+27 --> 28
+rectangle "AllowSharingOfPrivacyPreservingAnalytics" as 29
+rectangle "GenerateAuthenticityProof" as 30
+29 --> 30
+rectangle "GenerateAuthenticityProof" as 31
+30 --> 31
+rectangle "SendAnalyticData" as 32
+31 --> 32
+rectangle "aName" as 33
+32 --> 33
+33 --> 34
+34 --> 35
+rectangle "EnterNewJournalEntry" as 36
+rectangle "StoreEntry" as 37
+36 --> 37
+rectangle "StoreEntry" as 38
+37 --> 38
+38 --> 39
+rectangle "ScanCertificate" as 40
+rectangle "RetrieveCertificate" as 41
+40 --> 41
+rectangle "RetrieveCertificate" as 42
+41 --> 42
+rectangle "IssueCertificate" as 43
+42 --> 43
+rectangle "IssueCertificate" as 44
+43 --> 44
+rectangle "ReturnDigitalCertificate" as 45
+44 --> 45
+rectangle "ReturnDigitalCertificate" as 46
+45 --> 46
+46 --> 47
+rectangle "ReturnCertificate" as 48
+47 --> 48
+48 --> 49
+49 --> 50
+rectangle "UpdateStatistics" as 51
+rectangle "DownloadStatistics" as 52
+51 --> 52
+rectangle "DownloadStatistics" as 53
+52 --> 53
+rectangle "RetrieveData" as 54
+53 --> 54
+rectangle "RetrieveData" as 55
+54 --> 55
+rectangle "RetrieveStatistics" as 56
+55 --> 56
+rectangle "RetrieveStatistics" as 57
+56 --> 57
+rectangle "CollectStatisticsFromEverywhere" as 58
+57 --> 58
+rectangle "CollectStatisticsFromEverywhere" as 59
+58 --> 59
+rectangle "ReturnStats" as 60
+59 --> 60
+rectangle "ReturnStats" as 61
+60 --> 61
+61 --> 62
+rectangle "CalculateGeneralStatistics" as 63
+62 --> 63
+rectangle "ReturnGeneralStatistics" as 64
+63 --> 64
+64 --> 65
+rectangle "ReturnStatistics" as 66
+65 --> 66
+66 --> 67
+rectangle "ReturnData" as 68
+67 --> 68
+68 --> 69
+rectangle "ReturnStatistics" as 70
+69 --> 70
+70 --> 71
+rectangle "UpdateStatus" as 72
+71 --> 72
+rectangle "DownloadConfig" as 73
+72 --> 73
+rectangle "DownloadConfig" as 74
+73 --> 74
+rectangle "RetrieveData" as 75
+74 --> 75
+rectangle "RetrieveData" as 76
+75 --> 76
+rectangle "aName" as 77
+76 --> 77
+77 --> 78
+rectangle "ReturnData" as 79
+78 --> 79
+79 --> 80
+rectangle "DownloadKeys" as 81
+80 --> 81
+rectangle "RetrieveData" as 82
+81 --> 82
+rectangle "RetrieveData" as 83
+82 --> 83
+rectangle "FetchKeysFromStorage" as 84
+83 --> 84
+rectangle "FetchKeysFromStorage" as 85
+84 --> 85
+rectangle "LoadKeys" as 86
+85 --> 86
+rectangle "LoadKeys" as 87
+86 --> 87
+87 --> 88
+rectangle "RetrieveInternationalKeys" as 89
+88 --> 89
+rectangle "GetKeys" as 90
+89 --> 90
+rectangle "GetKeys" as 91
+90 --> 91
+rectangle "LoadKeys" as 92
+91 --> 92
+rectangle "LoadKeys" as 93
+92 --> 93
+93 --> 94
+rectangle "ReturnKeys" as 95
+94 --> 95
+95 --> 96
+rectangle "ReturnAllKeys" as 97
+96 --> 97
+97 --> 98
+rectangle "ReturnData" as 99
+98 --> 99
+99 --> 100
+rectangle "CalculateMatches" as 101
+100 --> 101
+rectangle "TriggerBroadcasting" as 102
+101 --> 102
+rectangle "TriggerBroadcasting" as 103
+102 --> 103
+rectangle "SimulateRPIExchange" as 104
+103 --> 104
+rectangle "SimulateRPIExchange" as 105
+104 --> 105
+rectangle "StoreExchangedRPIs" as 106
+105 --> 106
+rectangle "aName" as 107
+106 --> 107
+107 --> 108
+108 --> 109
+rectangle "RetrieveAllKeys" as 110
+109 --> 110
+rectangle "LoadRPIs" as 111
+110 --> 111
+rectangle "LoadRPIs" as 112
+111 --> 112
+112 --> 113
+rectangle "UseRPIsAndKeysAndParametersForMatchCalculations" as 114
+113 --> 114
+114 --> 115
+rectangle "ReturnSummary" as 116
+115 --> 116
+116 --> 117
+rectangle "EnterTeleTANandUploadKeys" as 118
+rectangle "RequestToken" as 119
+118 --> 119
+rectangle "RequestToken" as 120
+119 --> 120
+rectangle "GenerateToken" as 121
+120 --> 121
+rectangle "GenerateToken" as 122
+121 --> 122
+rectangle "GenerateToken" as 123
+122 --> 123
+rectangle "GenerateToken" as 124
+123 --> 124
+124 --> 125
+rectangle "ReturnToken" as 126
+125 --> 126
+126 --> 127
+rectangle "RequestTAN" as 128
+127 --> 128
+rectangle "GenerateTAN" as 129
+128 --> 129
+rectangle "GenerateTAN" as 130
+129 --> 130
+rectangle "GenerateTAN" as 131
+130 --> 131
+rectangle "GenerateTAN" as 132
+131 --> 132
+132 --> 133
+rectangle "ReturnTAN" as 134
+133 --> 134
+134 --> 135
+rectangle "GetOwnKeys" as 136
+135 --> 136
+rectangle "TriggerBroadcasting" as 137
+136 --> 137
+rectangle "TriggerBroadcasting" as 138
+137 --> 138
+138 --> 139
+139 --> 140
+140 --> 141
+141 --> 142
+142 --> 143
+143 --> 144
+rectangle "RetrieveOwnKeysFromStorage" as 145
+144 --> 145
+145 --> 146
+146 --> 147
+147 --> 148
+rectangle "ReturnOwnKeys" as 149
+148 --> 149
+149 --> 150
+rectangle "UploadKeys" as 151
+150 --> 151
+rectangle "VerifyTAN" as 152
+151 --> 152
+rectangle "VerifyTAN" as 153
+152 --> 153
+rectangle "Validate" as 154
+153 --> 154
+rectangle "Validate" as 155
+154 --> 155
+rectangle "aName" as 156
+155 --> 156
+156 --> 157
+157 --> 158
+rectangle "StoreKeys" as 159
+158 --> 159
+rectangle "StoreKeys" as 160
+159 --> 160
+rectangle "aName" as 161
+160 --> 161
+161 --> 162
+rectangle "ExchangeKeys" as 163
+162 --> 163
+rectangle "ExchangeKeys" as 164
+163 --> 164
+rectangle "StoreKeys" as 165
+164 --> 165
+rectangle "StoreKeys" as 166
+165 --> 166
+rectangle "aName" as 167
+166 --> 167
+167 --> 168
+168 --> 169
+169 --> 170
+170 --> 171
+172 --> 173
+173 --> 174
+174 --> 175
+175 --> 176
+176 --> 177
+177 --> 178
+178 --> 179
+179 --> 180
+180 --> 181
+181 --> 182
+182 --> 183
+183 --> 184
+184 --> 185
+185 --> 186
+186 --> 187
+187 --> 188
+188 --> 189
+189 --> 190
+190 --> 191
+191 --> 192
+192 --> 193
+193 --> 194
+194 --> 195
+195 --> 196
+196 --> 197
+197 --> 198
+198 --> 199
+199 --> 200
+200 --> 201
+201 --> 202
+202 --> 203
+203 --> 204
+204 --> 205
+205 --> 206
+206 --> 207
+207 --> 208
+208 --> 209
+209 --> 210
+210 --> 211
+211 --> 212
+212 --> 213
+213 --> 214
+214 --> 215
+215 --> 216
+rectangle "aName" as 217
+216 --> 217
+217 --> 218
+218 --> 219
+220 --> 221
+221 --> 222
+222 --> 223
+223 --> 224
+224 --> 225
+225 --> 226
+226 --> 227
+227 --> 228
+228 --> 229
+229 --> 230
+230 --> 231
+231 --> 232
+232 --> 233
+233 --> 234
+234 --> 235
+235 --> 236
+236 --> 237
+237 --> 238
+238 --> 239
+239 --> 240
+240 --> 241
+241 --> 242
+242 --> 243
+243 --> 244
+244 --> 245
+245 --> 246
+246 --> 247
+247 --> 248
+248 --> 249
+249 --> 250
+250 --> 251
+251 --> 252
+252 --> 253
+253 --> 254
+254 --> 255
+255 --> 256
+256 --> 257
+257 --> 258
+258 --> 259
+259 --> 260
+rectangle "aName" as 261
+260 --> 261
+261 --> 262
+262 --> 263
+rectangle "ScanQRCode" as 264
+rectangle "RequestToken" as 265
+264 --> 265
+rectangle "RequestToken" as 266
+265 --> 266
+rectangle "GenerateToken" as 267
+266 --> 267
+rectangle "GenerateToken" as 268
+267 --> 268
+268 --> 269
+269 --> 270
+270 --> 271
+rectangle "ReturnToken" as 272
+271 --> 272
+272 --> 273
+rectangle "RequestResults" as 274
+273 --> 274
+rectangle "RetrieveResult" as 275
+274 --> 275
+rectangle "RetrieveResult" as 276
+275 --> 276
+rectangle "GetTestResult" as 277
+276 --> 277
+rectangle "GetTestResult" as 278
+277 --> 278
+rectangle "LoadTestResults" as 279
+278 --> 279
+rectangle "LoadTestResults" as 280
+279 --> 280
+280 --> 281
+rectangle "ReturnTestResult" as 282
+281 --> 282
+282 --> 283
+rectangle "ReturnResult" as 284
+283 --> 284
+284 --> 285
+rectangle "ReturnTestResults" as 286
+285 --> 286
+286 --> 287
+rectangle "UploadKeys" as 288
+287 --> 288
+rectangle "RequestToken" as 289
+288 --> 289
+rectangle "RequestToken" as 290
+289 --> 290
+290 --> 291
+291 --> 292
+292 --> 293
+293 --> 294
+294 --> 295
+295 --> 296
+296 --> 297
+rectangle "RequestTAN" as 298
+297 --> 298
+298 --> 299
+299 --> 300
+300 --> 301
+301 --> 302
+302 --> 303
+303 --> 304
+304 --> 305
+rectangle "GetOwnKeys" as 306
+305 --> 306
+306 --> 307
+307 --> 308
+308 --> 309
+309 --> 310
+310 --> 311
+311 --> 312
+312 --> 313
+313 --> 314
+314 --> 315
+315 --> 316
+316 --> 317
+317 --> 318
+318 --> 319
+319 --> 320
+rectangle "UploadKeys" as 321
+320 --> 321
+321 --> 322
+322 --> 323
+323 --> 324
+324 --> 325
+325 --> 326
+326 --> 327
+327 --> 328
+328 --> 329
+329 --> 330
+330 --> 331
+331 --> 332
+332 --> 333
+333 --> 334
+334 --> 335
+335 --> 336
+336 --> 337
+337 --> 338
+338 --> 339
+339 --> 340
+340 --> 341
+342 --> 343
+343 --> 344
+344 --> 345
+345 --> 346
+346 --> 347
+347 --> 348
+348 --> 349
+349 --> 350
+350 --> 351
+351 --> 352
+352 --> 353
+353 --> 354
+354 --> 355
+355 --> 356
+356 --> 357
+357 --> 358
+358 --> 359
+359 --> 360
+360 --> 361
+361 --> 362
+362 --> 363
+363 --> 364
+364 --> 365
+365 --> 366
+366 --> 367
+367 --> 368
+368 --> 369
+369 --> 370
+370 --> 371
+371 --> 372
+372 --> 373
+373 --> 374
+374 --> 375
+375 --> 376
+376 --> 377
+377 --> 378
+378 --> 379
+379 --> 380
+380 --> 381
+381 --> 382
+382 --> 383
+383 --> 384
+384 --> 385
+385 --> 386
+386 --> 387
+387 --> 388
+388 --> 389
+389 --> 390
+390 --> 391
+391 --> 392
+392 --> 393
+393 --> 394
+394 --> 395
+395 --> 396
+396 --> 397
+397 --> 398
+398 --> 399
+399 --> 400
+400 --> 401
+401 --> 402
+402 --> 403
+403 --> 404
+404 --> 405
+405 --> 406
+406 --> 407
+407 --> 408
+408 --> 409
+409 --> 410
+410 --> 411
+411 --> 412
+412 --> 413
+414 --> 415
+415 --> 416
+416 --> 417
+417 --> 418
+418 --> 419
+419 --> 420
+420 --> 421
+421 --> 422
+422 --> 423
+423 --> 424
+424 --> 425
+425 --> 426
+426 --> 427
+427 --> 428
+428 --> 429
+429 --> 430
+430 --> 431
+431 --> 432
+432 --> 433
+433 --> 434
+434 --> 435
+435 --> 436
+436 --> 437
+437 --> 438
+438 --> 439
+439 --> 440
+440 --> 441
+441 --> 442
+442 --> 443
+443 --> 444
+444 --> 445
+445 --> 446
+446 --> 447
+447 --> 448
+448 --> 449
+449 --> 450
+450 --> 451
+451 --> 452
+452 --> 453
+453 --> 454
+454 --> 455
+455 --> 456
+456 --> 457
+457 --> 458
+458 --> 459
+459 --> 460
+460 --> 461
+461 --> 462
+462 --> 463
+463 --> 464
+464 --> 465
+465 --> 466
+466 --> 467
+467 --> 468
+468 --> 469
+469 --> 470
+470 --> 471
+471 --> 472
+472 --> 473
+473 --> 474
+474 --> 475
+475 --> 476
+476 --> 477
+477 --> 478
+478 --> 479
+479 --> 480
+480 --> 481
+482 --> 483
+483 --> 484
+484 --> 485
+485 --> 486
+486 --> 487
+487 --> 488
+488 --> 489
+489 --> 490
+490 --> 491
+491 --> 492
+492 --> 493
+493 --> 494
+494 --> 495
+495 --> 496
+496 --> 497
+497 --> 498
+498 --> 499
+499 --> 500
+500 --> 501
+501 --> 502
+502 --> 503
+503 --> 504
+504 --> 505
 @enduml

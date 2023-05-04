@@ -9,6 +9,6 @@
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="con" path="org.eclipse.pde.core.requiredPlugins"/>
-	<classpathentry kind="lib" path="plantuml-1.2023.6.jar"/>
+	<classpathentry kind="lib" path="plantuml-1.2023.6.jar" sourcepath="plantuml-1.2023.6.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

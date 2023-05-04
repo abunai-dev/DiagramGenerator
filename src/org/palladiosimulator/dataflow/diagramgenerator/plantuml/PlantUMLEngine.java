@@ -21,9 +21,13 @@ public class PlantUMLEngine implements DiagramEngine {
 
 	@Override
 	public void finish() {
+		this.source += "@enduml";
+
+		System.out.println(this.source);
+
 		boolean isSaved = PlantUMLUtility.convertSourceToSVG(this.source, "dataflow_diagram.svg");
 		if (!isSaved) {
-			System.out.println("Error: saving failed!");			
+			System.out.println("Error: saving failed!");
 		}
 	}
 
@@ -34,26 +38,29 @@ public class PlantUMLEngine implements DiagramEngine {
 			previousNode = this.consumeSequenceElement(previousNode, element);
 		}
 	}
-	
+
 	private DataFlowNode consumeSequenceElement(DataFlowNode previousNode, AbstractActionSequenceElement element) {
 		String elementId = EntityUtility.getEntityId(element);
 		String elementName = EntityUtility.getEntityName(element);
 
 		DataFlowNode node = new DataFlowNode(elementId, elementCounter, elementName, previousNode, element);
 		boolean isInserted = dataTree.insertNode(node);
-		
+
 		if (isInserted) {
 			this.source += "rectangle \"" + node.getName() + "\" as " + node.getIdNumber() + "\n";
+		} else {
+			node.addChild(node);
+			node = this.dataTree.getNode(elementId);
 		}
-
+		
 		if (previousNode != null) {
 			previousNode.addChild(node);
 			this.source += previousNode.getIdNumber() + " --> " + node.getIdNumber() + "\n";
 		}
 
 		elementCounter++;
-		
-		return previousNode;
+
+		return node;
 	}
 
 }
