@@ -1,4 +1,4 @@
-package org.palladiosimulator.dataflow.diagramgenerator;
+package org.palladiosimulator.dataflow.diagramgenerator.model;
 
 import java.util.ArrayList;
 import java.util.List;

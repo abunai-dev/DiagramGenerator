@@ -13,6 +13,10 @@ import java.util.Map;
 
 import org.palladiosimulator.dataflow.confidentiality.analysis.StandalonePCMDataFlowConfidentialtyAnalysis;
 import org.palladiosimulator.dataflow.confidentiality.analysis.testmodels.Activator;
+import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
+import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowTree;
+import org.palladiosimulator.dataflow.diagramgenerator.plantuml.PlantUMLEngine;
+import org.palladiosimulator.dataflow.diagramgenerator.plantuml.PlantUMLUtility;
 import org.palladiosimulator.pcm.seff.impl.AbstractActionImpl;
 import org.palladiosimulator.pcm.seff.impl.StartActionImpl;
 
@@ -37,80 +41,15 @@ public class Main {
 		analysis.initalizeAnalysis();
 
 		List<ActionSequence> actionSequences = analysis.findAllSequences();
-
-		Map<String, DataFlowNode> nodeMap = new HashMap<>();
-
-		int elementCounter = 0;
+		
+		DiagramEngine engine = new PlantUMLEngine();
+		
+		engine.initialize();
 
 		for (ActionSequence actionSequence : actionSequences) {
-			DataFlowNode previousNode = null;
-
-			for (AbstractActionSequenceElement element : actionSequence.getElements()) {
-				String elementId = EntityUtility.getEntityId(element);
-				String elementName = EntityUtility.getEntityName(element);
-				DataFlowNode node = nodeMap.get(elementId);
-
-				if (node == null) {
-					node = nodeMap.get(elementId);
-					if (node == null) {
-						node = new DataFlowNode(elementId, elementCounter, elementName, previousNode, element);
-						nodeMap.put(elementId, node);
-					}
-				}
-
-				if (previousNode != null) {
-					previousNode.addChild(node);
-				}
-
-				previousNode = node;
-
-				elementCounter++;
-			}
+			engine.consumeActionSequence(actionSequence);
 		}
-
-		String source = "@startuml\n";
-
-		List<DataFlowNode> roots = new ArrayList<>();
-
-		for (DataFlowNode node : nodeMap.values()) {
-			if (node.getParent() == null) {
-				roots.add(node);
-			}
-			source += "rectangle \"" + node.getName() + "\" as " + node.getIdNumber() + "\n";
-		}
-
-		for (DataFlowNode node : nodeMap.values()) {
-			List<DataFlowNode> children = node.getChildren();
-
-			for (DataFlowNode child : children) {
-				source += node.getIdNumber() + " --> " + child.getIdNumber() + "\n";
-			}
-		}
-
-		source += "@enduml";
-
-		SourceStringReader reader = new SourceStringReader(source);
-		final ByteArrayOutputStream os = new ByteArrayOutputStream();
-		// Write the first image to "os"
-		try {
-			String desc = reader.generateImage(os, new FileFormatOption(FileFormat.SVG));
-			os.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		// The XML is stored into svg
-		final String svg = new String(os.toByteArray(), Charset.forName("UTF-8"));
-
-		try {
-			BufferedWriter writer = new BufferedWriter(new FileWriter("output/data-flow.svg"));
-			writer.write(svg);
-			writer.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		System.out.println(source);
+		
+		engine.finish();
 	}
 }
