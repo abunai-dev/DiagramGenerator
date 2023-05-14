@@ -7,38 +7,45 @@ import java.util.List;
 import java.util.Map;
 
 public class DataFlowTree {
-	private Map<String, DataFlowNode> nodeMap;
-	
+	private Collection<DataFlowNode> nodes;
+
 	public DataFlowTree() {
-		this.nodeMap = new HashMap<>();
+		this.nodes = new ArrayList<>();
 	}
-	
+
 	public List<DataFlowNode> getRoots() {
 		List<DataFlowNode> roots = new ArrayList<>();
-		
-		for (DataFlowNode node : nodeMap.values()) {
+
+		for (DataFlowNode node : nodes) {
 			if (node.getParent() == null) {
 				roots.add(node);
 			}
 		}
-		
+
 		return roots;
 	}
-	
-	public DataFlowNode getNode(String id) {
-		return this.nodeMap.get(id);
+
+	public DataFlowNode getNode(DataFlowNodePrimaryKey key) {
+		for (DataFlowNode node : nodes) {
+			if (node.getKey().equals(key)) {
+				return node;
+			}
+		}
+
+		return null;
 	}
-	
+
 	public boolean insertNode(DataFlowNode node) {
-		if (this.nodeMap.get(node.getId()) == null) {
-			this.nodeMap.put(node.getId(), node);
+		// if node already exists, do not insert
+		if (this.getNode(node.getKey()) != null) {
+			return false;
+		} else {
+			this.nodes.add(node);
 			return true;
 		}
-		
-		return false;
 	}
-	
+
 	public Collection<DataFlowNode> getNodes() {
-		return this.nodeMap.values();
+		return this.nodes;
 	}
 }

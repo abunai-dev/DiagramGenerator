@@ -41,15 +41,93 @@ public class Main {
 		analysis.initalizeAnalysis();
 
 		List<ActionSequence> actionSequences = analysis.findAllSequences();
-		
-		DiagramEngine engine = new PlantUMLEngine();
-		
-		engine.initialize();
+
+		System.out.println("Initialization finished");
+
+		List<DataflowElement> dataflowElements = new ArrayList<DataflowElement>();
+
+		int idCounter = 0;
 
 		for (ActionSequence actionSequence : actionSequences) {
-			engine.consumeActionSequence(actionSequence);
+			List<DataflowElement> actionSequenceDataflowElements = new ArrayList<DataflowElement>();
+
+			DataflowElement currentElement = null;
+
+			// ich muss in einer sequenz herausfinden, ob sachen öfter vorkommen und nicht
+			// zwischen allen sequencen
+
+			for (AbstractActionSequenceElement element : actionSequence.getElements()) {
+				String id = EntityUtility.getEntityId(element);
+				String name = EntityUtility.getEntityName(element);
+				Boolean isCalling = EntityUtility.getIsCalling(element);
+				String parameter = EntityUtility.getParameterString(element);
+
+				DataflowElement newElement = new DataflowElement(id, idCounter, name, isCalling, null, parameter, 0,
+						element.getClass().getName());
+
+				String elementString = element.toString();
+
+				if (newElement.getIsCalling() == null || newElement.getIsCalling() == true) {
+					newElement.setParent(currentElement);
+					currentElement = newElement;
+					actionSequenceDataflowElements.add(newElement);
+				} else if (newElement.getIsCalling() == false) { // Element is a returning element
+					DataflowElement parent = currentElement.getParent();
+					currentElement = parent;
+				}
+
+				idCounter++;
+			}
+
+			dataflowElements.addAll(actionSequenceDataflowElements);
 		}
-		
-		engine.finish();
+		System.out.println("ActionSequences comsumed");
+
+		String source = "@startuml\n";
+
+		for (DataflowElement element : dataflowElements) {
+			String className = element.getClassName().substring(element.getClassName().lastIndexOf(".") + 1);
+
+			if (!className.equals("CallingUserActionSequenceElement")
+					&& !className.equals("CallingSEFFActionSequenceElement")) {
+
+				source += "usecase u_" + element.getNumId() + "[\n";
+
+				source += element.getName() + "\n";
+				source += "----\n";
+				source += "id: " + element.getId() + "\n";
+
+				source += "]\n";
+
+				DataflowElement iterator = element.getParent();
+				while (iterator != null) {
+					String iteratorClass = iterator.getClassName()
+							.substring(element.getClassName().lastIndexOf(".") + 1);
+					if (!iteratorClass.equals("CallingSEFFActionSequenceElement")
+							&& !iteratorClass.equals("CallingUserActionSequenceElement")) {
+						break;
+					}
+					iterator = iterator.getParent();
+				}
+
+				if (iterator != null) {
+					if (element.getParameter() != "") {
+						source += "u_" + iterator.getNumId() + " --> u_" + element.getNumId() + " : "
+								+ element.getParameter() + "\n";
+					} else {
+						source += "u_" + iterator.getNumId() + " --> u_" + element.getNumId() + "\n";
+					}
+				}
+			}
+		}
+
+		source += "@enduml";
+
+		boolean isSaved = PlantUMLUtility.convertSourceToSVG(source, "dataflow_diagram.svg");
+		if (!isSaved) {
+			System.out.println("Error: saving failed!");
+		}
+
+		System.out.println("Done!");
 	}
 }

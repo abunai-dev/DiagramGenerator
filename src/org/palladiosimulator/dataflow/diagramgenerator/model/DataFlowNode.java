@@ -6,25 +6,35 @@ import java.util.List;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.AbstractActionSequenceElement;
 
 public class DataFlowNode {
-	private String id;
+	// this is the primary key
+	private DataFlowNodePrimaryKey key;
+	//
 	private int idNumber;
 	private String name;
 	private AbstractActionSequenceElement element;
 	private DataFlowNode parent;
 	private List<DataFlowNode> children;
 
-	public DataFlowNode(String id, int idNumber, String name, DataFlowNode parent, AbstractActionSequenceElement element) {
+	public DataFlowNode(String id, int idNumber, String name, String parameterString, DataFlowNode parent, AbstractActionSequenceElement element, Boolean isCalling) {
 		// remove underscore from id
-		this.id = id;
+		this.key = new DataFlowNodePrimaryKey(id, isCalling, parameterString);
 		this.idNumber = idNumber;
 		this.name = name;
 		this.element = element;
 		this.parent = parent;
 		this.children = new ArrayList<DataFlowNode>();
 	}
+	
+	public DataFlowNodePrimaryKey getKey() {
+		return this.key;
+	}
+	
+	public Boolean isCalling() {
+		return this.key.isCalling;
+	}
 
 	public String getId() {
-		return id;
+		return this.key.id;
 	}
 	
 	public int getIdNumber() {
