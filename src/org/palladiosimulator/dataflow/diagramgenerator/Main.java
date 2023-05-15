@@ -34,8 +34,8 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.p
 public class Main {
 	public static void main(String[] args) {
 		var projectName = "org.palladiosimulator.dataflow.confidentiality.analysis.testmodels";
-		final var usageModelPath = Paths.get("models", "CoronaWarnApp", "default.usagemodel").toString();
-		final var allocationPath = Paths.get("models", "CoronaWarnApp", "default.allocation").toString();
+		final var usageModelPath = Paths.get("models", "BranchingOnlineShop", "default.usagemodel").toString();
+		final var allocationPath = Paths.get("models", "BranchingOnlineShop", "default.allocation").toString();
 		StandalonePCMDataFlowConfidentialtyAnalysis analysis = new StandalonePCMDataFlowConfidentialtyAnalysis(
 				projectName, Activator.class, usageModelPath, allocationPath);
 		analysis.initalizeAnalysis();
@@ -63,7 +63,7 @@ public class Main {
 				String parameter = EntityUtility.getParameterString(element);
 
 				DataflowElement newElement = new DataflowElement(id, idCounter, name, isCalling, null, parameter, 0,
-						element.getClass().getName());
+						element.getClass().getName().substring(element.getClass().getName().lastIndexOf(".") + 1));
 
 				String elementString = element.toString();
 
@@ -85,43 +85,80 @@ public class Main {
 
 		String source = "@startuml\n";
 
+		// ein mal zeichnen für SEFFActionSequenceElements: durchgezogene linien
+		List<DataflowElement> seffActionSequenceElements = new ArrayList<DataflowElement>();
 		for (DataflowElement element : dataflowElements) {
-			String className = element.getClassName().substring(element.getClassName().lastIndexOf(".") + 1);
+			if (element.getClassName().equals("SEFFActionSequenceElement")) {
+				seffActionSequenceElements.add(element);
+			}
+		}
 
-			if (!className.equals("CallingUserActionSequenceElement")
-					&& !className.equals("CallingSEFFActionSequenceElement")) {
+		for (DataflowElement element : seffActionSequenceElements) {
+			source += "usecase u_" + element.getNumId() + "[\n";
 
-				source += "usecase u_" + element.getNumId() + "[\n";
+			source += element.getName() + "\n";
+			source += "----\n";
+			source += element.getClassName() + "\n";
+			source += "....\n";
+			source += "id: " + element.getId() + "\n";
+
+			source += "]\n";
+
+			DataflowElement iterator = element.getParent();
+
+			while (iterator != null) {
+				String iteratorClass = iterator.getClassName().substring(element.getClassName().lastIndexOf(".") + 1);
+				if (!iteratorClass.equals("CallingSEFFActionSequenceElement")
+						&& !iteratorClass.equals("CallingUserActionSequenceElement")) {
+					break;
+				}
+				iterator = iterator.getParent();
+			}
+
+			if (iterator != null) {
+				if (element.getParameter() != "") {
+					source += "u_" + iterator.getNumId() + " --> u_" + element.getNumId() + " : "
+							+ element.getParameter() + "\n";
+				} else {
+					source += "u_" + iterator.getNumId() + " --> u_" + element.getNumId() + "\n";
+				}
+
+			}
+		}
+
+		// ein mal zeichnen für den rest: gepunktete linien
+		for (DataflowElement element : dataflowElements) {
+
+			if (!element.getClassName().equals("SEFFActionSequenceElement")) {
+				source += "rectangle u_" + element.getNumId() + "[\n";
 
 				source += element.getName() + "\n";
 				source += "----\n";
+				source += element.getClassName() + "\n";
+				source += "....\n";
 				source += "id: " + element.getId() + "\n";
 
 				source += "]\n";
+			}
 
-				DataflowElement iterator = element.getParent();
-				while (iterator != null) {
-					String iteratorClass = iterator.getClassName()
-							.substring(element.getClassName().lastIndexOf(".") + 1);
-					if (!iteratorClass.equals("CallingSEFFActionSequenceElement")
-							&& !iteratorClass.equals("CallingUserActionSequenceElement")) {
-						break;
-					}
-					iterator = iterator.getParent();
-				}
+			DataflowElement parent = element.getParent();
 
-				if (iterator != null) {
+			if (parent != null) {
+				if (!(element.getClassName().equals("SEFFActionSequenceElement")
+						&& parent.getClassName().equals("SEFFActionSequenceElement"))) {
 					if (element.getParameter() != "") {
-						source += "u_" + iterator.getNumId() + " --> u_" + element.getNumId() + " : "
+						source += "u_" + parent.getNumId() + " ..> u_" + element.getNumId() + " : "
 								+ element.getParameter() + "\n";
 					} else {
-						source += "u_" + iterator.getNumId() + " --> u_" + element.getNumId() + "\n";
+						source += "u_" + parent.getNumId() + " ..> u_" + element.getNumId() + "\n";
 					}
 				}
 			}
 		}
 
 		source += "@enduml";
+
+		System.out.println(source);
 
 		boolean isSaved = PlantUMLUtility.convertSourceToSVG(source, "dataflow_diagram.svg");
 		if (!isSaved) {
