@@ -11,6 +11,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.crypto.Data;
+
 import org.palladiosimulator.dataflow.confidentiality.analysis.StandalonePCMDataFlowConfidentialtyAnalysis;
 import org.palladiosimulator.dataflow.confidentiality.analysis.testmodels.Activator;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
@@ -34,8 +36,8 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.p
 public class Main {
 	public static void main(String[] args) {
 		var projectName = "org.palladiosimulator.dataflow.confidentiality.analysis.testmodels";
-		final var usageModelPath = Paths.get("models", "BranchingOnlineShop", "default.usagemodel").toString();
-		final var allocationPath = Paths.get("models", "BranchingOnlineShop", "default.allocation").toString();
+		final var usageModelPath = Paths.get("models", "CoronaWarnApp", "default.usagemodel").toString();
+		final var allocationPath = Paths.get("models", "CoronaWarnApp", "default.allocation").toString();
 		StandalonePCMDataFlowConfidentialtyAnalysis analysis = new StandalonePCMDataFlowConfidentialtyAnalysis(
 				projectName, Activator.class, usageModelPath, allocationPath);
 		analysis.initalizeAnalysis();
@@ -49,12 +51,8 @@ public class Main {
 		int idCounter = 0;
 
 		for (ActionSequence actionSequence : actionSequences) {
-			List<DataflowElement> actionSequenceDataflowElements = new ArrayList<DataflowElement>();
-
+			List<DataflowElement> currentElement2 = new ArrayList<DataflowElement>();
 			DataflowElement currentElement = null;
-
-			// ich muss in einer sequenz herausfinden, ob sachen öfter vorkommen und nicht
-			// zwischen allen sequencen
 
 			for (AbstractActionSequenceElement element : actionSequence.getElements()) {
 				String id = EntityUtility.getEntityId(element);
@@ -62,24 +60,74 @@ public class Main {
 				Boolean isCalling = EntityUtility.getIsCalling(element);
 				String parameter = EntityUtility.getParameterString(element);
 
-				DataflowElement newElement = new DataflowElement(id, idCounter, name, isCalling, null, parameter, 0,
-						element.getClass().getName().substring(element.getClass().getName().lastIndexOf(".") + 1));
-
-				String elementString = element.toString();
-
-				if (newElement.getIsCalling() == null || newElement.getIsCalling() == true) {
-					newElement.setParent(currentElement);
-					currentElement = newElement;
-					actionSequenceDataflowElements.add(newElement);
-				} else if (newElement.getIsCalling() == false) { // Element is a returning element
-					DataflowElement parent = currentElement.getParent();
-					currentElement = parent;
+				// find element with same id, name, isCalling and parameter in dataflowElements
+				DataflowElement foundElement = null;
+				for (DataflowElement dataflowElement : dataflowElements) {
+					if (dataflowElement.getId().equals(id) && dataflowElement.getName().equals(name)
+							&& dataflowElement.getIsCalling() == isCalling
+							&& dataflowElement.getParameter().equals(parameter)) {
+						foundElement = dataflowElement;
+						break;
+					}
 				}
 
-				idCounter++;
-			}
+				// if foundElement != null, check if the foundElement is a distinct parent of
+				// the currentElement
+				boolean isDistinctParent = false;
+				if (foundElement != null) {
+					List<DataflowElement> parents = new ArrayList<DataflowElement>();
+					if (currentElement2.size() > 0)
+						for (DataflowElement currentElement3 : currentElement2) {
+							parents.addAll(currentElement3.getParents());
+						}
+					if (!isDistinctParent) {
+						while (parents.size() > 0) {
+							for (DataflowElement parent : parents) {
+								if (parent.equals(foundElement)) {
+									isDistinctParent = true;
+									break;
+								}
+							}
+							List<DataflowElement> newParents = new ArrayList<DataflowElement>();
+							for (DataflowElement parent : parents) {
+								newParents.addAll(parent.getParents());
+							}
+							parents = newParents;
+						}
+					}
+				}
 
-			dataflowElements.addAll(actionSequenceDataflowElements);
+				if (foundElement == null || isDistinctParent) {
+					DataflowElement newElement = new DataflowElement(id, idCounter, name, isCalling, parameter, 0,
+							element.getClass().getName().substring(element.getClass().getName().lastIndexOf(".") + 1));
+
+					String elementString = element.toString();
+
+					if (newElement.getIsCalling() == null || newElement.getIsCalling() == true) {
+						if (currentElement2.size() > 0)
+							for (DataflowElement currentElement3 : currentElement2) {
+								newElement.addParent(currentElement3);
+							}
+						currentElement2.clear();
+						currentElement2.add(newElement);
+						dataflowElements.add(newElement);
+					} else if (newElement.getIsCalling() == false) { // Element is a returning element
+						List<DataflowElement> parents = new ArrayList<DataflowElement>();
+						currentElement2.clear();
+						for (DataflowElement parent : parents) {
+							currentElement2.add(parent);
+						}
+					}
+
+					idCounter++;
+				} else {
+					for (DataflowElement currentElement3 : currentElement2) {
+						foundElement.addParent(currentElement3);
+					}
+					currentElement2.clear();
+					currentElement2.add(foundElement);
+				}
+			}
 		}
 		System.out.println("ActionSequences comsumed");
 
@@ -104,25 +152,38 @@ public class Main {
 
 			source += "]\n";
 
-			DataflowElement iterator = element.getParent();
-
-			while (iterator != null) {
-				String iteratorClass = iterator.getClassName().substring(element.getClassName().lastIndexOf(".") + 1);
-				if (!iteratorClass.equals("CallingSEFFActionSequenceElement")
-						&& !iteratorClass.equals("CallingUserActionSequenceElement")) {
-					break;
+			List<DataflowElement> iterators = element.getParents();
+			while (iterators.size() > 0) {
+				boolean shouldBreak = true;
+				for (DataflowElement iterator : iterators) {
+					String iteratorClass = iterator.getClassName()
+							.substring(element.getClassName().lastIndexOf(".") + 1);
+					if (iteratorClass.equals("CallingSEFFActionSequenceElement")
+							|| iteratorClass.equals("CallingUserActionSequenceElement")) {
+						shouldBreak = false;
+						break;
+					}
 				}
-				iterator = iterator.getParent();
+				if (shouldBreak) {
+					break;
+				} else {
+					List<DataflowElement> parents = new ArrayList<DataflowElement>();
+					for (DataflowElement iterator : iterators) {
+						parents.addAll(iterator.getParents());
+					}
+					iterators = parents;
+				}
 			}
 
-			if (iterator != null) {
-				if (element.getParameter() != "") {
-					source += "u_" + iterator.getNumId() + " --> u_" + element.getNumId() + " : "
-							+ element.getParameter() + "\n";
-				} else {
-					source += "u_" + iterator.getNumId() + " --> u_" + element.getNumId() + "\n";
+			if (iterators.size() > 0) {
+				for (DataflowElement prevElement : iterators) {
+					if (element.getParameter() != "") {
+						source += "u_" + prevElement.getNumId() + " --> u_" + element.getNumId() + " : "
+								+ element.getParameter() + "\n";
+					} else {
+						source += "u_" + prevElement.getNumId() + " --> u_" + element.getNumId() + "\n";
+					}
 				}
-
 			}
 		}
 
@@ -141,16 +202,18 @@ public class Main {
 				source += "]\n";
 			}
 
-			DataflowElement parent = element.getParent();
+			List<DataflowElement> parents = element.getParents();
 
-			if (parent != null) {
-				if (!(element.getClassName().equals("SEFFActionSequenceElement")
-						&& parent.getClassName().equals("SEFFActionSequenceElement"))) {
-					if (element.getParameter() != "") {
-						source += "u_" + parent.getNumId() + " ..> u_" + element.getNumId() + " : "
-								+ element.getParameter() + "\n";
-					} else {
-						source += "u_" + parent.getNumId() + " ..> u_" + element.getNumId() + "\n";
+			for (DataflowElement parent : parents) {
+				if (parent != null) {
+					if (!(element.getClassName().equals("SEFFActionSequenceElement")
+							&& parent.getClassName().equals("SEFFActionSequenceElement"))) {
+						if (element.getParameter() != "") {
+							source += "u_" + parent.getNumId() + " ..> u_" + element.getNumId() + " : "
+									+ element.getParameter() + "\n";
+						} else {
+							source += "u_" + parent.getNumId() + " ..> u_" + element.getNumId() + "\n";
+						}
 					}
 				}
 			}

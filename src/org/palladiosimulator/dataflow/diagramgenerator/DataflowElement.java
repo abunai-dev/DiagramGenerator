@@ -10,11 +10,11 @@ public class DataflowElement {
 	private Boolean isCalling;
 	private String parameter;
 	private int occurance;
-	private DataflowElement parent;
+	private List<DataflowElement> parents;
 	private String className;
 
-	public DataflowElement(String id, int numId, String name, Boolean isCalling, DataflowElement parent,
-			String parameter, int occurance, String className) {
+	public DataflowElement(String id, int numId, String name, Boolean isCalling, String parameter, int occurance,
+			String className) {
 		super();
 		this.id = id;
 		this.numId = numId;
@@ -22,7 +22,7 @@ public class DataflowElement {
 		this.isCalling = isCalling;
 		this.parameter = parameter;
 		this.occurance = occurance;
-		this.parent = parent;
+		this.parents = new ArrayList<DataflowElement>();
 		this.className = className;
 	}
 
@@ -49,13 +49,21 @@ public class DataflowElement {
 	public int getOccurance() {
 		return occurance;
 	}
-
-	public DataflowElement getParent() {
-		return parent;
+	
+	public void addParent(DataflowElement parent) {
+		this.parents.add(parent);
 	}
 	
-	public void setParent(DataflowElement parent) {
-		this.parent = parent;
+	public void removeParent(DataflowElement parent) {
+		this.parents.remove(parent);
+	}
+
+	public List<DataflowElement> getParents() {
+		return parents;
+	}
+
+	public void setParents(List<DataflowElement> parents) {
+		this.parents = parents;
 	}
 
 	public String getClassName() {
