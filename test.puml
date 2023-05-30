@@ -22,4 +22,10 @@ This is four test
 
 test1 --> test2 : abc def
 
+actor test3 [
+    This is an actor
+    ====
+    asdasd
+]
+
 @enduml

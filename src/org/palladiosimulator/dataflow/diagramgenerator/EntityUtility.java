@@ -1,5 +1,6 @@
 package org.palladiosimulator.dataflow.diagramgenerator;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
@@ -10,6 +11,7 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.p
 import org.palladiosimulator.pcm.parameter.VariableUsage;
 import org.palladiosimulator.pcm.parameter.impl.VariableUsageImpl;
 import org.palladiosimulator.pcm.repository.Parameter;
+import org.palladiosimulator.pcm.repository.impl.BasicComponentImpl;
 import org.palladiosimulator.pcm.repository.impl.OperationSignatureImpl;
 import org.palladiosimulator.pcm.repository.impl.ParameterImpl;
 import org.palladiosimulator.pcm.seff.impl.AbstractActionImpl;
@@ -21,6 +23,8 @@ import org.palladiosimulator.pcm.seff.impl.SetVariableActionImpl;
 import org.palladiosimulator.pcm.seff.impl.StartActionImpl;
 import org.palladiosimulator.pcm.seff.impl.StopActionImpl;
 import org.palladiosimulator.pcm.usagemodel.impl.EntryLevelSystemCallImpl;
+import org.palladiosimulator.pcm.usagemodel.impl.ScenarioBehaviourImpl;
+import org.palladiosimulator.pcm.usagemodel.impl.UsageScenarioImpl;
 
 import gen.lib.dotgen.sameport__c;
 
@@ -28,9 +32,12 @@ public class EntityUtility {
 	public static String getEntityName(AbstractActionSequenceElement<?> element) {
 		String name = null;
 		if (element instanceof CallingUserActionSequenceElement cuase) {
-			name = ((CallingUserActionSequenceElement) element).getElement().getEntityName();
+			name = cuase.getElement().getEntityName();
 		} else if (element instanceof SEFFActionSequenceElement sase) {
 			var innerElement = sase.getElement();
+			// BasicComponentImpl bc = (BasicComponentImpl)
+			// innerElement.eContainer().eContainer();
+			// String containerName = bc.getEntityName();
 			name = ((AbstractActionImpl) ((SEFFActionSequenceElement) element).getElement()).getEntityName();
 			if (innerElement instanceof ExternalCallActionImpl eca) {
 			} else if (innerElement instanceof StartActionImpl sa) {
@@ -39,12 +46,12 @@ public class EntityUtility {
 					OperationSignatureImpl operation = (OperationSignatureImpl) rds.getDescribedService__SEFF();
 					name = operation.getEntityName();
 				} else if (seff instanceof ResourceDemandingBehaviourImpl rdb) {
-					ProbabilisticBranchTransitionImpl branch = (ProbabilisticBranchTransitionImpl) rdb.getAbstractBranchTransition_ResourceDemandingBehaviour();
+					ProbabilisticBranchTransitionImpl branch = (ProbabilisticBranchTransitionImpl) rdb
+							.getAbstractBranchTransition_ResourceDemandingBehaviour();
 					name = branch.getEntityName();
-				}
-				else {
+				} else {
 					throw new Error("Not implemented");
-				}				
+				}
 			} else if (innerElement instanceof SetVariableActionImpl sva) {
 			} else {
 				throw new Error("Not implemented");
@@ -53,6 +60,24 @@ public class EntityUtility {
 			throw new Error("Not implemented");
 		}
 		return name;
+	}
+
+	public static String getActorName(AbstractActionSequenceElement element) {
+		String actorName = null;
+		if (element instanceof CallingUserActionSequenceElement cuase) {
+			EntryLevelSystemCallImpl elsc = (EntryLevelSystemCallImpl) cuase.getElement();
+			ScenarioBehaviourImpl sbi = (ScenarioBehaviourImpl) elsc.getScenarioBehaviour_AbstractUserAction();
+			if (sbi != null) {
+				UsageScenarioImpl usi = (UsageScenarioImpl) sbi.getUsageScenario_SenarioBehaviour();
+				if (usi != null) {
+					String entityName = usi.getEntityName();
+					// the actor name is the first word of the entity name. All words are written
+					// with a capital letter but have no spaces
+					actorName = entityName.split("(?=\\p{Upper})")[0];
+				}
+			}
+		}
+		return actorName;
 	}
 
 	public static Boolean getIsCalling(AbstractActionSequenceElement element) {
@@ -117,5 +142,18 @@ public class EntityUtility {
 		}
 
 		return result;
+	}
+	
+	public static List<String> getParameters(AbstractActionSequenceElement element) {
+		List<String> paras = new ArrayList<String>();
+		if (element instanceof SEFFActionSequenceElement<?> sase) {
+			List<Parameter> parameters = sase.getParameter();
+			for (var entry : parameters) {
+				ParameterImpl parameter = (ParameterImpl) entry;
+				paras.add(parameter.getParameterName());
+			}
+		}
+
+		return paras;
 	}
 }

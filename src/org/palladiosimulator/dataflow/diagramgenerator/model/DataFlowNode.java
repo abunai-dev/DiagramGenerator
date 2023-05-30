@@ -6,59 +6,61 @@ import java.util.List;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.AbstractActionSequenceElement;
 
 public class DataFlowNode {
-	// this is the primary key
-	private DataFlowNodePrimaryKey key;
-	//
-	private int idNumber;
-	private String name;
-	private AbstractActionSequenceElement element;
-	private DataFlowNode parent;
+	private DataFlowElement element;
+	private AbstractActionSequenceElement originalElement;
+	private List<DataFlowNode> parents;
 	private List<DataFlowNode> children;
 
-	public DataFlowNode(String id, int idNumber, String name, String parameterString, DataFlowNode parent, AbstractActionSequenceElement element, Boolean isCalling) {
-		// remove underscore from id
-		this.key = new DataFlowNodePrimaryKey(id, isCalling, parameterString);
-		this.idNumber = idNumber;
-		this.name = name;
+	public DataFlowNode(AbstractActionSequenceElement originalElement, DataFlowElement element) {
 		this.element = element;
-		this.parent = parent;
+		this.originalElement = originalElement;
+		this.parents = new ArrayList<DataFlowNode>();
 		this.children = new ArrayList<DataFlowNode>();
 	}
-	
-	public DataFlowNodePrimaryKey getKey() {
-		return this.key;
-	}
-	
-	public Boolean isCalling() {
-		return this.key.isCalling;
-	}
 
-	public String getId() {
-		return this.key.id;
-	}
-	
-	public int getIdNumber() {
-		return this.idNumber;
-	}
-	
-	public String getName() {
-		return this.name;
-	}
-
-	public DataFlowNode getParent() {
-		return this.parent;
-	}
-
-	public AbstractActionSequenceElement getElement() {
+	public DataFlowElement getElement() {
 		return element;
+	}
+
+	public AbstractActionSequenceElement getOritignalElement() {
+		return this.originalElement;
+	}
+
+	public List<DataFlowNode> getParents() {
+		return this.parents;
+	}
+
+	public boolean hasParent(DataFlowNode parent) {
+		if (this.parents.contains(parent))
+			return true;
+		return false;
+	}
+
+	public void addParent(DataFlowNode parent) {
+		if (!this.parents.contains(parent))
+			this.parents.add(parent);
+	}
+	
+	public void removeParent(DataFlowNode parent) {
+		this.parents.remove(parent);
 	}
 
 	public List<DataFlowNode> getChildren() {
 		return this.children;
 	}
+	
+	public boolean hasChild(DataFlowNode child) {
+		if (this.children.contains(child))
+			return true;
+		return false;
+	}
 
 	public void addChild(DataFlowNode child) {
 		if (!this.children.contains(child))
 			this.children.add(child);
+	}
+	
+	public void removeChild(DataFlowNode child) {
+		this.children.remove(child);
 	}
 }
