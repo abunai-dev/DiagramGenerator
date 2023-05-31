@@ -7,4 +7,8 @@ public class WarehouseDataFlowElement extends DataFlowElement {
 		// TODO Auto-generated constructor stub
 	}
 
+	@Override
+	public void accept(DataFlowElementVisitor visitor) {
+		visitor.visit(this);
+	}
 }

@@ -2,12 +2,7 @@ package org.palladiosimulator.dataflow.diagramgenerator;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.nio.file.Paths;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -16,14 +11,11 @@ import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import org.palladiosimulator.dataflow.confidentiality.analysis.StandalonePCMDataFlowConfidentialtyAnalysis;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
 import org.palladiosimulator.dataflow.confidentiality.analysis.testmodels.Activator;
-import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementFactory;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
-import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNodeFactory;
-import org.palladiosimulator.dataflow.diagramgenerator.plantuml.PlantUMLUtility;
+import org.palladiosimulator.dataflow.diagramgenerator.plantuml.PlantUMLDrawingStrategy;
 
 public class Main {
 	private static JTextField projectNameTextField;
@@ -35,7 +27,7 @@ public class Main {
 			// If command-line arguments are provided, run the analysis directly
 			CommandLineOptions options = CommandLineParser.parseCommandLineOptions(args);
 			if (options != null) {
-				runDataFlowConfidentialityAnalysis(options);
+				runDataFlowDiagramGeneration(options);
 			}
 		} else {
 			// Otherwise, create the UI
@@ -78,7 +70,7 @@ public class Main {
 				options.setUsageModelPath(usageModelPath);
 				options.setAllocationPath(allocationPath);
 
-				runDataFlowConfidentialityAnalysis(options);
+				runDataFlowDiagramGeneration(options);
 			}
 		});
 
@@ -99,7 +91,7 @@ public class Main {
 		frame.setVisible(true);
 	}
 
-	private static void runDataFlowConfidentialityAnalysis(CommandLineOptions options) {
+	private static void runDataFlowDiagramGeneration(CommandLineOptions options) {
 		StandalonePCMDataFlowConfidentialtyAnalysis analysis = new StandalonePCMDataFlowConfidentialtyAnalysis(
 				options.getProjectName(), Activator.class, options.getUsageModelPath(), options.getAllocationPath());
 		analysis.initalizeAnalysis();
@@ -110,7 +102,15 @@ public class Main {
 
 		DataFlowElementFactory elementCreator = DataFlowElementFactory.getInstance();
 		DataFlowGraphProcessor graphProcessor = new DataFlowGraphProcessor(elementCreator);
+		
 		List<DataFlowNode> dataFlowNodes = graphProcessor.processActionSequences(actionSequences);
+		
+		System.out.println("Model translation finished!");
+		
+		PlantUMLDrawingStrategy drawer = new PlantUMLDrawingStrategy();
+		
+		drawer.generate(dataFlowNodes);
+		drawer.saveToDisk("output/data-flow.svg");
 
 		System.out.println("Done!");
 	}

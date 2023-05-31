@@ -1,6 +1,6 @@
 @startuml
 
-rectangle test1 [
+rectangle _test1 [
 This is a test
 ____
 This is two test
@@ -20,7 +20,7 @@ This is three test
 This is four test
 ]
 
-test1 --> test2 : abc def
+_test1 --> test2 : abc def
 
 actor test3 [
     This is an actor

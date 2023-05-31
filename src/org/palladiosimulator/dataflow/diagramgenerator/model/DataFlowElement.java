@@ -1,16 +1,34 @@
 package org.palladiosimulator.dataflow.diagramgenerator.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
-public class DataFlowElement {
+public abstract class DataFlowElement {
 	private String id;
 	private Boolean isCalling;
 	private String name;
+	private List<String> parameters;
 
 	public DataFlowElement(String id, Boolean isCalling, String name) {
 		this.id = id;
 		this.isCalling = isCalling;
 		this.name = name;
+		this.parameters = new ArrayList<String>();
+	}
+
+	public abstract void accept(DataFlowElementVisitor visitor);
+
+	public List<String> getParameters() {
+		return parameters;
+	}
+
+	public void addParameter(String parameter) {
+		this.parameters.add(parameter);
+	}
+
+	public void addParameters(List<String> parameters) {
+		this.parameters.addAll(parameters);
 	}
 
 	public String getId() {

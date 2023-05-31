@@ -40,7 +40,7 @@ public class DataFlowNode {
 		if (!this.parents.contains(parent))
 			this.parents.add(parent);
 	}
-	
+
 	public void removeParent(DataFlowNode parent) {
 		this.parents.remove(parent);
 	}
@@ -48,7 +48,7 @@ public class DataFlowNode {
 	public List<DataFlowNode> getChildren() {
 		return this.children;
 	}
-	
+
 	public boolean hasChild(DataFlowNode child) {
 		if (this.children.contains(child))
 			return true;
@@ -59,8 +59,12 @@ public class DataFlowNode {
 		if (!this.children.contains(child))
 			this.children.add(child);
 	}
-	
+
 	public void removeChild(DataFlowNode child) {
 		this.children.remove(child);
+	}
+
+	public void accept(DataFlowNodeVisitor visitor) {
+		visitor.visit(this);
 	}
 }

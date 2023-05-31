@@ -30,7 +30,7 @@ public class DataFlowGraphProcessor {
 		List<DataFlowNode> dataFlowNodes = new ArrayList<DataFlowNode>();
 
 		for (ActionSequence actionSequence : actionSequences) {
-			processActionSequence(actionSequence, elementCreator, dataFlowNodes);
+			this.processActionSequence(actionSequence, elementCreator, dataFlowNodes);
 		}
 
 		return dataFlowNodes;
@@ -42,10 +42,10 @@ public class DataFlowGraphProcessor {
 
 		for (AbstractActionSequenceElement actionSequenceElement : actionSequence.getElements()) {
 			List<DataFlowElement> dataFlowElements = elementCreator.createDataFlowElements(actionSequenceElement);
-			Map<DataFlowElement, DataFlowNode> existingMap = createExistingMap(dataFlowElements, dataFlowNodes);
+			Map<DataFlowElement, DataFlowNode> existingMap = this.createExistingMap(dataFlowElements, dataFlowNodes);
 
 			for (Entry<DataFlowElement, DataFlowNode> dataFlowEntry : existingMap.entrySet()) {
-				DataFlowNode dataFlowNode = getDataFlowNode(dataFlowEntry, actionSequenceElement);
+				DataFlowNode dataFlowNode = this.getDataFlowNode(dataFlowEntry, actionSequenceElement);
 				if (previousNode != null) {
 					previousNode.addChild(dataFlowNode);
 					dataFlowNode.addParent(previousNode);
