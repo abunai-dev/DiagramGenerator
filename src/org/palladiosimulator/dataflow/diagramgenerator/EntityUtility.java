@@ -4,14 +4,13 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.emf.common.util.EList;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.AbstractActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.CallingSEFFActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.CallingUserActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.SEFFActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.CallingSEFFActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.SEFFActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.user.CallingUserActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 import org.palladiosimulator.pcm.parameter.VariableUsage;
 import org.palladiosimulator.pcm.parameter.impl.VariableUsageImpl;
 import org.palladiosimulator.pcm.repository.Parameter;
-import org.palladiosimulator.pcm.repository.impl.BasicComponentImpl;
 import org.palladiosimulator.pcm.repository.impl.OperationSignatureImpl;
 import org.palladiosimulator.pcm.repository.impl.ParameterImpl;
 import org.palladiosimulator.pcm.seff.impl.AbstractActionImpl;
@@ -21,12 +20,9 @@ import org.palladiosimulator.pcm.seff.impl.ResourceDemandingBehaviourImpl;
 import org.palladiosimulator.pcm.seff.impl.ResourceDemandingSEFFImpl;
 import org.palladiosimulator.pcm.seff.impl.SetVariableActionImpl;
 import org.palladiosimulator.pcm.seff.impl.StartActionImpl;
-import org.palladiosimulator.pcm.seff.impl.StopActionImpl;
 import org.palladiosimulator.pcm.usagemodel.impl.EntryLevelSystemCallImpl;
 import org.palladiosimulator.pcm.usagemodel.impl.ScenarioBehaviourImpl;
 import org.palladiosimulator.pcm.usagemodel.impl.UsageScenarioImpl;
-
-import gen.lib.dotgen.sameport__c;
 
 public class EntityUtility {
 	public static String getEntityName(AbstractActionSequenceElement<?> element) {

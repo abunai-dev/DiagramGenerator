@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.AbstractActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementFactory;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;

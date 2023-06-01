@@ -10,8 +10,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.palladiosimulator.dataflow.confidentiality.analysis.StandalonePCMDataFlowConfidentialtyAnalysis;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.ActionSequence;
+import org.palladiosimulator.dataflow.confidentiality.analysis.DataFlowConfidentialityAnalysis;
+import org.palladiosimulator.dataflow.confidentiality.analysis.builder.DataFlowAnalysisBuilder;
+import org.palladiosimulator.dataflow.confidentiality.analysis.builder.pcm.PCMDataFlowConfidentialityAnalysisBuilder;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
 import org.palladiosimulator.dataflow.confidentiality.analysis.testmodels.Activator;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementFactory;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
@@ -37,7 +39,7 @@ public class Main {
 
 	private static void createUI() {
 		// Create the UI frame
-		JFrame frame = new JFrame("Data Flow Confidentiality Analysis");
+		JFrame frame = new JFrame("Data Flow Diagram Generator");
 		frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
 		// Create a panel to hold the components
@@ -54,7 +56,7 @@ public class Main {
 		allocationTextField = new JTextField("models/CoronaWarnApp/default.allocation", 20);
 
 		// Create a button to trigger the analysis
-		JButton button = new JButton("Start Analysis");
+		JButton button = new JButton("Generate Diagram");
 
 		// Add an action listener to the button
 		button.addActionListener(new ActionListener() {
@@ -92,9 +94,16 @@ public class Main {
 	}
 
 	private static void runDataFlowDiagramGeneration(CommandLineOptions options) {
-		StandalonePCMDataFlowConfidentialtyAnalysis analysis = new StandalonePCMDataFlowConfidentialtyAnalysis(
-				options.getProjectName(), Activator.class, options.getUsageModelPath(), options.getAllocationPath());
-		analysis.initalizeAnalysis();
+		DataFlowConfidentialityAnalysis analysis = new DataFlowAnalysisBuilder()
+		        .standalone()
+		        .modelProjectName("<PROJECT_NAME>")
+		        .useBuilder(new PCMDataFlowConfidentialityAnalysisBuilder())
+		        .usePluginActivator(Activator.class)
+		        .useUsageModel("<USAGE_MODEL_PATH>")
+		        .useAllocationModel("<ALLOCATION_MODEL_PATH>")
+		    	.useNodeCharacteristicsModel("<NODE_MODEL_PATH>")
+		        .build();
+		    analysis.initalizeAnalysis();
 
 		List<ActionSequence> actionSequences = analysis.findAllSequences();
 

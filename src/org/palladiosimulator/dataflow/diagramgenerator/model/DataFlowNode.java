@@ -3,7 +3,7 @@ package org.palladiosimulator.dataflow.diagramgenerator.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.AbstractActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 
 public class DataFlowNode {
 	private DataFlowElement element;

@@ -3,9 +3,9 @@ package org.palladiosimulator.dataflow.diagramgenerator.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.AbstractActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.CallingUserActionSequenceElement;
-import org.palladiosimulator.dataflow.confidentiality.analysis.sequence.entity.pcm.SEFFActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.SEFFActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.user.CallingUserActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.diagramgenerator.EntityUtility;
 
 public class DataFlowElementFactory {
@@ -36,7 +36,7 @@ public class DataFlowElementFactory {
 		if (element instanceof CallingUserActionSequenceElement cuase) {
 			// Results in an actor if existing
 			if (actorName != null) {
-				TerminatorDataFlowElement terminator = new TerminatorDataFlowElement(actorName, isCalling, actorName);
+				TerminatorDataFlowElement terminator = new TerminatorDataFlowElement(actorName, true, actorName);
 				dataFlowElements.add(terminator);
 			}
 		} else if (element instanceof SEFFActionSequenceElement sase) {

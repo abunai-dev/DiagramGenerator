@@ -71,6 +71,7 @@ public class PlantUMLDrawingStrategy implements DrawingStrategy {
 
 	private void initialize() {
 		this.source += "@startuml\n";
+		this.source += "left to right direction\n";
 	}
 
 	private void finish() {
