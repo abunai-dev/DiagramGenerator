@@ -15,7 +15,6 @@ import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
 public class DataFlowGraphProcessor {
 	private DataFlowElementFactory elementCreator;
 
-	
 	public DataFlowGraphProcessor(DataFlowElementFactory elementCreator) {
 		this.elementCreator = elementCreator;
 	}

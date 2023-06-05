@@ -2,7 +2,7 @@ package org.palladiosimulator.dataflow.diagramgenerator.plantuml;
 
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.ProcessDataFlowElement;
-import org.palladiosimulator.dataflow.diagramgenerator.model.TerminatorDataFlowElement;
+import org.palladiosimulator.dataflow.diagramgenerator.model.ExternalEntityDataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.WarehouseDataFlowElement;
 
 public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDataFlowElementDrawingVisitor {
@@ -13,13 +13,13 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 	}
 
 	@Override
-	public void visit(TerminatorDataFlowElement element) {
-		this.drawElement("actor", element);
+	public void visit(ExternalEntityDataFlowElement element) {
+		this.drawElement("agent", element);
 	}
 
 	@Override
 	public void visit(WarehouseDataFlowElement element) {
-		this.drawElement("rectangle", element);
+		this.drawElement("database", element);
 	}
 
 	private void drawElement(String elementType, DataFlowElement element) {
@@ -29,10 +29,6 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 
 		result += elementType + " " + uniqueIdentifier + " [\n";
 		result += element.getName() + "\n";
-		result += "----\n";
-		result += element.getId() + "\n";
-		result += "....\n";
-		result += "isCalling: " + element.getIsCalling();
 		result += "]\n";
 
 		this.setDrawResult(result);

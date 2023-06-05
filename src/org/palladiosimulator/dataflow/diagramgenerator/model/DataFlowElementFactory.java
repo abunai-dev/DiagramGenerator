@@ -36,12 +36,12 @@ public class DataFlowElementFactory {
 		if (element instanceof CallingUserActionSequenceElement cuase) {
 			// Results in an actor if existing
 			if (actorName != null) {
-				TerminatorDataFlowElement terminator = new TerminatorDataFlowElement(actorName, true, actorName);
+				ExternalEntityDataFlowElement terminator = new ExternalEntityDataFlowElement(actorName, true, actorName);
 				dataFlowElements.add(terminator);
 			}
 		} else if (element instanceof SEFFActionSequenceElement sase) {
 			// results in a ProcessDataFlowElement
-			
+
 			ProcessDataFlowElement process = new ProcessDataFlowElement(id, isCalling, name);
 			process.addParameters(parameters);
 			dataFlowElements.add(process);

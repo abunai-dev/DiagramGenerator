@@ -25,7 +25,7 @@ import org.palladiosimulator.pcm.usagemodel.impl.ScenarioBehaviourImpl;
 import org.palladiosimulator.pcm.usagemodel.impl.UsageScenarioImpl;
 
 public class EntityUtility {
-	public static String getEntityName(AbstractActionSequenceElement<?> element) {
+	public static String getEntityName(AbstractActionSequenceElement element) {
 		String name = null;
 		if (element instanceof CallingUserActionSequenceElement cuase) {
 			name = cuase.getElement().getEntityName();
@@ -66,10 +66,7 @@ public class EntityUtility {
 			if (sbi != null) {
 				UsageScenarioImpl usi = (UsageScenarioImpl) sbi.getUsageScenario_SenarioBehaviour();
 				if (usi != null) {
-					String entityName = usi.getEntityName();
-					// the actor name is the first word of the entity name. All words are written
-					// with a capital letter but have no spaces
-					actorName = entityName.split("(?=\\p{Upper})")[0];
+					actorName = usi.getEntityName();
 				}
 			}
 		}
@@ -139,7 +136,7 @@ public class EntityUtility {
 
 		return result;
 	}
-	
+
 	public static List<String> getParameters(AbstractActionSequenceElement element) {
 		List<String> paras = new ArrayList<String>();
 		if (element instanceof SEFFActionSequenceElement<?> sase) {
