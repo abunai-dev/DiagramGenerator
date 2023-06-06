@@ -2,7 +2,7 @@ package org.palladiosimulator.dataflow.diagramgenerator.ui;
 
 import javax.swing.*;
 
-import org.palladiosimulator.dataflow.diagramgenerator.CommandLineOptions;
+import org.palladiosimulator.dataflow.diagramgenerator.GeneratorOptions;
 import org.palladiosimulator.dataflow.diagramgenerator.StandaloneDiagramGenerator;
 
 import java.awt.event.ActionEvent;
@@ -44,7 +44,7 @@ public class UIDesigner {
 				String allocationPath = allocationTextField.getText();
 
 				// Create the options object
-				CommandLineOptions options = new CommandLineOptions();
+				GeneratorOptions options = new GeneratorOptions();
 				options.setProjectName(projectName);
 				options.setUsageModelPath(usageModelPath);
 				options.setAllocationPath(allocationPath);

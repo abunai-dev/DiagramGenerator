@@ -1,6 +1,6 @@
 package org.palladiosimulator.dataflow.diagramgenerator;
 
-public class CommandLineOptions {
+public class GeneratorOptions {
 	private String projectName;
 	private String usageModelPath;
 	private String allocationPath;

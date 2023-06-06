@@ -10,12 +10,14 @@ public class DataFlowNode {
 	private AbstractActionSequenceElement originalElement;
 	private List<DataFlowNode> parents;
 	private List<DataFlowNode> children;
+	private List<DataFlowLiteral> literals;
 
 	public DataFlowNode(AbstractActionSequenceElement originalElement, DataFlowElement element) {
 		this.element = element;
 		this.originalElement = originalElement;
 		this.parents = new ArrayList<DataFlowNode>();
 		this.children = new ArrayList<DataFlowNode>();
+		this.literals = new ArrayList<DataFlowLiteral>();
 	}
 
 	public DataFlowElement getElement() {
@@ -66,5 +68,37 @@ public class DataFlowNode {
 
 	public void accept(DataFlowNodeVisitor visitor) {
 		visitor.visit(this);
+	}
+
+	public List<DataFlowLiteral> getLiterals() {
+		return this.literals;
+	}
+
+	public void setLiteral(List<DataFlowLiteral> literals) {
+		this.literals = literals;
+	}
+
+	public void addLiteral(DataFlowLiteral literal) {
+		boolean exists = false;
+		for (DataFlowLiteral comp : this.literals) {
+			if (comp.getLiteralID().equals(literal.getLiteralID()) && comp.getTypeID().equals(literal.getTypeID()))
+				exists = true;
+		}
+		if (!exists) {
+			this.literals.add(literal);
+		}
+	}
+
+	public void removeLiteral(DataFlowLiteral literal) {
+		this.literals.remove(literal);
+	}
+
+	public boolean hasLiteral(DataFlowLiteral literal) {
+		boolean exists = false;
+		for (DataFlowLiteral comp : this.literals) {
+			if (comp.getLiteralID().equals(literal.getLiteralID()) && comp.getTypeID().equals(literal.getTypeID()))
+				exists = true;
+		}
+		return exists;
 	}
 }

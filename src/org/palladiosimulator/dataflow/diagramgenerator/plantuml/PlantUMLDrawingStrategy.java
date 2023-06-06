@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
+import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowLiteral;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DrawingStrategy;
 
@@ -29,16 +30,25 @@ public class PlantUMLDrawingStrategy implements DrawingStrategy {
 		// first, initialize all elements
 		for (DataFlowNode node : dataFlowNodes) {
 			PlantUMLDataFlowElementInitializerDrawingVisitor drawingVisitor = new PlantUMLDataFlowElementInitializerDrawingVisitor();
+			PlantUMLDataFlowLiteralInitializerDrawingVisitor literalVisitor = new PlantUMLDataFlowLiteralInitializerDrawingVisitor();
 			DataFlowElement element = node.getElement();
 			element.accept(drawingVisitor);
 			this.addToSource(drawingVisitor.getDrawResult());
+
+			for (DataFlowLiteral literal : node.getLiterals()) {
+				literal.accept(literalVisitor);
+				this.addToSource(literalVisitor.getDrawResult());
+			}
 		}
 
 		// second, draw the edges inbetween
 		for (DataFlowNode node : dataFlowNodes) {
 			PlantUMLDataFlowNodeDrawingVisitor drawingVisitor = new PlantUMLDataFlowNodeDrawingVisitor();
+			PlantUMLDataFlowLiteralEdgeDrawingVisitor literalEdgeVisitor = new PlantUMLDataFlowLiteralEdgeDrawingVisitor();
 			node.accept(drawingVisitor);
+			node.accept(literalEdgeVisitor);
 			this.addToSource(drawingVisitor.getDrawResult());
+			this.addToSource(literalEdgeVisitor.getDrawResult());
 		}
 		this.finish();
 	}

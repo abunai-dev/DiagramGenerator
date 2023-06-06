@@ -1,8 +1,8 @@
 package org.palladiosimulator.dataflow.diagramgenerator;
 
 public class CommandLineParser {
-	public static CommandLineOptions parseCommandLineOptions(String[] args) {
-		CommandLineOptions options = new CommandLineOptions();
+	public static GeneratorOptions parseCommandLineOptions(String[] args) {
+		GeneratorOptions options = new GeneratorOptions();
 
 		for (int i = 0; i < args.length; i++) {
 			String arg = args[i];

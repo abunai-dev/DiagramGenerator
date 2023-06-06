@@ -6,11 +6,16 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
+import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.CharacteristicValue;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementFactory;
+import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowLiteral;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
+import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.EnumCharacteristicTypeImpl;
+import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.EnumerationImpl;
+import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.LiteralImpl;
 
 public class DataFlowGraphProcessor {
 	private DataFlowElementFactory elementCreator;
@@ -39,7 +44,22 @@ public class DataFlowGraphProcessor {
 			List<DataFlowNode> dataFlowNodes) {
 		DataFlowNode previousNode = null;
 
-		for (AbstractActionSequenceElement actionSequenceElement : actionSequence.getElements()) {
+		for (AbstractActionSequenceElement<?> actionSequenceElement : actionSequence.getElements()) {
+			List<DataFlowLiteral> literals = new ArrayList<DataFlowLiteral>();
+			List<CharacteristicValue> characteristics = actionSequenceElement.getAllNodeCharacteristics();
+
+			for (CharacteristicValue val : characteristics) {
+				LiteralImpl elementLiteral = (LiteralImpl) val.characteristicLiteral();
+				EnumCharacteristicTypeImpl type = (EnumCharacteristicTypeImpl) val.characteristicType();
+
+				String typeID = type.getId();
+				String typeName = type.getName();
+				String literalID = elementLiteral.getId();
+				String literalName = elementLiteral.getName();
+
+				literals.add(new DataFlowLiteral(typeID, typeName, literalID, literalName));
+			}
+
 			List<DataFlowElement> dataFlowElements = elementCreator.createDataFlowElements(actionSequenceElement);
 			Map<DataFlowElement, DataFlowNode> existingMap = this.createExistingMap(dataFlowElements, dataFlowNodes);
 
@@ -48,6 +68,10 @@ public class DataFlowGraphProcessor {
 				if (previousNode != null) {
 					previousNode.addChild(dataFlowNode);
 					dataFlowNode.addParent(previousNode);
+				}
+				
+				for (DataFlowLiteral literal : literals) {
+					dataFlowNode.addLiteral(literal);
 				}
 
 				if (!dataFlowNodes.contains(dataFlowNode)) {
