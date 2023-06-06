@@ -14,12 +14,22 @@ import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementFact
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowLiteral;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
 import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.EnumCharacteristicTypeImpl;
-import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.EnumerationImpl;
 import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.LiteralImpl;
 
+/**
+ * The DataFlowGraphProcessor class processes a list of action sequences and
+ * generates data flow nodes.
+ */
 public class DataFlowGraphProcessor {
 	private DataFlowElementFactory elementCreator;
 
+	/**
+	 * Constructs a DataFlowGraphProcessor with the specified
+	 * DataFlowElementFactory.
+	 *
+	 * @param elementCreator The DataFlowElementFactory used to create data flow
+	 *                       elements.
+	 */
 	public DataFlowGraphProcessor(DataFlowElementFactory elementCreator) {
 		this.elementCreator = elementCreator;
 	}
@@ -31,54 +41,64 @@ public class DataFlowGraphProcessor {
 	 * @return A list of data flow nodes generated from the action sequences.
 	 */
 	public List<DataFlowNode> processActionSequences(List<ActionSequence> actionSequences) {
-		List<DataFlowNode> dataFlowNodes = new ArrayList<DataFlowNode>();
+		List<DataFlowNode> dataFlowNodes = new ArrayList<>();
 
 		for (ActionSequence actionSequence : actionSequences) {
-			this.processActionSequence(actionSequence, elementCreator, dataFlowNodes);
+			processActionSequence(actionSequence, dataFlowNodes);
 		}
 
 		return dataFlowNodes;
 	}
 
-	private void processActionSequence(ActionSequence actionSequence, DataFlowElementFactory elementCreator,
-			List<DataFlowNode> dataFlowNodes) {
+	private void processActionSequence(ActionSequence actionSequence, List<DataFlowNode> dataFlowNodes) {
 		DataFlowNode previousNode = null;
 
 		for (AbstractActionSequenceElement<?> actionSequenceElement : actionSequence.getElements()) {
-			List<DataFlowLiteral> literals = new ArrayList<DataFlowLiteral>();
-			List<CharacteristicValue> characteristics = actionSequenceElement.getAllNodeCharacteristics();
-
-			for (CharacteristicValue val : characteristics) {
-				LiteralImpl elementLiteral = (LiteralImpl) val.characteristicLiteral();
-				EnumCharacteristicTypeImpl type = (EnumCharacteristicTypeImpl) val.characteristicType();
-
-				String typeID = type.getId();
-				String typeName = type.getName();
-				String literalID = elementLiteral.getId();
-				String literalName = elementLiteral.getName();
-
-				literals.add(new DataFlowLiteral(typeID, typeName, literalID, literalName));
-			}
-
-			List<DataFlowElement> dataFlowElements = elementCreator.createDataFlowElements(actionSequenceElement);
-			Map<DataFlowElement, DataFlowNode> existingMap = this.createExistingMap(dataFlowElements, dataFlowNodes);
+			List<DataFlowLiteral> literals = createDataFlowLiterals(actionSequenceElement);
+			List<DataFlowElement> dataFlowElements = elementCreator
+					.createDataFlowElementsForActionSequenceElement(actionSequenceElement);
+			Map<DataFlowElement, DataFlowNode> existingMap = createExistingMap(dataFlowElements, dataFlowNodes);
 
 			for (Entry<DataFlowElement, DataFlowNode> dataFlowEntry : existingMap.entrySet()) {
-				DataFlowNode dataFlowNode = this.getDataFlowNode(dataFlowEntry, actionSequenceElement);
-				if (previousNode != null) {
-					previousNode.addChild(dataFlowNode);
-					dataFlowNode.addParent(previousNode);
-				}
-				
-				for (DataFlowLiteral literal : literals) {
-					dataFlowNode.addLiteral(literal);
-				}
-
-				if (!dataFlowNodes.contains(dataFlowNode)) {
-					dataFlowNodes.add(dataFlowNode);
-				}
+				DataFlowNode dataFlowNode = getDataFlowNode(dataFlowEntry, actionSequenceElement);
+				connectNodes(previousNode, dataFlowNode);
+				addLiteralsToNode(dataFlowNode, literals);
+				addNodeToListIfNotExists(dataFlowNode, dataFlowNodes);
 				previousNode = dataFlowNode;
 			}
+		}
+	}
+
+	private List<DataFlowLiteral> createDataFlowLiterals(AbstractActionSequenceElement<?> actionSequenceElement) {
+		List<DataFlowLiteral> literals = new ArrayList<>();
+
+		for (CharacteristicValue val : actionSequenceElement.getAllNodeCharacteristics()) {
+			LiteralImpl elementLiteral = (LiteralImpl) val.characteristicLiteral();
+			EnumCharacteristicTypeImpl type = (EnumCharacteristicTypeImpl) val.characteristicType();
+
+			literals.add(new DataFlowLiteral(type.getId(), type.getName(), elementLiteral.getId(),
+					elementLiteral.getName()));
+		}
+
+		return literals;
+	}
+
+	private void connectNodes(DataFlowNode previousNode, DataFlowNode dataFlowNode) {
+		if (previousNode != null) {
+			previousNode.addChild(dataFlowNode);
+			dataFlowNode.addParent(previousNode);
+		}
+	}
+
+	private void addLiteralsToNode(DataFlowNode dataFlowNode, List<DataFlowLiteral> literals) {
+		for (DataFlowLiteral literal : literals) {
+			dataFlowNode.addLiteral(literal);
+		}
+	}
+
+	private void addNodeToListIfNotExists(DataFlowNode dataFlowNode, List<DataFlowNode> dataFlowNodes) {
+		if (!dataFlowNodes.contains(dataFlowNode)) {
+			dataFlowNodes.add(dataFlowNode);
 		}
 	}
 
@@ -102,11 +122,8 @@ public class DataFlowGraphProcessor {
 	}
 
 	private DataFlowNode getDataFlowNode(Entry<DataFlowElement, DataFlowNode> dataFlowEntry,
-			AbstractActionSequenceElement actionSequenceElement) {
+			AbstractActionSequenceElement<?> actionSequenceElement) {
 		DataFlowNode dataFlowNode = dataFlowEntry.getValue();
-		if (dataFlowNode == null) {
-			dataFlowNode = new DataFlowNode(actionSequenceElement, dataFlowEntry.getKey());
-		}
-		return dataFlowNode;
+		return dataFlowNode != null ? dataFlowNode : new DataFlowNode(actionSequenceElement, dataFlowEntry.getKey());
 	}
 }

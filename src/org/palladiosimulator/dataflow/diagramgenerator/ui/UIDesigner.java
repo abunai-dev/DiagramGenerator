@@ -1,13 +1,19 @@
 package org.palladiosimulator.dataflow.diagramgenerator.ui;
 
-import javax.swing.*;
-
-import org.palladiosimulator.dataflow.diagramgenerator.GeneratorOptions;
-import org.palladiosimulator.dataflow.diagramgenerator.StandaloneDiagramGenerator;
-
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.List;
+
+import javax.swing.JButton;
+import javax.swing.JFrame;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JTextField;
+
+import org.palladiosimulator.dataflow.diagramgenerator.DataFlowGraphProcessor;
+import org.palladiosimulator.dataflow.diagramgenerator.GeneratorOptions;
+import org.palladiosimulator.dataflow.diagramgenerator.StandaloneDiagramGenerator;
+import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementFactory;
+import org.palladiosimulator.dataflow.diagramgenerator.plantuml.PlantUMLDrawingStrategy;
 
 public class UIDesigner {
 	private static JTextField projectNameTextField;
@@ -51,7 +57,10 @@ public class UIDesigner {
 
 				StandaloneDiagramGenerator diagramGenerator = new StandaloneDiagramGenerator(options);
 
-				diagramGenerator.runDataFlowDiagramGeneration();
+				PlantUMLDrawingStrategy drawer = new PlantUMLDrawingStrategy();
+				DataFlowElementFactory creator = DataFlowElementFactory.getInstance();
+				DataFlowGraphProcessor processor = new DataFlowGraphProcessor(creator);
+				diagramGenerator.generateDataFlowDiagram(drawer, creator, processor);
 			}
 		});
 

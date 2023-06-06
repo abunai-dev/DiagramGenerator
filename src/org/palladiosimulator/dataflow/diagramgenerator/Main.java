@@ -1,20 +1,34 @@
 package org.palladiosimulator.dataflow.diagramgenerator;
 
+import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementFactory;
+import org.palladiosimulator.dataflow.diagramgenerator.plantuml.PlantUMLDrawingStrategy;
 import org.palladiosimulator.dataflow.diagramgenerator.ui.UIDesigner;
 
 public class Main {
 	public static void main(String[] args) {
 		if (args.length > 0) {
-			// If command-line arguments are provided, run the analysis directly
-			GeneratorOptions options = CommandLineParser.parseCommandLineOptions(args);
-			if (options != null) {
-				StandaloneDiagramGenerator diagramGenerator = new StandaloneDiagramGenerator(options);
-				diagramGenerator.runDataFlowDiagramGeneration();
-			}
+			runGenerator(args);
 		} else {
-			// Otherwise, create the UI
-			UIDesigner.createUI();
+			showUserInterface();
 		}
 	}
 
+	private static void runGenerator(String[] args) {
+		GeneratorOptions options = CommandLineParser.parseCommandLineOptions(args);
+		if (options != null) {
+			generateDataFlowDiagram(options);
+		}
+	}
+
+	private static void generateDataFlowDiagram(GeneratorOptions options) {
+		StandaloneDiagramGenerator diagramGenerator = new StandaloneDiagramGenerator(options);
+		PlantUMLDrawingStrategy drawer = new PlantUMLDrawingStrategy();
+		DataFlowElementFactory creator = DataFlowElementFactory.getInstance();
+		DataFlowGraphProcessor processor = new DataFlowGraphProcessor(creator);
+		diagramGenerator.generateDataFlowDiagram(drawer, creator, processor);
+	}
+
+	private static void showUserInterface() {
+		UIDesigner.createUI();
+	}
 }

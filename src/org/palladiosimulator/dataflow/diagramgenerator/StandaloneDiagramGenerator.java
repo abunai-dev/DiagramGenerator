@@ -5,60 +5,73 @@ import java.util.List;
 import org.palladiosimulator.dataflow.confidentiality.analysis.DataFlowConfidentialityAnalysis;
 import org.palladiosimulator.dataflow.confidentiality.analysis.builder.DataFlowAnalysisBuilder;
 import org.palladiosimulator.dataflow.confidentiality.analysis.builder.pcm.PCMDataFlowConfidentialityAnalysisBuilder;
-import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.CharacteristicValue;
-import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
 import org.palladiosimulator.dataflow.confidentiality.analysis.testmodels.Activator;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementFactory;
-import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowLiteral;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DrawingStrategy;
-import org.palladiosimulator.dataflow.diagramgenerator.plantuml.PlantUMLDrawingStrategy;
-import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.Literal;
-import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.EnumCharacteristicTypeImpl;
-import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.EnumerationImpl;
-import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.LiteralImpl;
 
+/**
+ * The StandaloneDiagramGenerator class is responsible for generating a data
+ * flow diagram based on the provided GeneratorOptions.
+ */
 public class StandaloneDiagramGenerator {
-	private String projectName;
-	private String usageModelPath;
-	private String allocationPath;
+	private GeneratorOptions options;
 	private DataFlowConfidentialityAnalysis analysis;
 
+	/**
+	 * Constructs a StandaloneDiagramGenerator with the given GeneratorOptions.
+	 * 
+	 * @param options The GeneratorOptions for generating the data flow diagram.
+	 * @throws IllegalArgumentException if the provided options are invalid.
+	 */
 	public StandaloneDiagramGenerator(GeneratorOptions options) {
+		this.options = options;
 		if (!options.isValid()) {
-			System.err.println("Invalid command line options. Aborting.");
-			return;
+			throw new IllegalArgumentException("Invalid command line options. Aborting.");
 		}
 
-		this.initializeAnalysis(options.getProjectName(), options.getUsageModelPath(), options.getAllocationPath());
+		initializeAnalysis();
 	}
 
-	private void initializeAnalysis(String projectName, String usageModelPath, String allocationPath) {
+	/**
+	 * Generates the data flow diagram using the provided DrawingStrategy,
+	 * DataFlowElementFactory, and DataFlowGraphProcessor.
+	 * 
+	 * @param drawer         The DrawingStrategy for generating the diagram.
+	 * @param elementCreator The DataFlowElementFactory for creating data flow
+	 *                       elements.
+	 * @param graphProcessor The DataFlowGraphProcessor for processing action
+	 *                       sequences.
+	 */
+	public void generateDataFlowDiagram(DrawingStrategy drawer, DataFlowElementFactory elementCreator,
+			DataFlowGraphProcessor graphProcessor) {
+		List<ActionSequence> actionSequences = getActionSequences();
+
+		List<DataFlowNode> dataFlowNodes = graphProcessor.processActionSequences(actionSequences);
+		System.out.println("Model translation finished!");
+
+		drawer.generate(dataFlowNodes);
+		drawer.saveToDisk("output/data-flow.svg");
+		System.out.println("Done!");
+	}
+
+	private List<ActionSequence> getActionSequences() {
+		List<ActionSequence> actionSequences = analysis.findAllSequences();
+		return analysis.evaluateDataFlows(actionSequences);
+	}
+
+	private void initializeAnalysis() {
+		String projectName = options.getProjectName();
+		String usageModelPath = options.getUsageModelPath();
+		String allocationPath = options.getAllocationPath();
+
 		this.analysis = new DataFlowAnalysisBuilder().standalone().modelProjectName(projectName)
 				.useBuilder(new PCMDataFlowConfidentialityAnalysisBuilder()).legacy()
 				.usePluginActivator(Activator.class).useUsageModel(usageModelPath).useAllocationModel(allocationPath)
 				.build();
+
 		analysis.initializeAnalysis();
 		System.out.println("Initialization finished!");
-	}
-
-	private List<ActionSequence> getActionSequences() {
-		List<ActionSequence> actionSequences = this.analysis.findAllSequences();
-		return this.analysis.evaluateDataFlows(actionSequences);
-	}
-
-	public void runDataFlowDiagramGeneration() {
-		List<ActionSequence> actionSequences = this.getActionSequences();
-
-		DataFlowElementFactory elementCreator = DataFlowElementFactory.getInstance();
-		DataFlowGraphProcessor graphProcessor = new DataFlowGraphProcessor(elementCreator);
-		List<DataFlowNode> dataFlowNodes = graphProcessor.processActionSequences(actionSequences);
-		System.out.println("Model translation finished!");
-
-		DrawingStrategy drawer = new PlantUMLDrawingStrategy();
-		drawer.generate(dataFlowNodes);
-		drawer.saveToDisk("output/data-flow.svg");
-		System.out.println("Done!");
 	}
 }
