@@ -8,6 +8,7 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
+import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementVariable;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowLiteral;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DrawingStrategy;
@@ -30,10 +31,21 @@ public class PlantUMLDrawingStrategy implements DrawingStrategy {
 		// first, initialize all elements
 		for (DataFlowNode node : dataFlowNodes) {
 			PlantUMLDataFlowElementInitializerDrawingVisitor drawingVisitor = new PlantUMLDataFlowElementInitializerDrawingVisitor();
+			PlantUMLDataFlowElementVariableInitializerVisitor variableVisitor = new PlantUMLDataFlowElementVariableInitializerVisitor();
 			PlantUMLDataFlowLiteralInitializerDrawingVisitor literalVisitor = new PlantUMLDataFlowLiteralInitializerDrawingVisitor();
 			DataFlowElement element = node.getElement();
 			element.accept(drawingVisitor);
 			this.addToSource(drawingVisitor.getDrawResult());
+
+			for (DataFlowElementVariable variable : node.getVariables()) {
+				variable.accept(variableVisitor);
+				this.addToSource(variableVisitor.getDrawResult());
+
+				for (DataFlowLiteral literal : variable.getLiterals()) {
+					literal.accept(literalVisitor);
+					this.addToSource(literalVisitor.getDrawResult());
+				}
+			}
 
 			for (DataFlowLiteral literal : node.getLiterals()) {
 				literal.accept(literalVisitor);
@@ -44,11 +56,21 @@ public class PlantUMLDrawingStrategy implements DrawingStrategy {
 		// second, draw the edges inbetween
 		for (DataFlowNode node : dataFlowNodes) {
 			PlantUMLDataFlowNodeDrawingVisitor drawingVisitor = new PlantUMLDataFlowNodeDrawingVisitor();
+			PlantUMLDataFlowVariableEdgeDrawingVisitor variableEdgeVisitor = new PlantUMLDataFlowVariableEdgeDrawingVisitor();
 			PlantUMLDataFlowLiteralEdgeDrawingVisitor literalEdgeVisitor = new PlantUMLDataFlowLiteralEdgeDrawingVisitor();
+
 			node.accept(drawingVisitor);
+			node.accept(variableEdgeVisitor);
 			node.accept(literalEdgeVisitor);
 			this.addToSource(drawingVisitor.getDrawResult());
+			this.addToSource(variableEdgeVisitor.getDrawResult());
 			this.addToSource(literalEdgeVisitor.getDrawResult());
+
+			for (DataFlowElementVariable variable : node.getVariables()) {
+				PlantUMLDataFlowVariableLiteralEdgeDrawingVisitor variableLiteralEdgeVisitor = new PlantUMLDataFlowVariableLiteralEdgeDrawingVisitor();
+				variable.accept(variableLiteralEdgeVisitor);
+				this.addToSource(variableLiteralEdgeVisitor.getDrawResult());
+			}
 		}
 		this.finish();
 	}
