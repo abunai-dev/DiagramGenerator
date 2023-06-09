@@ -25,5 +25,4 @@ public class PlantUMLDataFlowVariableEdgeDrawingVisitor implements DataFlowNodeV
 
 		this.drawResult = result;
 	}
-
 }

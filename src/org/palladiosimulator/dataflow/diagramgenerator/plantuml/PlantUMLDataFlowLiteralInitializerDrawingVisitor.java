@@ -23,5 +23,4 @@ public class PlantUMLDataFlowLiteralInitializerDrawingVisitor implements DataFlo
 
 		this.drawResult = result;
 	}
-
 }

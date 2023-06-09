@@ -25,5 +25,4 @@ public class PlantUMLDataFlowLiteralEdgeDrawingVisitor implements DataFlowNodeVi
 
 		this.drawResult = result;
 	}
-
 }

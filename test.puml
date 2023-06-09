@@ -1,32 +1,28 @@
 @startuml
 left to right direction
 
-rectangle _test1 [
-This is a test
-____
-This is two test
-====
-This is three test
-....
-This is four test
-]
+rectangle externalEntityID as "external entity U" {
+    hexagon literalID1 as "literal X"
+}
 
-rectangle test2 [
-This is a test
-====
-This is two test
-----
-This is three test
-....
-This is four test
-]
+storage elementID1 as "process A" {
+    hexagon literalID2 as "literal Y"
+    artifact variableID1 as "variable A" {
+        hexagon literalID4 as "literal W"
+    }
+}
 
-_test1 --> test2 : abc def
+storage elementID2 as "process B" {
+    hexagon literalID3 as "literal Z"
+}
 
-actor test3 [
-    This is an actor
-    ====
-    asdasd
-]
+database databaseID1 as "database F" {
+    hexagon literalID5 as "literal V"
+}
+
+externalEntityID --> elementID1 : parameter A
+elementID1 --> databaseID1 : parameter B
+elementID1 --> elementID2 : parameter A
+elementID2 --> databaseID1 : parameter C
 
 @enduml

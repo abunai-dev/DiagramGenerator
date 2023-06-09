@@ -39,5 +39,4 @@ public class PlantUMLDataFlowNodeDrawingVisitor implements DataFlowNodeVisitor {
 
 		this.drawResult = result;
 	}
-
 }

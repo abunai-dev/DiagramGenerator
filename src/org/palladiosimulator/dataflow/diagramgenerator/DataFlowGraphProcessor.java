@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.stream.Collectors;
 
 import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.CharacteristicValue;
 import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.DataFlowVariable;
@@ -20,9 +21,11 @@ import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCha
 
 public class DataFlowGraphProcessor {
 	private final DataFlowElementFactory elementCreator;
+	private final DataFlowNodeManager nodeManager;
 
 	public DataFlowGraphProcessor(DataFlowElementFactory elementCreator) {
 		this.elementCreator = elementCreator;
+		this.nodeManager = new DataFlowNodeManager();
 	}
 
 	public List<DataFlowNode> processActionSequences(List<ActionSequence> actionSequences) {
@@ -43,33 +46,22 @@ public class DataFlowGraphProcessor {
 			List<DataFlowLiteral> literals = createDataFlowLiterals(actionSequenceElement);
 			List<DataFlowElement> dataFlowElements = elementCreator
 					.createDataFlowElementsForActionSequenceElement(actionSequenceElement);
-			Map<DataFlowElement, DataFlowNode> existingMap = createExistingMap(dataFlowElements, dataFlowNodes);
+			Map<DataFlowElement, DataFlowNode> existingMap = nodeManager.createDataFlowElementNodeMap(dataFlowElements,
+					dataFlowNodes);
 
 			for (Entry<DataFlowElement, DataFlowNode> dataFlowEntry : existingMap.entrySet()) {
 				DataFlowNode dataFlowNode = dataFlowEntry.getValue();
 
 				if (dataFlowNode == null) {
-					dataFlowNode = new DataFlowNode(actionSequenceElement, dataFlowEntry.getKey());
-					addNodeToListIfNotExists(dataFlowNode, dataFlowNodes);
+					dataFlowNode = nodeManager.createNewDataFlowNode(actionSequenceElement, dataFlowEntry.getKey());
+					nodeManager.addNodeToListIfNotExists(dataFlowNode, dataFlowNodes);
 				}
 
-				connectNodes(previousNode, dataFlowNode);
-				addVariablesToNode(dataFlowNode, variables);
-				addLiteralsToNode(dataFlowNode, literals);
+				nodeManager.connectNodes(previousNode, dataFlowNode);
+				nodeManager.addVariablesToNode(dataFlowNode, variables);
+				nodeManager.addLiteralsToNode(dataFlowNode, literals);
 				previousNode = dataFlowNode;
 			}
-		}
-	}
-
-	private void addLiteralsToNode(DataFlowNode dataFlowNode, List<DataFlowLiteral> literals) {
-		for (DataFlowLiteral literal : literals) {
-			dataFlowNode.addLiteral(literal);
-		}
-	}
-
-	private void addVariablesToNode(DataFlowNode dataFlowNode, List<DataFlowElementVariable> variables) {
-		for (DataFlowElementVariable variable : variables) {
-			dataFlowNode.addVariable(variable);
 		}
 	}
 
@@ -78,18 +70,7 @@ public class DataFlowGraphProcessor {
 		List<DataFlowElementVariable> variables = new ArrayList<>();
 
 		for (DataFlowVariable variable : actionSequenceElement.getAllDataFlowVariables()) {
-			DataFlowElementVariable elementVariable = null;
-			boolean isNew = false;
-			for (DataFlowElementVariable v : variables) {
-				if (v.getName().equals(variable.variableName())) {
-					elementVariable = v;
-					break;
-				}
-			}
-			if (elementVariable == null) {
-				elementVariable = new DataFlowElementVariable(variable.variableName());
-				isNew = true;
-			}
+			DataFlowElementVariable elementVariable = findOrCreateVariable(variables, variable.variableName());
 
 			for (CharacteristicValue val : variable.getAllCharacteristics()) {
 				LiteralImpl elementLiteral = (LiteralImpl) val.characteristicLiteral();
@@ -98,60 +79,25 @@ public class DataFlowGraphProcessor {
 				elementVariable.addLiteral(new DataFlowLiteral(type.getId(), type.getName(), elementLiteral.getId(),
 						elementLiteral.getName()));
 			}
-
-			if (isNew)
-				variables.add(elementVariable);
 		}
 
 		return variables;
 	}
 
-	private List<DataFlowLiteral> createDataFlowLiterals(AbstractActionSequenceElement<?> actionSequenceElement) {
-		List<DataFlowLiteral> literals = new ArrayList<>();
+	private DataFlowElementVariable findOrCreateVariable(List<DataFlowElementVariable> variables, String variableName) {
+		return variables.stream().filter(v -> v.getName().equals(variableName)).findFirst().orElseGet(() -> {
+			DataFlowElementVariable newVariable = new DataFlowElementVariable(variableName);
+			variables.add(newVariable);
+			return newVariable;
+		});
+	}
 
-		for (CharacteristicValue val : actionSequenceElement.getAllNodeCharacteristics()) {
+	private List<DataFlowLiteral> createDataFlowLiterals(AbstractActionSequenceElement<?> actionSequenceElement) {
+		return actionSequenceElement.getAllNodeCharacteristics().stream().map(val -> {
 			LiteralImpl elementLiteral = (LiteralImpl) val.characteristicLiteral();
 			EnumCharacteristicTypeImpl type = (EnumCharacteristicTypeImpl) val.characteristicType();
 
-			literals.add(new DataFlowLiteral(type.getId(), type.getName(), elementLiteral.getId(),
-					elementLiteral.getName()));
-		}
-
-		return literals;
-	}
-
-	private void connectNodes(DataFlowNode previousNode, DataFlowNode dataFlowNode) {
-		if (previousNode != null) {
-			previousNode.addChild(dataFlowNode);
-			dataFlowNode.addParent(previousNode);
-		}
-	}
-
-	private void addNodeToListIfNotExists(DataFlowNode dataFlowNode, List<DataFlowNode> dataFlowNodes) {
-		if (!dataFlowNodes.contains(dataFlowNode)) {
-			dataFlowNodes.add(dataFlowNode);
-		}
-	}
-
-	private Map<DataFlowElement, DataFlowNode> createExistingMap(List<DataFlowElement> dataFlowElements,
-			List<DataFlowNode> dataFlowNodes) {
-		Map<DataFlowElement, DataFlowNode> existingMap = new HashMap<>();
-
-		for (DataFlowElement dfe : dataFlowElements) {
-			DataFlowNode existingNode = findExistingNode(dfe, dataFlowNodes);
-			existingMap.put(dfe, existingNode);
-		}
-
-		return existingMap;
-	}
-
-	private DataFlowNode findExistingNode(DataFlowElement dataFlowElement, List<DataFlowNode> dataFlowNodes) {
-		for (DataFlowNode node : dataFlowNodes) {
-			if (node.getElement().equals(dataFlowElement)) {
-				return node;
-			}
-		}
-
-		return null;
+			return new DataFlowLiteral(type.getId(), type.getName(), elementLiteral.getId(), elementLiteral.getName());
+		}).collect(Collectors.toList());
 	}
 }

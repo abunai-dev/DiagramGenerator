@@ -25,5 +25,4 @@ public class PlantUMLDataFlowVariableLiteralEdgeDrawingVisitor implements DataFl
 
 		this.drawResult = result;
 	}
-
 }
