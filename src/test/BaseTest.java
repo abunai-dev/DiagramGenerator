@@ -10,20 +10,19 @@ import org.palladiosimulator.dataflow.diagramgenerator.StandaloneDiagramGenerato
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementFactory;
 import org.palladiosimulator.dataflow.diagramgenerator.plantuml.PlantUMLDrawingStrategy;
 
-@TestInstance(Lifecycle.PER_CLASS)
 public class BaseTest {
 	public static String TEST_MODEL_PROJECT_NAME = "org.palladiosimulator.dataflow.confidentiality.analysis.testmodels";
 
-	protected StandaloneDiagramGenerator diagramGenerator;
+	private static StandaloneDiagramGenerator diagramGenerator;
 
 	@BeforeAll
-	public void initializeGenerator() {
+	public static void initializeGenerator() {
 		GeneratorOptions options = new GeneratorOptions();
 		options.setProjectName(TEST_MODEL_PROJECT_NAME);
 		options.setAllocationPath("models/CoronaWarnApp/default.usagemodel");
 		options.setUsageModelPath("models/CoronaWarnApp/default.allocation");
 
-		this.diagramGenerator = new StandaloneDiagramGenerator(options);
+		diagramGenerator = new StandaloneDiagramGenerator(options);
 	}
 
 	@Test

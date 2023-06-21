@@ -17,9 +17,8 @@ public class PlantUMLDataFlowLiteralInitializerDrawingVisitor implements DataFlo
 
 		String uniqueIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(literal);
 
-		result += "file " + uniqueIdentifier + " #line.dotted [\n";
-		result += literal.getTypeName() + ": " + literal.getLiteralName() + "\n";
-		result += "]\n";
+		result += "file " + uniqueIdentifier + " as \"" + literal.getTypeName() + ": " + literal.getLiteralName()
+				+ "\" #line.dotted\n";
 
 		this.drawResult = result;
 	}

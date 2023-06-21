@@ -31,47 +31,31 @@ public class PlantUMLDrawingStrategy implements DrawingStrategy {
 		// first, initialize all elements
 		for (DataFlowNode node : dataFlowNodes) {
 			PlantUMLDataFlowElementInitializerDrawingVisitor drawingVisitor = new PlantUMLDataFlowElementInitializerDrawingVisitor();
-			PlantUMLDataFlowElementVariableInitializerVisitor variableVisitor = new PlantUMLDataFlowElementVariableInitializerVisitor();
-			PlantUMLDataFlowLiteralInitializerDrawingVisitor literalVisitor = new PlantUMLDataFlowLiteralInitializerDrawingVisitor();
+			
 			DataFlowElement element = node.getElement();
 			element.accept(drawingVisitor);
 			this.addToSource(drawingVisitor.getDrawResult());
 
-			for (DataFlowElementVariable variable : node.getVariables()) {
-				variable.accept(variableVisitor);
-				this.addToSource(variableVisitor.getDrawResult());
+			// embed variables
+			PlantUMLDataFlowVariableEmbeddingDrawingVisitor variableVisitor = new PlantUMLDataFlowVariableEmbeddingDrawingVisitor(
+					this.source);
+			node.accept(variableVisitor);
+			this.source = variableVisitor.getDrawResult();
 
-				for (DataFlowLiteral literal : variable.getLiterals()) {
-					literal.accept(literalVisitor);
-					this.addToSource(literalVisitor.getDrawResult());
-				}
-			}
-
-			for (DataFlowLiteral literal : node.getLiterals()) {
-				literal.accept(literalVisitor);
-				this.addToSource(literalVisitor.getDrawResult());
-			}
+			PlantUMLDataFlowLiteralEmbeddingDrawingVisitor literalEmbeddingVisitor = new PlantUMLDataFlowLiteralEmbeddingDrawingVisitor(
+					this.source);
+			node.accept(literalEmbeddingVisitor);
+			this.source = literalEmbeddingVisitor.getDrawResult();
+			
+			var i = 1;
 		}
 
 		// second, draw the edges inbetween
-		for (DataFlowNode node : dataFlowNodes) {
+		/*for (DataFlowNode node : dataFlowNodes) {
 			PlantUMLDataFlowNodeDrawingVisitor drawingVisitor = new PlantUMLDataFlowNodeDrawingVisitor();
-			PlantUMLDataFlowVariableEdgeDrawingVisitor variableEdgeVisitor = new PlantUMLDataFlowVariableEdgeDrawingVisitor();
-			PlantUMLDataFlowLiteralEdgeDrawingVisitor literalEdgeVisitor = new PlantUMLDataFlowLiteralEdgeDrawingVisitor();
-
 			node.accept(drawingVisitor);
-			node.accept(variableEdgeVisitor);
-			node.accept(literalEdgeVisitor);
 			this.addToSource(drawingVisitor.getDrawResult());
-			this.addToSource(variableEdgeVisitor.getDrawResult());
-			this.addToSource(literalEdgeVisitor.getDrawResult());
-
-			for (DataFlowElementVariable variable : node.getVariables()) {
-				PlantUMLDataFlowVariableLiteralEdgeDrawingVisitor variableLiteralEdgeVisitor = new PlantUMLDataFlowVariableLiteralEdgeDrawingVisitor();
-				variable.accept(variableLiteralEdgeVisitor);
-				this.addToSource(variableLiteralEdgeVisitor.getDrawResult());
-			}
-		}
+		}*/
 		this.finish();
 	}
 
@@ -108,5 +92,6 @@ public class PlantUMLDrawingStrategy implements DrawingStrategy {
 
 	private void finish() {
 		this.source += "@enduml";
+		System.out.println(this.source);
 	}
 }

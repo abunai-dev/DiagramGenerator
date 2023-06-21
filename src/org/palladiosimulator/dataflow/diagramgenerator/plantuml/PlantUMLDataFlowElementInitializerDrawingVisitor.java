@@ -9,12 +9,12 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 
 	@Override
 	public void visit(ProcessDataFlowElement element) {
-		this.drawElement("usecase", element);
+		this.drawElement("storage", element);
 	}
 
 	@Override
 	public void visit(ExternalEntityDataFlowElement element) {
-		this.drawElement("agent", element);
+		this.drawElement("rectangle", element);
 	}
 
 	@Override
@@ -27,9 +27,7 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 
 		String uniqueIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(element);
 
-		result += elementType + " " + uniqueIdentifier + " [\n";
-		result += element.getName() + "\n";
-		result += "]\n";
+		result += elementType + " " + uniqueIdentifier + " as \"" + element.getName() + "\"\n";
 
 		this.setDrawResult(result);
 	}

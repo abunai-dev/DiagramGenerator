@@ -3,7 +3,7 @@ package org.palladiosimulator.dataflow.diagramgenerator.plantuml;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementVariable;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementVariableVisitor;
 
-public class PlantUMLDataFlowElementVariableInitializerVisitor implements DataFlowElementVariableVisitor {
+public class PlantUMLDataFlowVariableInitializerVisitor implements DataFlowElementVariableVisitor {
 	private String drawResult;
 
 	public String getDrawResult() {
@@ -16,9 +16,7 @@ public class PlantUMLDataFlowElementVariableInitializerVisitor implements DataFl
 
 		String uniqueIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(variable);
 
-		result += "artifact " + uniqueIdentifier + " #line.dotted [\n";
-		result += variable.getName() + "\n";
-		result += "]\n";
+		result += "artifact " + uniqueIdentifier + " as \"" + variable.getName() + "\" #line.dotted\n";
 
 		this.drawResult = result;
 	}
