@@ -31,7 +31,7 @@ public class PlantUMLDrawingStrategy implements DrawingStrategy {
 		// first, initialize all elements
 		for (DataFlowNode node : dataFlowNodes) {
 			PlantUMLDataFlowElementInitializerDrawingVisitor drawingVisitor = new PlantUMLDataFlowElementInitializerDrawingVisitor();
-			
+
 			DataFlowElement element = node.getElement();
 			element.accept(drawingVisitor);
 			this.addToSource(drawingVisitor.getDrawResult());
@@ -42,20 +42,28 @@ public class PlantUMLDrawingStrategy implements DrawingStrategy {
 			node.accept(variableVisitor);
 			this.source = variableVisitor.getDrawResult();
 
+			for (DataFlowElementVariable variable : node.getVariables()) {
+				PlantUMLDataFlowVariableLiteralEmbeddingDrawingVisitor varLitVisitor = new PlantUMLDataFlowVariableLiteralEmbeddingDrawingVisitor(
+						this.source);
+				variable.accept(varLitVisitor);
+				this.source = varLitVisitor.getDrawResult();
+			}
+
 			PlantUMLDataFlowLiteralEmbeddingDrawingVisitor literalEmbeddingVisitor = new PlantUMLDataFlowLiteralEmbeddingDrawingVisitor(
 					this.source);
 			node.accept(literalEmbeddingVisitor);
 			this.source = literalEmbeddingVisitor.getDrawResult();
-			
+
 			var i = 1;
 		}
 
 		// second, draw the edges inbetween
-		/*for (DataFlowNode node : dataFlowNodes) {
+		for (DataFlowNode node : dataFlowNodes) {
 			PlantUMLDataFlowNodeDrawingVisitor drawingVisitor = new PlantUMLDataFlowNodeDrawingVisitor();
 			node.accept(drawingVisitor);
 			this.addToSource(drawingVisitor.getDrawResult());
-		}*/
+		}
+
 		this.finish();
 	}
 

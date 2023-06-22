@@ -18,29 +18,25 @@ public class PlantUMLDataFlowLiteralEmbeddingDrawingVisitor implements DataFlowN
 
 	@Override
 	public void visit(DataFlowNode node) {
-		String elementIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(node.getElement());
+		if (node.getLiterals().size() > 0) {
+			String elementIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(node.getElement());
 
-		int nextNewLineIndex = source.indexOf("\n", source.indexOf(elementIdentifier));
-		// if character before newline is { then no new parentheses are needed
-		boolean hasParentheses = source.charAt(nextNewLineIndex - 1) == '{' ? true : false;
+			int nextNewLineIndex = source.indexOf("\n", source.indexOf(elementIdentifier));
+			// if character before newline is { then no new parentheses are needed
+			boolean hasParentheses = source.charAt(nextNewLineIndex - 1) == '{' ? true : false;
 
-		String insertion = "";
+			String insertion = hasParentheses ? "\n" : "{\n";
 
-		insertion += hasParentheses ? "\n" : "{\n";
+			for (DataFlowLiteral literal : node.getLiterals()) {
+				String literalIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(literal);
 
-		for (DataFlowLiteral literal : node.getLiterals()) {
-			String literalIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(literal);
+				insertion += "hexagon " + literalIdentifier + " as \"" + literal.getTypeName() + ": "
+						+ literal.getLiteralName() + "\" #line.dotted\n";
+			}
 
-			insertion += "hexagon " + literalIdentifier + " as \"" + literal.getTypeName() + ": "
-					+ literal.getLiteralName() + "\" #line.dotted\n";
+			insertion += hasParentheses ? "" : "}\n";
+
+			this.source = source.substring(0, nextNewLineIndex) + insertion + source.substring(nextNewLineIndex + 1);
 		}
-
-		insertion += hasParentheses ? "" : "}\n";
-
-		var part1 = source.substring(0, nextNewLineIndex);
-		var part2 = source.substring(nextNewLineIndex + 1);
-
-		this.source = source.substring(0, nextNewLineIndex) + insertion + source.substring(nextNewLineIndex + 1);
-		var i = 1;
 	}
 }

@@ -1,14 +1,14 @@
 package org.palladiosimulator.dataflow.diagramgenerator.plantuml;
 
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementVariable;
+import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementVariableVisitor;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowLiteral;
-import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
-import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNodeVisitor;
 
-public class PlantUMLDataFlowVariableEmbeddingDrawingVisitor implements DataFlowNodeVisitor {
+public class PlantUMLDataFlowVariableLiteralEmbeddingDrawingVisitor implements DataFlowElementVariableVisitor {
 	private String source;
 
-	public PlantUMLDataFlowVariableEmbeddingDrawingVisitor(String source) {
+	public PlantUMLDataFlowVariableLiteralEmbeddingDrawingVisitor(String source) {
+		super();
 		this.source = source;
 	}
 
@@ -17,9 +17,9 @@ public class PlantUMLDataFlowVariableEmbeddingDrawingVisitor implements DataFlow
 	}
 
 	@Override
-	public void visit(DataFlowNode node) {
-		if (node.getVariables().size() > 0) {
-			String elementIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(node.getElement());
+	public void visit(DataFlowElementVariable variable) {
+		if (variable.getLiterals().size() > 0) {
+			String elementIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(variable);
 
 			int nextNewLineIndex = source.indexOf("\n", source.indexOf(elementIdentifier));
 			// if character before newline is { then no new parentheses are needed
@@ -27,10 +27,11 @@ public class PlantUMLDataFlowVariableEmbeddingDrawingVisitor implements DataFlow
 
 			String insertion = hasParentheses ? "\n" : "{\n";
 
-			for (DataFlowElementVariable variable : node.getVariables()) {
-				String literalIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(variable);
+			for (DataFlowLiteral literal : variable.getLiterals()) {
+				String literalIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(literal);
 
-				insertion += "file " + literalIdentifier + " as \"" + variable.getName() + "\" #line.dotted\n";
+				insertion += "hexagon " + literalIdentifier + " as \"" + literal.getTypeName() + ": "
+						+ literal.getLiteralName() + "\" #line.dotted\n";
 			}
 
 			insertion += hasParentheses ? "" : "}\n";
