@@ -6,24 +6,41 @@ digraph dfd {
         <
             <table border="0" cellspacing="0" cellborder="1">
                 <tr>
-                    <td colspan="3">HotlineRetrieveTeleTAN</td>
+                    <td colspan="3" sides="tlr"><b>HotlineRetrieveTeleTAN</b></td>
                 </tr>
                 <tr>
-                    <td>Actor</td>
-                    <td colspan="2">HealthAuthority</td>
+                    <td colspan="3" sides="lbr">Actor.HealthAuthority</td>
                 </tr>
                 <tr>
-                    <td colspan="3" height="4"></td>
+                    <td sides="lt">teleTAN:</td>
+                    <td sides="tr">Sensivity.Private</td>
                 </tr>
                 <tr>
-                    <td sides="ltr">teleTAN</td>
-                    <td>Sensivity</td>
-                    <td>Private</td>
+                    <td sides="lb"></td>
+                    <td sides="br">Encryption.RSA</td>
+                </tr>
+            </table>
+        >
+    ];
+
+    "48354135278" [
+        shape = Mrecord;margin=0;padding=0;
+        label = 
+        <
+            <table border="0" cellspacing="0" cellborder="1">
+                <tr>
+                    <td colspan="3" border="0"><b>GenerateTeleTAN</b></td>
                 </tr>
                 <tr>
-                    <td sides="lbr"></td>
-                    <td>Encryption</td>
-                    <td>RSA</td>
+                    <td colspan="3" sides="b">Actor.HealthAuthority</td>
+                </tr>
+                <tr>
+                    <td border="0">teleTAN:</td>
+                    <td border="0">Sensivity.Private</td>
+                </tr>
+                <tr>
+                    <td border="0"></td>
+                    <td border="0">Encryption.RSA&nbsp;</td>
                 </tr>
             </table>
         >
@@ -51,7 +68,7 @@ digraph dfd {
     "934483247" [
         shape=none;style=rounded;margin=0;padding=0;label=
         <
-            <table border="0" cellborder="1">
+            <table border="0" cellborder="1" style="rounded" sides="tlb">
                 <tr>
                     <td width="120" height="26" sides="ltb">UserDatabase</td>
                 </tr>
