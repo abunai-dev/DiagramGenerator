@@ -1,12 +1,64 @@
 @startuml
 digraph dfd {
-    node [shape=record]
-
-    "954731510" [label = "{HotlineRetrieveTeleTAN|Actor: HealthAuthority|teleTAN\nSensivity: Private|Location: OpenTelekomCloud}"];
+    "954731510" [
+        shape = none;margin=0;padding=0;
+        label = 
+        <
+            <table border="0" cellspacing="0" cellborder="1">
+                <tr>
+                    <td colspan="3">HotlineRetrieveTeleTAN</td>
+                </tr>
+                <tr>
+                    <td>Actor</td>
+                    <td colspan="2">HealthAuthority</td>
+                </tr>
+                <tr>
+                    <td colspan="3" height="4"></td>
+                </tr>
+                <tr>
+                    <td sides="ltr">teleTAN</td>
+                    <td>Sensivity</td>
+                    <td>Private</td>
+                </tr>
+                <tr>
+                    <td sides="lbr"></td>
+                    <td>Encryption</td>
+                    <td>RSA</td>
+                </tr>
+            </table>
+        >
+    ];
 
 
     "2016239109" [label = "{GenerateTeleTAN|Location: OpenTelekomCloud\nRETURN\nteleTAN}";shape=Mrecord];
 
-    "954731510" -> "2016239109";
+    "954731510" -> "2016239109" [label="tan"];
+
+
+    "39485754" [
+        shape=none;margin=0;
+        label=
+        <
+            <table border="0" cellspacing="0" cellborder="1">
+                <tr>
+                    <td width="10" height="26"></td>
+                    <td width="120" height="26" sides="ltb">TANs</td>
+                </tr>
+            </table>
+        >
+    ]
+
+    "934483247" [
+        shape=none;style=rounded;margin=0;padding=0;label=
+        <
+            <table border="0" cellborder="1">
+                <tr>
+                    <td width="120" height="26" sides="ltb">UserDatabase</td>
+                </tr>
+            </table>
+        >
+    ]
+
+    "2016239109" -> "39485754" [label="tan"];
 }
 @enduml
