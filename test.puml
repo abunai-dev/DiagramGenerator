@@ -1,28 +1,71 @@
 @startuml
-left to right direction
+digraph dfd {
+    "954731510" [
+        shape = none;margin=0;padding=0;
+        label = 
+        <
+            <table border="1" cellspacing="0" cellborder="1">
+                <tr>
+                    <td colspan="3" border="0"><b>HotlineRetrieveTeleTAN</b>  </td>
+                </tr>
+                <tr>
+                    <td colspan="3" sides="b">Actor.HealthAuthority</td>
+                </tr>
+                <tr>
+                    <td border="0">teleTAN:</td>
+                    <td border="0">Sensivity.Private</td>
+                </tr>
+            </table>
+        >
+    ];
 
-rectangle externalEntityID as "external entity U" {
-    hexagon literalID1 as "literal X"
+    /' <tr>
+                    <td colspan="3" sides="b">Actor.HealthAuthority</td>
+                </tr>
+                <tr>
+                    <td border="0">teleTAN:</td>
+                    <td border="0">Sensivity.Private</td>
+                </tr>
+                <tr>
+                    <td border="0"></td>
+                    <td border="0">Encryption.RSA</td>
+                </tr> '/
+
+    "48354135278" [
+        shape = Mrecord;margin=0;padding=0;
+        label = 
+        <
+            <table border="0" cellspacing="0" cellborder="1">
+                <tr>
+                    <td colspan="3" border="0"><b>GenerateTeleTAN</b>  </td>
+                </tr>
+                <tr>
+                    <td colspan="3" sides="b">Actor.HealthAuthority</td>
+                </tr>
+                <tr>
+                    <td border="0">&nbsp;teleTAN:</td>
+                    <td border="0">Sensivity.Private </td>
+                </tr>
+                <tr>
+                    <td border="0"></td>
+                    <td border="0">Encryption.RSA </td>
+                </tr>
+            </table>
+        >
+    ];
+
+    "934483247" [
+        shape=none;style=rounded;margin=0;padding=0;label=
+        <
+            <table border="0" cellborder="1" style="rounded" sides="tlb">
+                <tr>
+                    <td width="120" height="26" sides="ltb"><b>UserDatabase</b></td>
+                </tr>
+            </table>
+        >
+    ]
+
+    "954731510" -> "48354135278";
+    "48354135278" -> "934483247" [label="test"];
 }
-
-storage elementID1 as "process A" {
-    hexagon literalID2 as "literal Y"
-    artifact variableID1 as "variable A" {
-        hexagon literalID4 as "literal W"
-    }
-}
-
-storage elementID2 as "process B" {
-    hexagon literalID3 as "literal Z"
-}
-
-database databaseID1 as "database F" {
-    hexagon literalID5 as "literal V"
-}
-
-externalEntityID --> elementID1 : parameter A
-elementID1 --> databaseID1 : parameter B
-elementID1 --> elementID2 : parameter A
-elementID2 --> databaseID1 : parameter C
-
 @enduml

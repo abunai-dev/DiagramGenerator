@@ -30,9 +30,13 @@ public class PlantUMLDataFlowNodeDrawingVisitor implements DataFlowNodeVisitor {
 				String parentUID = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(parent.getElement());
 
 				if (parameterString.length() > 0) {
-					result += parentUID + " --> " + currentUID + " : " + parameterString + "\n";
+					result += String.format("""
+							%s -> %s [label="%s"];
+							""", parentUID, currentUID, parameterString);
 				} else {
-					result += parentUID + " --> " + currentUID + "\n";
+					result += String.format("""
+							%s -> %s;
+							""", parentUID, currentUID);
 				}
 			}
 		}
