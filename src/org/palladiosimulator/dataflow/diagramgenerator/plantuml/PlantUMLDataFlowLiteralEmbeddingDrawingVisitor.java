@@ -20,27 +20,26 @@ public class PlantUMLDataFlowLiteralEmbeddingDrawingVisitor implements DataFlowN
 	public void visit(DataFlowNode node) {
 		String elementIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(node.getElement());
 
-		int nextNewLineIndex = source.indexOf("\n", source.indexOf(elementIdentifier));
-		// if character before newline is { then no new parentheses are needed
-		boolean hasParentheses = source.charAt(nextNewLineIndex - 1) == '{' ? true : false;
+		int elementLineIndex = source.indexOf(elementIdentifier);
+		int afterTitleLineIndex = source.indexOf("// title end", elementLineIndex);
+		int afterCharacteristicsLineIndex = source.indexOf("// characteristics end", afterTitleLineIndex);
 
-		String insertion = "";
-
-		insertion += hasParentheses ? "\n" : "{\n";
+		StringBuilder sb = new StringBuilder(source);
 
 		for (DataFlowLiteral literal : node.getLiterals()) {
-			String literalIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(literal);
+			String toInsert = String.format("""
+					<tr>
+					    <td colspan="3" border="0">%s.%s </td>
+					</tr>
+					""", literal.getTypeName(), literal.getLiteralName());
 
-			insertion += "hexagon " + literalIdentifier + " as \"" + literal.getTypeName() + ": "
-					+ literal.getLiteralName() + "\" #line.dotted\n";
+			if (afterCharacteristicsLineIndex != -1) {
+				sb.insert(afterCharacteristicsLineIndex, "\n" + toInsert);
+			} else {
+				sb.append("\n").append(toInsert);
+			}
 		}
 
-		insertion += hasParentheses ? "" : "}\n";
-
-		var part1 = source.substring(0, nextNewLineIndex);
-		var part2 = source.substring(nextNewLineIndex + 1);
-
-		this.source = source.substring(0, nextNewLineIndex) + insertion + source.substring(nextNewLineIndex + 1);
-		var i = 1;
+		source = sb.toString();
 	}
 }

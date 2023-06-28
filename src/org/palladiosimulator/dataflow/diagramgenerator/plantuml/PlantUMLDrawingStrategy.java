@@ -8,8 +8,6 @@ import java.nio.charset.Charset;
 import java.util.List;
 
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
-import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementVariable;
-import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowLiteral;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DrawingStrategy;
 
@@ -30,32 +28,29 @@ public class PlantUMLDrawingStrategy implements DrawingStrategy {
 		this.initialize();
 		// first, initialize all elements
 		for (DataFlowNode node : dataFlowNodes) {
-			PlantUMLDataFlowElementInitializerDrawingVisitor drawingVisitor = new PlantUMLDataFlowElementInitializerDrawingVisitor();
-			
 			DataFlowElement element = node.getElement();
+
+			PlantUMLDataFlowElementInitializerDrawingVisitor drawingVisitor = new PlantUMLDataFlowElementInitializerDrawingVisitor();
 			element.accept(drawingVisitor);
 			this.addToSource(drawingVisitor.getDrawResult());
-
-			// embed variables
-			PlantUMLDataFlowVariableEmbeddingDrawingVisitor variableVisitor = new PlantUMLDataFlowVariableEmbeddingDrawingVisitor(
-					this.source);
-			node.accept(variableVisitor);
-			this.source = variableVisitor.getDrawResult();
 
 			PlantUMLDataFlowLiteralEmbeddingDrawingVisitor literalEmbeddingVisitor = new PlantUMLDataFlowLiteralEmbeddingDrawingVisitor(
 					this.source);
 			node.accept(literalEmbeddingVisitor);
 			this.source = literalEmbeddingVisitor.getDrawResult();
-			
-			var i = 1;
+
+			PlantUMLDataFlowVariableEmbeddingDrawingVisitor variableVisitor = new PlantUMLDataFlowVariableEmbeddingDrawingVisitor(
+					this.source);
+			node.accept(variableVisitor);
+			this.source = variableVisitor.getDrawResult();
 		}
 
 		// second, draw the edges inbetween
-		/*for (DataFlowNode node : dataFlowNodes) {
+		for (DataFlowNode node : dataFlowNodes) {
 			PlantUMLDataFlowNodeDrawingVisitor drawingVisitor = new PlantUMLDataFlowNodeDrawingVisitor();
 			node.accept(drawingVisitor);
 			this.addToSource(drawingVisitor.getDrawResult());
-		}*/
+		}
 		this.finish();
 	}
 
@@ -87,10 +82,11 @@ public class PlantUMLDrawingStrategy implements DrawingStrategy {
 
 	private void initialize() {
 		this.source += "@startuml\n";
-		this.source += "left to right direction\n";
+		this.source += "digraph dfd {\n";
 	}
 
 	private void finish() {
+		this.source += "}\n";
 		this.source += "@enduml";
 		System.out.println(this.source);
 	}

@@ -4,32 +4,9 @@ digraph dfd {
         shape = none;margin=0;padding=0;
         label = 
         <
-            <table border="0" cellspacing="0" cellborder="1">
+            <table border="1" cellspacing="0" cellborder="1">
                 <tr>
-                    <td colspan="3" sides="tlr"><b>HotlineRetrieveTeleTAN</b></td>
-                </tr>
-                <tr>
-                    <td colspan="3" sides="lbr">Actor.HealthAuthority</td>
-                </tr>
-                <tr>
-                    <td sides="lt">teleTAN:</td>
-                    <td sides="tr">Sensivity.Private</td>
-                </tr>
-                <tr>
-                    <td sides="lb"></td>
-                    <td sides="br">Encryption.RSA</td>
-                </tr>
-            </table>
-        >
-    ];
-
-    "48354135278" [
-        shape = Mrecord;margin=0;padding=0;
-        label = 
-        <
-            <table border="0" cellspacing="0" cellborder="1">
-                <tr>
-                    <td colspan="3" border="0"><b>GenerateTeleTAN</b></td>
+                    <td colspan="3" border="0"><b>HotlineRetrieveTeleTAN</b>  </td>
                 </tr>
                 <tr>
                     <td colspan="3" sides="b">Actor.HealthAuthority</td>
@@ -38,44 +15,57 @@ digraph dfd {
                     <td border="0">teleTAN:</td>
                     <td border="0">Sensivity.Private</td>
                 </tr>
-                <tr>
-                    <td border="0"></td>
-                    <td border="0">Encryption.RSA&nbsp;</td>
-                </tr>
             </table>
         >
     ];
 
+    /' <tr>
+                    <td colspan="3" sides="b">Actor.HealthAuthority</td>
+                </tr>
+                <tr>
+                    <td border="0">teleTAN:</td>
+                    <td border="0">Sensivity.Private</td>
+                </tr>
+                <tr>
+                    <td border="0"></td>
+                    <td border="0">Encryption.RSA</td>
+                </tr> '/
 
-    "2016239109" [label = "{GenerateTeleTAN|Location: OpenTelekomCloud\nRETURN\nteleTAN}";shape=Mrecord];
-
-    "954731510" -> "2016239109" [label="tan"];
-
-
-    "39485754" [
-        shape=none;margin=0;
-        label=
+    "48354135278" [
+        shape = Mrecord;margin=0;padding=0;
+        label = 
         <
             <table border="0" cellspacing="0" cellborder="1">
                 <tr>
-                    <td width="10" height="26"></td>
-                    <td width="120" height="26" sides="ltb">TANs</td>
+                    <td colspan="3" border="0"><b>GenerateTeleTAN</b>  </td>
+                </tr>
+                <tr>
+                    <td colspan="3" sides="b">Actor.HealthAuthority</td>
+                </tr>
+                <tr>
+                    <td border="0">&nbsp;teleTAN:</td>
+                    <td border="0">Sensivity.Private </td>
+                </tr>
+                <tr>
+                    <td border="0"></td>
+                    <td border="0">Encryption.RSA </td>
                 </tr>
             </table>
         >
-    ]
+    ];
 
     "934483247" [
         shape=none;style=rounded;margin=0;padding=0;label=
         <
             <table border="0" cellborder="1" style="rounded" sides="tlb">
                 <tr>
-                    <td width="120" height="26" sides="ltb">UserDatabase</td>
+                    <td width="120" height="26" sides="ltb"><b>UserDatabase</b></td>
                 </tr>
             </table>
         >
     ]
 
-    "2016239109" -> "39485754" [label="tan"];
+    "954731510" -> "48354135278";
+    "48354135278" -> "934483247" [label="test"];
 }
 @enduml

@@ -18,23 +18,45 @@ public class PlantUMLDataFlowVariableEmbeddingDrawingVisitor implements DataFlow
 
 	@Override
 	public void visit(DataFlowNode node) {
-		if (node.getVariables().size() > 0) {
-			String elementIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(node.getElement());
+		String elementIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(node.getElement());
 
-			int nextNewLineIndex = source.indexOf("\n", source.indexOf(elementIdentifier));
+		int elementLineIndex = source.indexOf(elementIdentifier);
 
-			String insertion = "{\n";
+		StringBuilder sb = new StringBuilder(source);
 
-			for (DataFlowElementVariable variable : node.getVariables()) {
-				String literalIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(variable);
+		int varCounter = 0;
+		for (DataFlowElementVariable variable : node.getVariables()) {
+			int litCounter = 0;
+			for (DataFlowLiteral literal : node.getLiterals()) {
+				int charEndLineIndex = sb.indexOf("// characteristics end", elementLineIndex);
+				int varEndLineIndex = sb.indexOf("// variables end", charEndLineIndex);
 
-				insertion += "file " + literalIdentifier + " as \"" + variable.getName() + "\" #line.dotted\n";
+				String toInsert = "";
+				if (varCounter < 1) {
+					toInsert = String.format("""
+							           <tr>
+							               <td sides="t">%s</td>
+							               <td sides="t">%s.%s </td>
+							           </tr>
+							""", litCounter > 1 ? "" : variable.getName().concat(":"), literal.getTypeName(),
+							literal.getLiteralName());
+				} else {
+					toInsert = String.format("""
+							           <tr>
+							               <td border="0">%s</td>
+							               <td border="0">%s.%s </td>
+							           </tr>
+							""", litCounter > 1 ? "" : variable.getName().concat(":"), literal.getTypeName(),
+							literal.getLiteralName());
+				}
+
+				sb.insert(varEndLineIndex, toInsert);
+
+				litCounter++;
 			}
-
-			insertion += "}\n";
-
-			this.source = source.substring(0, nextNewLineIndex) + insertion + source.substring(nextNewLineIndex);
-			var i = 1;
+			varCounter++;
 		}
+
+		source = sb.toString();
 	}
 }
