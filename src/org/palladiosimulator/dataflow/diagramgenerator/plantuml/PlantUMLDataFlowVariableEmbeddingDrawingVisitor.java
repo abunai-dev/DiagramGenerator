@@ -19,39 +19,27 @@ public class PlantUMLDataFlowVariableEmbeddingDrawingVisitor implements DataFlow
 	@Override
 	public void visit(DataFlowNode node) {
 		String elementIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(node.getElement());
-
 		int elementLineIndex = source.indexOf(elementIdentifier);
-
 		StringBuilder sb = new StringBuilder(source);
-
 		int varCounter = 0;
+
 		for (DataFlowElementVariable variable : node.getVariables()) {
 			int litCounter = 0;
 			for (DataFlowLiteral literal : node.getLiterals()) {
 				int charEndLineIndex = sb.indexOf("// characteristics end", elementLineIndex);
 				int varEndLineIndex = sb.indexOf("// variables end", charEndLineIndex);
 
-				String toInsert = "";
-				if (varCounter < 1) {
-					toInsert = String.format("""
-							           <tr>
-							               <td sides="t">%s</td>
-							               <td sides="t">%s.%s </td>
-							           </tr>
-							""", litCounter > 1 ? "" : variable.getName().concat(":"), literal.getTypeName(),
-							literal.getLiteralName());
-				} else {
-					toInsert = String.format("""
-							           <tr>
-							               <td border="0">%s</td>
-							               <td border="0">%s.%s </td>
-							           </tr>
-							""", litCounter > 1 ? "" : variable.getName().concat(":"), literal.getTypeName(),
-							literal.getLiteralName());
-				}
+				String prefix = litCounter > 0 ? "" : variable.getName().concat(":");
+				String toInsert = String.format("""
+						<tr>
+						    <td %s>%s</td>
+						    <td %s>%s.%s</td>
+						</tr>
+						""", litCounter < 1 && varCounter < 1 ? "sides=\"t\"" : "border=\"0\"", prefix,
+						litCounter < 1 && varCounter < 1 ? "sides=\"t\"" : "border=\"0\"", literal.getTypeName(),
+						literal.getLiteralName());
 
 				sb.insert(varEndLineIndex, toInsert);
-
 				litCounter++;
 			}
 			varCounter++;
@@ -59,4 +47,5 @@ public class PlantUMLDataFlowVariableEmbeddingDrawingVisitor implements DataFlow
 
 		source = sb.toString();
 	}
+
 }
