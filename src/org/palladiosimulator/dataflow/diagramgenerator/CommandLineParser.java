@@ -10,19 +10,21 @@ public class CommandLineParser {
 			case "-p":
 			case "--project":
 				options.setProjectName(CommandLineArgumentUtils.getNextArgumentValue(args, i));
-				i++;
 				break;
 
 			case "-u":
 			case "--usageModel":
 				options.setUsageModelPath(CommandLineArgumentUtils.getNextArgumentValue(args, i));
-				i++;
 				break;
 
 			case "-a":
 			case "--allocation":
 				options.setAllocationPath(CommandLineArgumentUtils.getNextArgumentValue(args, i));
-				i++;
+				break;
+				
+			case "-c":
+			case "--characteristics":
+				options.setCharacteristicsPath(CommandLineArgumentUtils.getNextArgumentValue(args, i));
 				break;
 
 			default:

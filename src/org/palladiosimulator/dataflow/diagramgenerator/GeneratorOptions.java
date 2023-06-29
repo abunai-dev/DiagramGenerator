@@ -4,6 +4,15 @@ public class GeneratorOptions {
 	private String projectName;
 	private String usageModelPath;
 	private String allocationPath;
+	private String characteristicsPath;
+
+	public String getCharacteristicsPath() {
+		return characteristicsPath;
+	}
+
+	public void setCharacteristicsPath(String characteristicsPath) {
+		this.characteristicsPath = characteristicsPath;
+	}
 
 	public String getProjectName() {
 		return projectName;

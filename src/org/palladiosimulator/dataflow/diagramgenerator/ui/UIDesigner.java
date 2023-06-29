@@ -19,6 +19,7 @@ public class UIDesigner {
 	private static JTextField projectNameTextField;
 	private static JTextField usageModelTextField;
 	private static JTextField allocationTextField;
+	private static JTextField characteristicsTextField;
 
 	public static void createUI() {
 		// Create the UI frame
@@ -32,11 +33,13 @@ public class UIDesigner {
 		JLabel projectNameLabel = new JLabel("Project Name:");
 		JLabel usageModelLabel = new JLabel("Usage Model Path:");
 		JLabel allocationLabel = new JLabel("Allocation Path:");
+		JLabel characteristicsLabel = new JLabel("Characteristics Path:");
 
 		// Create text fields for the arguments
-		projectNameTextField = new JTextField("org.palladiosimulator.dataflow.confidentiality.analysis.testmodels", 20);
-		usageModelTextField = new JTextField("models/CoronaWarnApp/default.usagemodel", 20);
-		allocationTextField = new JTextField("models/CoronaWarnApp/default.allocation", 20);
+		projectNameTextField = new JTextField("org.palladiosimulator.dataflow.confidentiality.analysis.testmodels", 40);
+		usageModelTextField = new JTextField("models/CoronaWarnApp/default.usagemodel", 40);
+		allocationTextField = new JTextField("models/CoronaWarnApp/default.allocation", 40);
+		characteristicsTextField = new JTextField("models/CoronaWarnApp/default.nodecharacteristics", 40);
 
 		// Create a button to trigger the generation
 		JButton button = new JButton("Generate Diagram");
@@ -48,12 +51,14 @@ public class UIDesigner {
 				String projectName = projectNameTextField.getText();
 				String usageModelPath = usageModelTextField.getText();
 				String allocationPath = allocationTextField.getText();
+				String characteristicsPath = characteristicsTextField.getText();
 
 				// Create the options object
 				GeneratorOptions options = new GeneratorOptions();
 				options.setProjectName(projectName);
 				options.setUsageModelPath(usageModelPath);
 				options.setAllocationPath(allocationPath);
+				options.setCharacteristicsPath(characteristicsPath);
 
 				StandaloneDiagramGenerator diagramGenerator = new StandaloneDiagramGenerator(options);
 
@@ -71,13 +76,15 @@ public class UIDesigner {
 		panel.add(usageModelTextField);
 		panel.add(allocationLabel);
 		panel.add(allocationTextField);
+		panel.add(characteristicsLabel);
+		panel.add(characteristicsTextField);
 		panel.add(button);
 
 		// Add the panel to the frame
 		frame.getContentPane().add(panel);
 
 		// Set the frame size and make it visible
-		frame.setSize(400, 200);
+		frame.setSize(600, 200);
 		frame.setVisible(true);
 	}
 }

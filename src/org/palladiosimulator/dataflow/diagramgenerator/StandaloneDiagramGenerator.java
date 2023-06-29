@@ -65,10 +65,12 @@ public class StandaloneDiagramGenerator {
 		String projectName = options.getProjectName();
 		String usageModelPath = options.getUsageModelPath();
 		String allocationPath = options.getAllocationPath();
+		String characteristicsPath = options.getCharacteristicsPath();
 
 		this.analysis = new DataFlowAnalysisBuilder().standalone().modelProjectName(projectName)
 				.useBuilder(new PCMDataFlowConfidentialityAnalysisBuilder()).usePluginActivator(Activator.class)
-				.useUsageModel(usageModelPath).useAllocationModel(allocationPath).useNodeCharacteristicsModel("models/CoronaWarnApp/default.nodecharacteristics").build();
+				.useUsageModel(usageModelPath).useAllocationModel(allocationPath)
+				.useNodeCharacteristicsModel(characteristicsPath).build();
 
 		analysis.initializeAnalysis();
 		System.out.println("Initialization finished!");
