@@ -83,6 +83,7 @@ public class PlantUMLDrawingStrategy implements DrawingStrategy {
 	private void initialize() {
 		this.source += "@startuml\n";
 		this.source += "digraph dfd {\n";
+		this.source += "rankdir = LR;\n";
 	}
 
 	private void finish() {

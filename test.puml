@@ -1,5 +1,6 @@
 @startuml
 digraph dfd {
+    rankdir = LR;
     "954731510" [
         shape = none;margin=0;padding=0;
         label = 
@@ -18,18 +19,6 @@ digraph dfd {
             </table>
         >
     ];
-
-    /' <tr>
-                    <td colspan="3" sides="b">Actor.HealthAuthority</td>
-                </tr>
-                <tr>
-                    <td border="0">teleTAN:</td>
-                    <td border="0">Sensivity.Private</td>
-                </tr>
-                <tr>
-                    <td border="0"></td>
-                    <td border="0">Encryption.RSA</td>
-                </tr> '/
 
     "48354135278" [
         shape = Mrecord;margin=0;padding=0;
@@ -55,15 +44,30 @@ digraph dfd {
     ];
 
     "934483247" [
-        shape=none;style=rounded;margin=0;padding=0;label=
+        shape=none;margin=0;padding=0;label=
         <
-            <table border="0" cellborder="1" style="rounded" sides="tlb">
+            <table border="0" cellborder="1" sides="tlb">
                 <tr>
                     <td width="120" height="26" sides="ltb"><b>UserDatabase</b></td>
                 </tr>
             </table>
         >
-    ]
+    ];
+
+    "123123123" [
+        shape=none;margin=0;padding=0;label=
+        <
+            <table border="0" cellborder="1" sides="tlb">
+                <tr>
+                	<td border="1" sides="ltb"><b>DataStore</b>  </td>
+                </tr>
+                // title end
+                // characteristics end
+                // variables end
+            </table>
+        >
+    ];
+
 
     "954731510" -> "48354135278";
     "48354135278" -> "934483247" [label="test"];

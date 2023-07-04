@@ -1,8 +1,8 @@
 package org.palladiosimulator.dataflow.diagramgenerator.model;
 
-public class WarehouseDataFlowElement extends DataFlowElement {
+public class DataStoreDataFlowElement extends DataFlowElement {
 
-	public WarehouseDataFlowElement(String id, Boolean isCalling, String name) {
+	public DataStoreDataFlowElement(String id, Boolean isCalling, String name) {
 		super(id, isCalling, name);
 		// TODO Auto-generated constructor stub
 	}

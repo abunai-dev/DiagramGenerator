@@ -2,12 +2,17 @@ package org.palladiosimulator.dataflow.diagramgenerator;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import org.eclipse.emf.common.util.EList;
+import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.CharacteristicValue;
+import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.DataStore;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.CallingSEFFActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.DatabaseActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.SEFFActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.user.CallingUserActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
+import org.palladiosimulator.dataflow.confidentiality.pcm.model.confidentiality.repository.impl.OperationalDataStoreComponentImpl;
 import org.palladiosimulator.pcm.parameter.VariableUsage;
 import org.palladiosimulator.pcm.parameter.impl.VariableUsageImpl;
 import org.palladiosimulator.pcm.repository.Parameter;
@@ -52,6 +57,9 @@ public class EntityUtility {
 			} else {
 				throw new Error("Not implemented");
 			}
+		} else if (element instanceof DatabaseActionSequenceElement<?> dase) {
+			DataStore dataStore = dase.getDataStore();
+			return dataStore.getDatabaseComponentName();
 		} else {
 			throw new Error("Not implemented");
 		}
@@ -78,9 +86,11 @@ public class EntityUtility {
 			return cuase.isCalling();
 		} else if (element instanceof CallingSEFFActionSequenceElement csase) {
 			return csase.isCalling();
+		} else if (element instanceof DatabaseActionSequenceElement<?> dase) {
+			return null;
+		} else {
+			return null;
 		}
-
-		return null;
 	}
 
 	public static String getEntityId(AbstractActionSequenceElement<?> element) {
@@ -115,8 +125,11 @@ public class EntityUtility {
 				throw new Error();
 			}
 			return ((AbstractActionImpl) ((SEFFActionSequenceElement) element).getElement()).getId();
+		} else if (element instanceof DatabaseActionSequenceElement<?> dase) {
+			OperationalDataStoreComponentImpl innerElement = (OperationalDataStoreComponentImpl) dase.getElement();
+			return innerElement.getId();
 		} else {
-			throw new Error();
+			throw new Error("Not implemented!");
 		}
 	}
 

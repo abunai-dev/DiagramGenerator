@@ -5,5 +5,5 @@ public interface DataFlowElementVisitor {
 
 	void visit(ExternalEntityDataFlowElement element);
 
-	void visit(WarehouseDataFlowElement element);
+	void visit(DataStoreDataFlowElement element);
 }

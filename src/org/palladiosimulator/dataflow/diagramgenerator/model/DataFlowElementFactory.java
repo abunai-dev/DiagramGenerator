@@ -3,6 +3,7 @@ package org.palladiosimulator.dataflow.diagramgenerator.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.DatabaseActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.SEFFActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.user.CallingUserActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
@@ -51,6 +52,8 @@ public class DataFlowElementFactory {
 			createExternalEntityDataFlowElement(dataFlowElements, actorName);
 		} else if (element instanceof SEFFActionSequenceElement) {
 			createProcessDataFlowElement(dataFlowElements, id, isCalling, name, parameters);
+		} else if (element instanceof DatabaseActionSequenceElement<?>) {
+			createDataStoreDataFlowElement(dataFlowElements, id, isCalling, name);
 		} else {
 			throw new UnsupportedOperationException("Element type not supported");
 		}
@@ -70,5 +73,11 @@ public class DataFlowElementFactory {
 		ProcessDataFlowElement process = new ProcessDataFlowElement(id, isCalling, name);
 		process.addParameters(parameters);
 		dataFlowElements.add(process);
+	}
+
+	private void createDataStoreDataFlowElement(List<DataFlowElement> dataStoreElements, String id,
+			Boolean isCalling, String name) {
+		DataStoreDataFlowElement dataStore = new DataStoreDataFlowElement(id, isCalling, name);
+		dataStoreElements.add(dataStore);
 	}
 }
