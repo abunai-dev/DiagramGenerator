@@ -17,7 +17,7 @@ public class BaseTest {
 
 	@BeforeAll
 	public static void initializeGenerator() {
-		GeneratorOptions options = new GeneratorOptions();
+		GeneratorOptions options = GeneratorOptions.getInstance();
 		options.setProjectName(TEST_MODEL_PROJECT_NAME);
 		options.setAllocationPath("models/CoronaWarnApp/default.usagemodel");
 		options.setUsageModelPath("models/CoronaWarnApp/default.allocation");

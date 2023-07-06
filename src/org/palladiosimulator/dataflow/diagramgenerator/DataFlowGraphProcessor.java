@@ -40,6 +40,7 @@ public class DataFlowGraphProcessor {
 
 	private void processActionSequence(ActionSequence actionSequence, List<DataFlowNode> dataFlowNodes) {
 		DataFlowNode previousNode = null;
+		GeneratorOptions options = GeneratorOptions.getInstance();
 
 		for (AbstractActionSequenceElement<?> actionSequenceElement : actionSequence.getElements()) {
 			List<DataFlowElementVariable> variables = createDataFlowElementVariables(actionSequenceElement);
@@ -48,6 +49,7 @@ public class DataFlowGraphProcessor {
 					.createDataFlowElementsForActionSequenceElement(actionSequenceElement);
 			Map<DataFlowElement, DataFlowNode> existingMap = nodeManager.createDataFlowElementNodeMap(dataFlowElements,
 					dataFlowNodes);
+			var i = 1;
 
 			for (Entry<DataFlowElement, DataFlowNode> dataFlowEntry : existingMap.entrySet()) {
 				DataFlowNode dataFlowNode = dataFlowEntry.getValue();
@@ -58,8 +60,10 @@ public class DataFlowGraphProcessor {
 				}
 
 				nodeManager.connectNodes(previousNode, dataFlowNode);
-				nodeManager.addVariablesToNode(dataFlowNode, variables);
-				nodeManager.addLiteralsToNode(dataFlowNode, literals);
+				if (options.isDrawVariables())
+					nodeManager.addVariablesToNode(dataFlowNode, variables);
+				if (options.isDrawNodeCharacteristics())
+					nodeManager.addLiteralsToNode(dataFlowNode, literals);
 				previousNode = dataFlowNode;
 			}
 		}

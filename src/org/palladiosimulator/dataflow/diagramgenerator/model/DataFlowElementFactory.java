@@ -47,15 +47,18 @@ public class DataFlowElementFactory {
 		Boolean isCalling = EntityUtility.getIsCalling(element);
 		List<String> parameters = EntityUtility.getParameters(element);
 		String actorName = EntityUtility.getActorName(element);
+		boolean isBranch = EntityUtility.isBranch(element);
 
-		if (element instanceof CallingUserActionSequenceElement) {
-			createExternalEntityDataFlowElement(dataFlowElements, actorName);
-		} else if (element instanceof SEFFActionSequenceElement) {
-			createProcessDataFlowElement(dataFlowElements, id, isCalling, name, parameters);
-		} else if (element instanceof DatabaseActionSequenceElement<?>) {
-			createDataStoreDataFlowElement(dataFlowElements, id, isCalling, name);
-		} else {
-			throw new UnsupportedOperationException("Element type not supported");
+		if (!isBranch) {
+			if (element instanceof CallingUserActionSequenceElement) {
+				createExternalEntityDataFlowElement(dataFlowElements, actorName);
+			} else if (element instanceof SEFFActionSequenceElement) {
+				createProcessDataFlowElement(dataFlowElements, id, isCalling, name, parameters);
+			} else if (element instanceof DatabaseActionSequenceElement<?>) {
+				createDataStoreDataFlowElement(dataFlowElements, id, isCalling, name);
+			} else {
+				throw new UnsupportedOperationException("Element type not supported");
+			}
 		}
 
 		return dataFlowElements;
@@ -75,8 +78,8 @@ public class DataFlowElementFactory {
 		dataFlowElements.add(process);
 	}
 
-	private void createDataStoreDataFlowElement(List<DataFlowElement> dataStoreElements, String id,
-			Boolean isCalling, String name) {
+	private void createDataStoreDataFlowElement(List<DataFlowElement> dataStoreElements, String id, Boolean isCalling,
+			String name) {
 		DataStoreDataFlowElement dataStore = new DataStoreDataFlowElement(id, isCalling, name);
 		dataStoreElements.add(dataStore);
 	}

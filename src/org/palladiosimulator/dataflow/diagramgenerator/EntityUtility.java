@@ -30,16 +30,33 @@ import org.palladiosimulator.pcm.usagemodel.impl.ScenarioBehaviourImpl;
 import org.palladiosimulator.pcm.usagemodel.impl.UsageScenarioImpl;
 
 public class EntityUtility {
-	public static String getEntityName(AbstractActionSequenceElement element) {
+	public static boolean isBranch(AbstractActionSequenceElement<?> element) {
+		if (element instanceof SEFFActionSequenceElement<?> sase) {
+			if (sase.getElement() instanceof StartActionImpl sai) {
+				var seff = sai.getResourceDemandingBehaviour_AbstractAction();
+				if (seff instanceof ResourceDemandingBehaviourImpl rdb) {
+					ProbabilisticBranchTransitionImpl branch = (ProbabilisticBranchTransitionImpl) rdb
+							.getAbstractBranchTransition_ResourceDemandingBehaviour();
+					if (branch != null) {
+						return true;
+					}
+				}
+			}
+		}
+
+		return false;
+	}
+
+	public static String getEntityName(AbstractActionSequenceElement<?> element) {
 		String name = null;
 		if (element instanceof CallingUserActionSequenceElement cuase) {
 			name = cuase.getElement().getEntityName();
-		} else if (element instanceof SEFFActionSequenceElement sase) {
+		} else if (element instanceof SEFFActionSequenceElement<?> sase) {
 			var innerElement = sase.getElement();
 			// BasicComponentImpl bc = (BasicComponentImpl)
 			// innerElement.eContainer().eContainer();
 			// String containerName = bc.getEntityName();
-			name = ((AbstractActionImpl) ((SEFFActionSequenceElement) element).getElement()).getEntityName();
+			name = ((AbstractActionImpl) ((SEFFActionSequenceElement<?>) element).getElement()).getEntityName();
 			if (innerElement instanceof ExternalCallActionImpl eca) {
 			} else if (innerElement instanceof StartActionImpl sa) {
 				var seff = sa.getResourceDemandingBehaviour_AbstractAction();
@@ -50,6 +67,7 @@ public class EntityUtility {
 					ProbabilisticBranchTransitionImpl branch = (ProbabilisticBranchTransitionImpl) rdb
 							.getAbstractBranchTransition_ResourceDemandingBehaviour();
 					name = branch.getEntityName();
+					var i = 1;
 				} else {
 					throw new Error("Not implemented");
 				}

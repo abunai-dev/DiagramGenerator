@@ -1,10 +1,25 @@
 package org.palladiosimulator.dataflow.diagramgenerator;
 
 public class GeneratorOptions {
+	private static GeneratorOptions instance;
 	private String projectName;
 	private String usageModelPath;
 	private String allocationPath;
 	private String characteristicsPath;
+	private boolean drawNodeCharacteristics;
+	private boolean drawVariables;
+	
+	private GeneratorOptions() {
+		drawNodeCharacteristics = true;
+		drawVariables = true;
+	}
+	
+	public static synchronized GeneratorOptions getInstance() {
+		if (instance == null) {
+			instance = new GeneratorOptions();
+		}
+		return instance;
+	}
 
 	public String getCharacteristicsPath() {
 		return characteristicsPath;
@@ -40,5 +55,21 @@ public class GeneratorOptions {
 
 	public boolean isValid() {
 		return projectName != null && usageModelPath != null && allocationPath != null;
+	}
+
+	public boolean isDrawNodeCharacteristics() {
+		return drawNodeCharacteristics;
+	}
+
+	public void setDrawNodeCharacteristics(boolean drawNodeCharacteristics) {
+		this.drawNodeCharacteristics = drawNodeCharacteristics;
+	}
+
+	public boolean isDrawVariables() {
+		return drawVariables;
+	}
+
+	public void setDrawVariables(boolean drawVariables) {
+		this.drawVariables = drawVariables;
 	}
 }

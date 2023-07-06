@@ -4,6 +4,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -37,9 +38,13 @@ public class UIDesigner {
 
 		// Create text fields for the arguments
 		projectNameTextField = new JTextField("org.palladiosimulator.dataflow.confidentiality.analysis.testmodels", 40);
-		usageModelTextField = new JTextField("models/CoronaWarnApp/default.usagemodel", 40);
-		allocationTextField = new JTextField("models/CoronaWarnApp/default.allocation", 40);
-		characteristicsTextField = new JTextField("models/CoronaWarnApp/default.nodecharacteristics", 40);
+		usageModelTextField = new JTextField("models/BranchingOnlineShop/default.usagemodel", 40);
+		allocationTextField = new JTextField("models/BranchingOnlineShop/default.allocation", 40);
+		characteristicsTextField = new JTextField("models/BranchingOnlineShop/default.nodecharacteristics", 40);
+
+		// Create checkboxes
+		JCheckBox drawNodeCharacteristics = new JCheckBox("Draw Node Characteristics");
+		JCheckBox drawVariables = new JCheckBox("Draw Variables");
 
 		// Create a button to trigger the generation
 		JButton button = new JButton("Generate Diagram");
@@ -54,11 +59,15 @@ public class UIDesigner {
 				String characteristicsPath = characteristicsTextField.getText();
 
 				// Create the options object
-				GeneratorOptions options = new GeneratorOptions();
+				GeneratorOptions options = GeneratorOptions.getInstance();
 				options.setProjectName(projectName);
 				options.setUsageModelPath(usageModelPath);
 				options.setAllocationPath(allocationPath);
 				options.setCharacteristicsPath(characteristicsPath);
+
+				// Perform actions based on checkbox selection
+				options.setDrawNodeCharacteristics(drawNodeCharacteristics.isSelected());
+				options.setDrawVariables(drawVariables.isSelected());
 
 				StandaloneDiagramGenerator diagramGenerator = new StandaloneDiagramGenerator(options);
 
@@ -78,6 +87,8 @@ public class UIDesigner {
 		panel.add(allocationTextField);
 		panel.add(characteristicsLabel);
 		panel.add(characteristicsTextField);
+		panel.add(drawNodeCharacteristics);
+	    panel.add(drawVariables);
 		panel.add(button);
 
 		// Add the panel to the frame

@@ -72,7 +72,16 @@ public class StandaloneDiagramGenerator {
 				.useUsageModel(usageModelPath).useAllocationModel(allocationPath)
 				.useNodeCharacteristicsModel(characteristicsPath).build();
 
-		analysis.initializeAnalysis();
+		try {
+			analysis.initializeAnalysis();
+		} catch (Exception e) {
+			this.analysis = new DataFlowAnalysisBuilder().standalone().modelProjectName(projectName)
+					.useBuilder(new PCMDataFlowConfidentialityAnalysisBuilder()).legacy()
+					.usePluginActivator(Activator.class).useUsageModel(usageModelPath)
+					.useAllocationModel(allocationPath).build();
+			analysis.initializeAnalysis();
+		}
+
 		System.out.println("Initialization finished!");
 	}
 }
