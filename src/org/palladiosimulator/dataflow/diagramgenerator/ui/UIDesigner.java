@@ -10,7 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.palladiosimulator.dataflow.diagramgenerator.DataFlowGraphProcessor;
+import org.palladiosimulator.dataflow.diagramgenerator.PCMGraphProcessor;
 import org.palladiosimulator.dataflow.diagramgenerator.GeneratorOptions;
 import org.palladiosimulator.dataflow.diagramgenerator.StandaloneDiagramGenerator;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementFactory;
@@ -45,6 +45,7 @@ public class UIDesigner {
 		// Create checkboxes
 		JCheckBox drawNodeCharacteristics = new JCheckBox("Draw Node Characteristics");
 		JCheckBox drawVariables = new JCheckBox("Draw Variables");
+		JCheckBox drawControlFlow = new JCheckBox("Draw Control Flow");
 
 		// Create a button to trigger the generation
 		JButton button = new JButton("Generate Diagram");
@@ -68,12 +69,13 @@ public class UIDesigner {
 				// Perform actions based on checkbox selection
 				options.setDrawNodeCharacteristics(drawNodeCharacteristics.isSelected());
 				options.setDrawVariables(drawVariables.isSelected());
+				options.setDrawControlFlow(drawControlFlow.isSelected());
 
 				StandaloneDiagramGenerator diagramGenerator = new StandaloneDiagramGenerator(options);
 
 				PlantUMLDrawingStrategy drawer = new PlantUMLDrawingStrategy();
 				DataFlowElementFactory creator = DataFlowElementFactory.getInstance();
-				DataFlowGraphProcessor processor = new DataFlowGraphProcessor(creator);
+				PCMGraphProcessor processor = new PCMGraphProcessor(creator);
 				diagramGenerator.generateDataFlowDiagram(drawer, creator, processor);
 			}
 		});
@@ -89,6 +91,7 @@ public class UIDesigner {
 		panel.add(characteristicsTextField);
 		panel.add(drawNodeCharacteristics);
 	    panel.add(drawVariables);
+	    panel.add(drawControlFlow);
 		panel.add(button);
 
 		// Add the panel to the frame

@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.List;
 
+import org.palladiosimulator.dataflow.diagramgenerator.GeneratorOptions;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DrawingStrategy;
@@ -26,30 +27,46 @@ public class PlantUMLDrawingStrategy implements DrawingStrategy {
 	@Override
 	public void generate(List<DataFlowNode> dataFlowNodes) {
 		this.initialize();
+		GeneratorOptions options = GeneratorOptions.getInstance();
 		// first, initialize all elements
 		for (DataFlowNode node : dataFlowNodes) {
-			DataFlowElement element = node.getElement();
+			// determine a boolean that is true if one of the nodes children gets a
+			// parameter
+			// from the node
+			boolean hasChildWithParameter = false;
+			for (DataFlowNode child : node.getChildren()) {
+				if (!child.getElement().getParameters().isEmpty()) {
+					hasChildWithParameter = true;
+					break;
+				}
+			}
+			if (options.isDrawControlFlow() || hasChildWithParameter || !node.getElement().getParameters().isEmpty()) {
+				DataFlowElement element = node.getElement();
 
-			PlantUMLDataFlowElementInitializerDrawingVisitor drawingVisitor = new PlantUMLDataFlowElementInitializerDrawingVisitor();
-			element.accept(drawingVisitor);
-			this.addToSource(drawingVisitor.getDrawResult());
+				PlantUMLDataFlowElementInitializerDrawingVisitor drawingVisitor = new PlantUMLDataFlowElementInitializerDrawingVisitor();
+				element.accept(drawingVisitor);
+				this.addToSource(drawingVisitor.getDrawResult());
 
-			PlantUMLDataFlowLiteralEmbeddingDrawingVisitor literalEmbeddingVisitor = new PlantUMLDataFlowLiteralEmbeddingDrawingVisitor(
-					this.source);
-			node.accept(literalEmbeddingVisitor);
-			this.source = literalEmbeddingVisitor.getDrawResult();
+				PlantUMLDataFlowLiteralEmbeddingDrawingVisitor literalEmbeddingVisitor = new PlantUMLDataFlowLiteralEmbeddingDrawingVisitor(
+						this.source);
+				node.accept(literalEmbeddingVisitor);
+				this.source = literalEmbeddingVisitor.getDrawResult();
 
-			PlantUMLDataFlowVariableEmbeddingDrawingVisitor variableVisitor = new PlantUMLDataFlowVariableEmbeddingDrawingVisitor(
-					this.source);
-			node.accept(variableVisitor);
-			this.source = variableVisitor.getDrawResult();
+				PlantUMLDataFlowVariableEmbeddingDrawingVisitor variableVisitor = new PlantUMLDataFlowVariableEmbeddingDrawingVisitor(
+						this.source);
+				node.accept(variableVisitor);
+				this.source = variableVisitor.getDrawResult();
+			}
 		}
 
 		// second, draw the edges inbetween
 		for (DataFlowNode node : dataFlowNodes) {
-			PlantUMLDataFlowNodeDrawingVisitor drawingVisitor = new PlantUMLDataFlowNodeDrawingVisitor();
-			node.accept(drawingVisitor);
-			this.addToSource(drawingVisitor.getDrawResult());
+			if (options.isDrawControlFlow() || !node.getElement().isControlFlow()) { // draw control flow only if
+																						// wanted!
+				PlantUMLDataFlowEdgeDrawingVisitor edgeVisitor = new PlantUMLDataFlowEdgeDrawingVisitor();
+				node.accept(edgeVisitor);
+				this.addToSource(edgeVisitor.getDrawResult());
+			}
 		}
 		this.finish();
 	}

@@ -24,7 +24,7 @@ public class Main {
 		StandaloneDiagramGenerator diagramGenerator = new StandaloneDiagramGenerator(options);
 		PlantUMLDrawingStrategy drawer = new PlantUMLDrawingStrategy();
 		DataFlowElementFactory creator = DataFlowElementFactory.getInstance();
-		DataFlowGraphProcessor processor = new DataFlowGraphProcessor(creator);
+		PCMGraphProcessor processor = new PCMGraphProcessor(creator);
 		diagramGenerator.generateDataFlowDiagram(drawer, creator, processor);
 	}
 

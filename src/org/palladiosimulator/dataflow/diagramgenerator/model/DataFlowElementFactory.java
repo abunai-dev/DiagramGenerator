@@ -55,7 +55,7 @@ public class DataFlowElementFactory {
 			} else if (element instanceof SEFFActionSequenceElement) {
 				createProcessDataFlowElement(dataFlowElements, id, isCalling, name, parameters);
 			} else if (element instanceof DatabaseActionSequenceElement<?>) {
-				createDataStoreDataFlowElement(dataFlowElements, id, isCalling, name);
+				createDataStoreDataFlowElement(dataFlowElements, id, isCalling, name, parameters);
 			} else {
 				throw new UnsupportedOperationException("Element type not supported");
 			}
@@ -75,12 +75,19 @@ public class DataFlowElementFactory {
 			String name, List<String> parameters) {
 		ProcessDataFlowElement process = new ProcessDataFlowElement(id, isCalling, name);
 		process.addParameters(parameters);
+		if (parameters.isEmpty()) {
+			process.setControlFlow(true);
+		}
 		dataFlowElements.add(process);
 	}
 
 	private void createDataStoreDataFlowElement(List<DataFlowElement> dataStoreElements, String id, Boolean isCalling,
-			String name) {
+			String name, List<String> parameters) {
 		DataStoreDataFlowElement dataStore = new DataStoreDataFlowElement(id, isCalling, name);
+		dataStore.addParameters(parameters);
+		if (parameters.isEmpty()) {
+			dataStore.setControlFlow(true);
+		}
 		dataStoreElements.add(dataStore);
 	}
 }

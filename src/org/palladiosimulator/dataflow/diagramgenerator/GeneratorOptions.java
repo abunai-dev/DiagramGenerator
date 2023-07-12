@@ -8,10 +8,12 @@ public class GeneratorOptions {
 	private String characteristicsPath;
 	private boolean drawNodeCharacteristics;
 	private boolean drawVariables;
+	private boolean drawControlFlow;
 	
 	private GeneratorOptions() {
 		drawNodeCharacteristics = true;
 		drawVariables = true;
+		drawControlFlow = false;
 	}
 	
 	public static synchronized GeneratorOptions getInstance() {
@@ -71,5 +73,13 @@ public class GeneratorOptions {
 
 	public void setDrawVariables(boolean drawVariables) {
 		this.drawVariables = drawVariables;
+	}
+
+	public boolean isDrawControlFlow() {
+		return drawControlFlow;
+	}
+
+	public void setDrawControlFlow(boolean drawControlFlow) {
+		this.drawControlFlow = drawControlFlow;
 	}
 }

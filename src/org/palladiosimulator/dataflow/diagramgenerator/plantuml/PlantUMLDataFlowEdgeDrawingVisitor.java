@@ -1,9 +1,10 @@
 package org.palladiosimulator.dataflow.diagramgenerator.plantuml;
 
+import org.palladiosimulator.dataflow.diagramgenerator.GeneratorOptions;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNodeVisitor;
 
-public class PlantUMLDataFlowNodeDrawingVisitor implements DataFlowNodeVisitor {
+public class PlantUMLDataFlowEdgeDrawingVisitor implements DataFlowNodeVisitor {
 	private String drawResult;
 
 	public String getDrawResult() {
@@ -15,6 +16,8 @@ public class PlantUMLDataFlowNodeDrawingVisitor implements DataFlowNodeVisitor {
 		String result = "";
 
 		if (node.getParents().size() > 0) {
+			GeneratorOptions options = GeneratorOptions.getInstance();
+			
 			String currentUID = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(node.getElement());
 
 			String parameterString = "";
@@ -33,9 +36,9 @@ public class PlantUMLDataFlowNodeDrawingVisitor implements DataFlowNodeVisitor {
 					result += String.format("""
 							%s -> %s [label="%s"];
 							""", parentUID, currentUID, parameterString);
-				} else {
+				} else if (options.isDrawControlFlow()) { // CONTROL FLOW
 					result += String.format("""
-							%s -> %s;
+							%s -> %s [style=dotted];
 							""", parentUID, currentUID);
 				}
 			}

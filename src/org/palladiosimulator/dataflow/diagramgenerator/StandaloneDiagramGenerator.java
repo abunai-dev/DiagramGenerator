@@ -45,7 +45,7 @@ public class StandaloneDiagramGenerator {
 	 *                       sequences.
 	 */
 	public void generateDataFlowDiagram(DrawingStrategy drawer, DataFlowElementFactory elementCreator,
-			DataFlowGraphProcessor graphProcessor) {
+			PCMGraphProcessor graphProcessor) {
 		List<ActionSequence> actionSequences = getActionSequences();
 
 		List<DataFlowNode> dataFlowNodes = graphProcessor.processActionSequences(actionSequences);

@@ -19,11 +19,11 @@ import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
 import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.EnumCharacteristicTypeImpl;
 import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.LiteralImpl;
 
-public class DataFlowGraphProcessor {
+public class PCMGraphProcessor {
 	private final DataFlowElementFactory elementCreator;
 	private final DataFlowNodeManager nodeManager;
 
-	public DataFlowGraphProcessor(DataFlowElementFactory elementCreator) {
+	public PCMGraphProcessor(DataFlowElementFactory elementCreator) {
 		this.elementCreator = elementCreator;
 		this.nodeManager = new DataFlowNodeManager();
 	}
