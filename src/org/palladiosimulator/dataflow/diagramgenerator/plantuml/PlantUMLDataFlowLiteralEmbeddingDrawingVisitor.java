@@ -1,6 +1,5 @@
 package org.palladiosimulator.dataflow.diagramgenerator.plantuml;
 
-import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowLiteral;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNodeVisitor;
 

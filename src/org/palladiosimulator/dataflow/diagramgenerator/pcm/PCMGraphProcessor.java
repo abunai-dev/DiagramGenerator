@@ -1,7 +1,6 @@
-package org.palladiosimulator.dataflow.diagramgenerator;
+package org.palladiosimulator.dataflow.diagramgenerator.pcm;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -11,8 +10,9 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.C
 import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.DataFlowVariable;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
+import org.palladiosimulator.dataflow.diagramgenerator.DataFlowNodeManager;
+import org.palladiosimulator.dataflow.diagramgenerator.GeneratorOptions;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
-import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementFactory;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementVariable;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowLiteral;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
@@ -20,10 +20,10 @@ import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCha
 import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.LiteralImpl;
 
 public class PCMGraphProcessor {
-	private final DataFlowElementFactory elementCreator;
+	private final PCMDataFlowElementFactory elementCreator;
 	private final DataFlowNodeManager nodeManager;
 
-	public PCMGraphProcessor(DataFlowElementFactory elementCreator) {
+	public PCMGraphProcessor(PCMDataFlowElementFactory elementCreator) {
 		this.elementCreator = elementCreator;
 		this.nodeManager = new DataFlowNodeManager();
 	}
@@ -49,7 +49,6 @@ public class PCMGraphProcessor {
 					.createDataFlowElementsForActionSequenceElement(actionSequenceElement);
 			Map<DataFlowElement, DataFlowNode> existingMap = nodeManager.createDataFlowElementNodeMap(dataFlowElements,
 					dataFlowNodes);
-			var i = 1;
 
 			for (Entry<DataFlowElement, DataFlowNode> dataFlowEntry : existingMap.entrySet()) {
 				DataFlowNode dataFlowNode = dataFlowEntry.getValue();

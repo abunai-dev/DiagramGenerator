@@ -1,7 +1,5 @@
 package org.palladiosimulator.dataflow.diagramgenerator.model;
 
-import java.util.Objects;
-
 public class DataFlowLiteral {
 	private String typeID;
 	private String typeName;

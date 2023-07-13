@@ -1,4 +1,4 @@
-package org.palladiosimulator.dataflow.diagramgenerator;
+package org.palladiosimulator.dataflow.diagramgenerator.pcm;
 
 import java.util.List;
 
@@ -7,7 +7,8 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.builder.DataFlowA
 import org.palladiosimulator.dataflow.confidentiality.analysis.builder.pcm.PCMDataFlowConfidentialityAnalysisBuilder;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
 import org.palladiosimulator.dataflow.confidentiality.analysis.testmodels.Activator;
-import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementFactory;
+import org.palladiosimulator.dataflow.diagramgenerator.DiagramGenerator;
+import org.palladiosimulator.dataflow.diagramgenerator.GeneratorOptions;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DrawingStrategy;
 
@@ -15,7 +16,7 @@ import org.palladiosimulator.dataflow.diagramgenerator.model.DrawingStrategy;
  * The StandaloneDiagramGenerator class is responsible for generating a data
  * flow diagram based on the provided GeneratorOptions.
  */
-public class StandaloneDiagramGenerator {
+public class PCMDiagramGenerator implements DiagramGenerator<PCMGraphProcessor> {
 	private GeneratorOptions options;
 	private DataFlowConfidentialityAnalysis analysis;
 
@@ -25,7 +26,7 @@ public class StandaloneDiagramGenerator {
 	 * @param options The GeneratorOptions for generating the data flow diagram.
 	 * @throws IllegalArgumentException if the provided options are invalid.
 	 */
-	public StandaloneDiagramGenerator(GeneratorOptions options) {
+	public PCMDiagramGenerator(GeneratorOptions options) {
 		this.options = options;
 		if (!options.isValid()) {
 			throw new IllegalArgumentException("Invalid command line options. Aborting.");
@@ -44,8 +45,7 @@ public class StandaloneDiagramGenerator {
 	 * @param graphProcessor The DataFlowGraphProcessor for processing action
 	 *                       sequences.
 	 */
-	public void generateDataFlowDiagram(DrawingStrategy drawer, DataFlowElementFactory elementCreator,
-			PCMGraphProcessor graphProcessor) {
+	public void generateDataFlowDiagram(DrawingStrategy drawer, PCMGraphProcessor graphProcessor) {
 		List<ActionSequence> actionSequences = getActionSequences();
 
 		List<DataFlowNode> dataFlowNodes = graphProcessor.processActionSequences(actionSequences);

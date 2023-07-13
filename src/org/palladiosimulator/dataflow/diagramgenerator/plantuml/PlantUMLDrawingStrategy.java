@@ -75,13 +75,13 @@ public class PlantUMLDrawingStrategy implements DrawingStrategy {
 		this.source += addition;
 	}
 
+	@SuppressWarnings("deprecation")
 	@Override
 	public boolean saveToDisk(String path) {
 		SourceStringReader reader = new SourceStringReader(this.source);
 		final ByteArrayOutputStream os = new ByteArrayOutputStream();
-		// Write the first image to "os"
 		try {
-			String desc = reader.generateImage(os, new FileFormatOption(FileFormat.SVG));
+			reader.generateImage(os, new FileFormatOption(FileFormat.SVG));
 			os.close();
 
 			final String svg = new String(os.toByteArray(), Charset.forName("UTF-8"));

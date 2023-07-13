@@ -10,10 +10,10 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import org.palladiosimulator.dataflow.diagramgenerator.PCMGraphProcessor;
 import org.palladiosimulator.dataflow.diagramgenerator.GeneratorOptions;
-import org.palladiosimulator.dataflow.diagramgenerator.StandaloneDiagramGenerator;
-import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementFactory;
+import org.palladiosimulator.dataflow.diagramgenerator.pcm.PCMDataFlowElementFactory;
+import org.palladiosimulator.dataflow.diagramgenerator.pcm.PCMDiagramGenerator;
+import org.palladiosimulator.dataflow.diagramgenerator.pcm.PCMGraphProcessor;
 import org.palladiosimulator.dataflow.diagramgenerator.plantuml.PlantUMLDrawingStrategy;
 
 public class UIDesigner {
@@ -71,12 +71,12 @@ public class UIDesigner {
 				options.setDrawVariables(drawVariables.isSelected());
 				options.setDrawControlFlow(drawControlFlow.isSelected());
 
-				StandaloneDiagramGenerator diagramGenerator = new StandaloneDiagramGenerator(options);
+				PCMDiagramGenerator diagramGenerator = new PCMDiagramGenerator(options);
 
 				PlantUMLDrawingStrategy drawer = new PlantUMLDrawingStrategy();
-				DataFlowElementFactory creator = DataFlowElementFactory.getInstance();
+				PCMDataFlowElementFactory creator = PCMDataFlowElementFactory.getInstance();
 				PCMGraphProcessor processor = new PCMGraphProcessor(creator);
-				diagramGenerator.generateDataFlowDiagram(drawer, creator, processor);
+				diagramGenerator.generateDataFlowDiagram(drawer, processor);
 			}
 		});
 
@@ -90,8 +90,8 @@ public class UIDesigner {
 		panel.add(characteristicsLabel);
 		panel.add(characteristicsTextField);
 		panel.add(drawNodeCharacteristics);
-	    panel.add(drawVariables);
-	    panel.add(drawControlFlow);
+		panel.add(drawVariables);
+		panel.add(drawControlFlow);
 		panel.add(button);
 
 		// Add the panel to the frame

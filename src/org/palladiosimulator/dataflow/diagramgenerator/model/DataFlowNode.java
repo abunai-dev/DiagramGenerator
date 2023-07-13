@@ -7,13 +7,13 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.A
 
 public class DataFlowNode {
 	private DataFlowElement element;
-	private AbstractActionSequenceElement originalElement;
+	private AbstractActionSequenceElement<?> originalElement;
 	private List<DataFlowNode> parents;
 	private List<DataFlowNode> children;
 	private List<DataFlowLiteral> literals;
 	private List<DataFlowElementVariable> variables;
 
-	public DataFlowNode(AbstractActionSequenceElement originalElement, DataFlowElement element) {
+	public DataFlowNode(AbstractActionSequenceElement<?> originalElement, DataFlowElement element) {
 		this.element = element;
 		this.originalElement = originalElement;
 		this.parents = new ArrayList<DataFlowNode>();
@@ -26,7 +26,7 @@ public class DataFlowNode {
 		return element;
 	}
 
-	public AbstractActionSequenceElement getOritignalElement() {
+	public AbstractActionSequenceElement<?> getOritignalElement() {
 		return this.originalElement;
 	}
 

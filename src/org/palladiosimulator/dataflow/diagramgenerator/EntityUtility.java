@@ -2,10 +2,7 @@ package org.palladiosimulator.dataflow.diagramgenerator;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
-import org.eclipse.emf.common.util.EList;
-import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.CharacteristicValue;
 import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.DataStore;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.CallingSEFFActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.DatabaseActionSequenceElement;
@@ -13,8 +10,6 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.S
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.user.CallingUserActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.pcm.model.confidentiality.repository.impl.OperationalDataStoreComponentImpl;
-import org.palladiosimulator.pcm.parameter.VariableUsage;
-import org.palladiosimulator.pcm.parameter.impl.VariableUsageImpl;
 import org.palladiosimulator.pcm.repository.Parameter;
 import org.palladiosimulator.pcm.repository.impl.OperationSignatureImpl;
 import org.palladiosimulator.pcm.repository.impl.ParameterImpl;
@@ -67,7 +62,6 @@ public class EntityUtility {
 					ProbabilisticBranchTransitionImpl branch = (ProbabilisticBranchTransitionImpl) rdb
 							.getAbstractBranchTransition_ResourceDemandingBehaviour();
 					name = branch.getEntityName();
-					var i = 1;
 				} else {
 					throw new Error("Not implemented");
 				}
@@ -84,7 +78,7 @@ public class EntityUtility {
 		return name;
 	}
 
-	public static String getActorName(AbstractActionSequenceElement element) {
+	public static String getActorName(AbstractActionSequenceElement<?> element) {
 		String actorName = null;
 		if (element instanceof CallingUserActionSequenceElement cuase) {
 			EntryLevelSystemCallImpl elsc = (EntryLevelSystemCallImpl) cuase.getElement();
@@ -99,7 +93,7 @@ public class EntityUtility {
 		return actorName;
 	}
 
-	public static Boolean getIsCalling(AbstractActionSequenceElement element) {
+	public static Boolean getIsCalling(AbstractActionSequenceElement<?> element) {
 		if (element instanceof CallingUserActionSequenceElement cuase) {
 			return cuase.isCalling();
 		} else if (element instanceof CallingSEFFActionSequenceElement csase) {
@@ -115,34 +109,19 @@ public class EntityUtility {
 		if (element instanceof CallingUserActionSequenceElement) {
 			var innerElement = ((CallingUserActionSequenceElement) element).getElement();
 			if (innerElement instanceof EntryLevelSystemCallImpl) {
-				EntryLevelSystemCallImpl test = (EntryLevelSystemCallImpl) innerElement;
-				EList<VariableUsage> x = test.getInputParameterUsages_EntryLevelSystemCall();
-				for (var y : x) {
-					if (y instanceof VariableUsageImpl) {
-						VariableUsageImpl variable = (VariableUsageImpl) y;
-
-						var w = 1;
-					}
-					var z = 1;
-				}
-				var i = 1;
 			} else {
-				throw new Error();
+				throw new Error("Not implemented!");
 			}
 			return ((CallingUserActionSequenceElement) element).getElement().getId();
 		} else if (element instanceof SEFFActionSequenceElement) {
-			var innerElement = ((SEFFActionSequenceElement) element).getElement();
+			var innerElement = ((SEFFActionSequenceElement<?>) element).getElement();
 			if (innerElement instanceof StartActionImpl) {
-				StartActionImpl test = (StartActionImpl) innerElement;
-				var i = 1;
 			} else if (innerElement instanceof ExternalCallActionImpl) {
-				var i = 1;
 			} else if (innerElement instanceof SetVariableActionImpl) {
-				var i = 1;
 			} else {
-				throw new Error();
+				throw new Error("Not implemented!");
 			}
-			return ((AbstractActionImpl) ((SEFFActionSequenceElement) element).getElement()).getId();
+			return ((AbstractActionImpl) ((SEFFActionSequenceElement<?>) element).getElement()).getId();
 		} else if (element instanceof DatabaseActionSequenceElement<?> dase) {
 			OperationalDataStoreComponentImpl innerElement = (OperationalDataStoreComponentImpl) dase.getElement();
 			return innerElement.getId();
@@ -151,7 +130,7 @@ public class EntityUtility {
 		}
 	}
 
-	public static String getParameterString(AbstractActionSequenceElement element) {
+	public static String getParameterString(AbstractActionSequenceElement<?> element) {
 		String result = "";
 		if (element instanceof SEFFActionSequenceElement<?> sase) {
 			List<Parameter> parameters = sase.getParameter();
@@ -168,7 +147,7 @@ public class EntityUtility {
 		return result;
 	}
 
-	public static List<String> getParameters(AbstractActionSequenceElement element) {
+	public static List<String> getParameters(AbstractActionSequenceElement<?> element) {
 		List<String> paras = new ArrayList<String>();
 		if (element instanceof SEFFActionSequenceElement<?> sase) {
 			List<Parameter> parameters = sase.getParameter();
