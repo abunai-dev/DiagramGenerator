@@ -7,7 +7,6 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.D
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.SEFFActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.user.CallingUserActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
-import org.palladiosimulator.dataflow.diagramgenerator.EntityUtility;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementFactory;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataStoreDataFlowElement;
@@ -47,12 +46,12 @@ public class PCMDataFlowElementFactory extends DataFlowElementFactory {
 			AbstractActionSequenceElement<?> element) {
 		List<DataFlowElement> dataFlowElements = new ArrayList<>();
 
-		String id = EntityUtility.getEntityId(element);
-		String name = EntityUtility.getEntityName(element);
-		Boolean isCalling = EntityUtility.getIsCalling(element);
-		List<String> parameters = EntityUtility.getParameters(element);
-		String actorName = EntityUtility.getActorName(element);
-		boolean isBranch = EntityUtility.isBranch(element);
+		String id = PCMEntityUtility.getEntityId(element);
+		String name = PCMEntityUtility.getEntityName(element);
+		Boolean isCalling = PCMEntityUtility.getIsCalling(element);
+		List<String> parameters = PCMEntityUtility.getParameters(element);
+		String actorName = PCMEntityUtility.getActorName(element);
+		boolean isBranch = PCMEntityUtility.isBranch(element);
 
 		if (!isBranch) {
 			if (element instanceof CallingUserActionSequenceElement) {

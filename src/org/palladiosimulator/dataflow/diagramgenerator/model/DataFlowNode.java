@@ -7,27 +7,27 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.A
 
 public class DataFlowNode {
 	private DataFlowElement element;
-	private AbstractActionSequenceElement<?> originalElement;
+	private OriginalSourceElement originalSource;
 	private List<DataFlowNode> parents;
 	private List<DataFlowNode> children;
 	private List<DataFlowLiteral> literals;
 	private List<DataFlowElementVariable> variables;
 
-	public DataFlowNode(AbstractActionSequenceElement<?> originalElement, DataFlowElement element) {
+	public DataFlowNode(OriginalSourceElement originalSource, DataFlowElement element) {
 		this.element = element;
-		this.originalElement = originalElement;
-		this.parents = new ArrayList<DataFlowNode>();
-		this.children = new ArrayList<DataFlowNode>();
-		this.literals = new ArrayList<DataFlowLiteral>();
-		this.variables = new ArrayList<DataFlowElementVariable>();
+		this.originalSource = originalSource;
+		this.parents = new ArrayList<>();
+		this.children = new ArrayList<>();
+		this.literals = new ArrayList<>();
+		this.variables = new ArrayList<>();
 	}
 
 	public DataFlowElement getElement() {
 		return element;
 	}
 
-	public AbstractActionSequenceElement<?> getOritignalElement() {
-		return this.originalElement;
+	public OriginalSourceElement getOritignalSource() {
+		return this.originalSource;
 	}
 
 	public List<DataFlowNode> getParents() {

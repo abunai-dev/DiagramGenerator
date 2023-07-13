@@ -1,4 +1,4 @@
-package org.palladiosimulator.dataflow.diagramgenerator;
+package org.palladiosimulator.dataflow.diagramgenerator.pcm;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -24,7 +24,7 @@ import org.palladiosimulator.pcm.usagemodel.impl.EntryLevelSystemCallImpl;
 import org.palladiosimulator.pcm.usagemodel.impl.ScenarioBehaviourImpl;
 import org.palladiosimulator.pcm.usagemodel.impl.UsageScenarioImpl;
 
-public class EntityUtility {
+public class PCMEntityUtility {
 	public static boolean isBranch(AbstractActionSequenceElement<?> element) {
 		if (element instanceof SEFFActionSequenceElement<?> sase) {
 			if (sase.getElement() instanceof StartActionImpl sai) {

@@ -9,11 +9,11 @@ import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementVariable;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowLiteral;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
+import org.palladiosimulator.dataflow.diagramgenerator.model.OriginalSourceElement;
 
 public class DataFlowNodeManager {
-	public DataFlowNode createNewDataFlowNode(AbstractActionSequenceElement<?> actionSequenceElement,
-			DataFlowElement dataFlowElement) {
-		return new DataFlowNode(actionSequenceElement, dataFlowElement);
+	public DataFlowNode createNewDataFlowNode(OriginalSourceElement originalSource, DataFlowElement dataFlowElement) {
+		return new DataFlowNode(originalSource, dataFlowElement);
 	}
 
 	public void addLiteralsToNode(DataFlowNode dataFlowNode, List<DataFlowLiteral> literals) {

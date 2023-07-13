@@ -54,7 +54,8 @@ public class PCMGraphProcessor {
 				DataFlowNode dataFlowNode = dataFlowEntry.getValue();
 
 				if (dataFlowNode == null) {
-					dataFlowNode = nodeManager.createNewDataFlowNode(actionSequenceElement, dataFlowEntry.getKey());
+					PCMOriginalSourceElement originalSource = new PCMOriginalSourceElement(actionSequenceElement);
+					dataFlowNode = nodeManager.createNewDataFlowNode(originalSource, dataFlowEntry.getKey());
 					nodeManager.addNodeToListIfNotExists(dataFlowNode, dataFlowNodes);
 				}
 

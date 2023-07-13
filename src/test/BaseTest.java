@@ -9,18 +9,18 @@ import org.palladiosimulator.dataflow.diagramgenerator.plantuml.PlantUMLDrawingS
 
 public class BaseTest {
 	public static String PROJECT_NAME = "org.palladiosimulator.dataflow.confidentiality.analysis.testmodels";
-	public static String USAGE_MODEL_PATH = "models/TravelPlannerNew/travelPlanner.usagemodel";
-	public static String ALLOCATION_PATH = "models/TravelPlannerNew/travelPlanner.allocation";
-	public static String CHARACTERISTICS_PATH = "models/TravelPlannerNew/travelPlanner.nodecharacteristics";
+	public static String USAGE_MODEL_PATH = "models/CoronaWarnApp/default.usagemodel";
+	public static String ALLOCATION_PATH = "models/CoronaWarnApp/default.allocation";
+	public static String CHARACTERISTICS_PATH = "models/CoronaWarnApp/default.nodecharacteristics";
 
 	@Test
-	void runGeneratorWithCoronaWarnApp() {
+	void runGeneratorWithModel() {
 		GeneratorOptions options = GeneratorOptions.getInstance();
 		options.setProjectName(PROJECT_NAME);
 		options.setUsageModelPath(USAGE_MODEL_PATH);
 		options.setAllocationPath(ALLOCATION_PATH);
 		options.setCharacteristicsPath(CHARACTERISTICS_PATH);
-		options.setDrawControlFlow(true);
+		options.setDrawControlFlow(false);
 
 		PCMDiagramGenerator diagramGenerator = new PCMDiagramGenerator(options);
 
