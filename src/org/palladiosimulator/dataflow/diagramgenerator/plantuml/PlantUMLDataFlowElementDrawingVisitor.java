@@ -2,7 +2,7 @@ package org.palladiosimulator.dataflow.diagramgenerator.plantuml;
 
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementVisitor;
 
-public abstract class PlantUMLDataFlowElementDrawingVisitor implements DataFlowElementVisitor {
+public abstract class PlantUMLDataFlowElementDrawingVisitor implements DataFlowElementVisitor<Void> {
 	private String drawResult;
 
 	public PlantUMLDataFlowElementDrawingVisitor() {

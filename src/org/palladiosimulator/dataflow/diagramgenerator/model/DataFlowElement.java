@@ -19,7 +19,7 @@ public abstract class DataFlowElement {
 		this.isControlFlow = false;
 	}
 
-	public abstract void accept(DataFlowElementVisitor visitor);
+	public abstract Object accept(DataFlowElementVisitor<?> visitor);
 
 	public List<String> getParameters() {
 		return parameters;

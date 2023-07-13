@@ -1,31 +1,39 @@
 @startuml
 digraph dfd {
 rankdir = LR;
-"954731510" [
-    shape = none;margin=0;padding=0;
-    label =
-    <
-        <table border="1" cellspacing="0" cellborder="1">
-            <tr>
-                <td colspan="3" border="0"><b>HotlineRetrieveTeleTAN</b>  </td>
-            </tr>
-            // title end
-            
+"1859352337" [
+shape=none;margin=0;padding=0;label=
+<
+<table border="1" cellspacing="0" cellborder="1" margin="0" padding="0" sides="tlb">
 <tr>
-    <td colspan="3" border="0">Actor.HealthAuthority </td>
+<td colspan="1" border="1" sides="r"> </td>
+<td colspan="2" border="0"><b>CreditCardDataDB</b>  </td>
+</tr>
+// title end
+
+<tr>
+<td colspan="1" border="1" sides="r"> </td>
+<td colspan="2" border="0">AssignedRoles.User </td>
 </tr>
 // characteristics end
-            <tr>
-    <td sides="t">RETURN:</td>
-    <td sides="t">Actor.HealthAuthority</td>
+<tr>
+<td colspan="1" border="1" sides="r"> </td>
+<td sides="t">ccd:</td>
+<td sides="t">AssignedRoles.User</td>
 </tr>
 <tr>
-    <td border="0">teleTAN:</td>
-    <td border="0">Actor.HealthAuthority</td>
+<td colspan="1" border="1" sides="r"> </td>
+<td border="0">flights:</td>
+<td border="0">AssignedRoles.User</td>
+</tr>
+<tr>
+<td colspan="1" border="1" sides="r"> </td>
+<td border="0">RETURN:</td>
+<td border="0">AssignedRoles.User</td>
 </tr>
 // variables end
-        </table>
-    >
+</table>
+>
 ];
 }
 @enduml

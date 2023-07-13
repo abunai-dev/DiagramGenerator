@@ -1,9 +1,9 @@
 package org.palladiosimulator.dataflow.diagramgenerator.model;
 
-public interface DataFlowElementVisitor {
-	void visit(ProcessDataFlowElement element);
+public interface DataFlowElementVisitor<T> {
+	T visit(ProcessDataFlowElement element);
 
-	void visit(ExternalEntityDataFlowElement element);
+	T visit(ExternalEntityDataFlowElement element);
 
-	void visit(DataStoreDataFlowElement element);
+	T visit(DataStoreDataFlowElement element);
 }

@@ -8,8 +8,8 @@ public class ExternalEntityDataFlowElement extends DataFlowElement {
 	}
 
 	@Override
-	public void accept(DataFlowElementVisitor visitor) {
-		visitor.visit(this);
+	public Object accept(DataFlowElementVisitor<?> visitor) {
+		return visitor.visit(this);
 	}
 
 }

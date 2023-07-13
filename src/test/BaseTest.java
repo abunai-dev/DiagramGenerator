@@ -20,7 +20,7 @@ public class BaseTest {
 		options.setUsageModelPath(USAGE_MODEL_PATH);
 		options.setAllocationPath(ALLOCATION_PATH);
 		options.setCharacteristicsPath(CHARACTERISTICS_PATH);
-		options.setDrawControlFlow(false);
+		options.setDrawControlFlow(true);
 
 		StandaloneDiagramGenerator diagramGenerator = new StandaloneDiagramGenerator(options);
 

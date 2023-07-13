@@ -7,7 +7,7 @@ import org.palladiosimulator.dataflow.diagramgenerator.model.DataStoreDataFlowEl
 public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDataFlowElementDrawingVisitor {
 
 	@Override
-	public void visit(ProcessDataFlowElement element) {
+	public Void visit(ProcessDataFlowElement element) {
 		String result = "";
 
 		String uniqueIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(element);
@@ -30,10 +30,11 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 				""", uniqueIdentifier, element.getName());
 
 		this.setDrawResult(result);
+		return null;
 	}
 
 	@Override
-	public void visit(ExternalEntityDataFlowElement element) {
+	public Void visit(ExternalEntityDataFlowElement element) {
 		String result = "";
 
 		String uniqueIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(element);
@@ -56,10 +57,11 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 				""", uniqueIdentifier, element.getName());
 
 		this.setDrawResult(result);
+		return null;
 	}
 
 	@Override
-	public void visit(DataStoreDataFlowElement element) {
+	public Void visit(DataStoreDataFlowElement element) {
 		String result = "";
 
 		String uniqueIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(element);
@@ -68,9 +70,11 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 				"%s" [
 				        shape=none;margin=0;padding=0;label=
 				        <
-				            <table border="1" cellborder="1" sides="tlb">
+				            <table border="1" cellspacing="0" cellborder="1">
 				                <tr>
-				                	<td colspan="2" border="0" sides="ltb"><b>%s</b>  </td>
+				                	<td colspan="1" border="1" sides="r"> </td>
+				                	<td colspan="2" border="0"><b>%s</b>  </td>
+				                	<td colspan="1" border="1" sides="l"> </td>
 				                </tr>
 				                // title end
 				                // characteristics end
@@ -81,5 +85,6 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 								""", uniqueIdentifier, element.getName());
 
 		this.setDrawResult(result);
+		return null;
 	}
 }
