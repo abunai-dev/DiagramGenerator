@@ -70,7 +70,7 @@ public class PlantUMLDataFlowElementVariableStringBuilderVisitor implements Data
 
 		for (DataFlowElementVariable variable : node.getVariables()) {
 			int litCounter = 0;
-			for (DataFlowLiteral literal : node.getLiterals()) {
+			for (DataFlowLiteral literal : variable.getLiterals()) {
 				int charEndLineIndex = sb.indexOf("// characteristics end", elementLineIndex);
 				int varEndLineIndex = sb.indexOf("// variables end", charEndLineIndex);
 
