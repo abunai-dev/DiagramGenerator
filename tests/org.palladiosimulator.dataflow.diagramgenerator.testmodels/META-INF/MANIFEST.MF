@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Testmodels
+Bundle-SymbolicName: org.palladiosimulator.dataflow.diagramgenerator.testmodels
+Bundle-Version: 1.0.0.qualifier
+Export-Package: org.palladiosimulator.dataflow.diagramgenerator.testmodels
+Bundle-Activator: org.palladiosimulator.dataflow.diagramgenerator.testmodels.Activator
+Bundle-Vendor: DiagramGenerator Test Models
+Require-Bundle: org.eclipse.core.runtime,
+ org.palladiosimulator.dataflow.diagramgenerator;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-17
+Automatic-Module-Name: org.palladiosimulator.dataflow.diagramgenerator.testmodels
+Bundle-ActivationPolicy: lazy
