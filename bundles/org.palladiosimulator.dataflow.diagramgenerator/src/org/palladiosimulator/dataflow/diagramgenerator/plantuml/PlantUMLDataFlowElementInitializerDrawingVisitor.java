@@ -15,6 +15,7 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 		result += String.format("""
 				"%s" [
 				    shape = Mrecord;margin=0;padding=0;
+				    %s
 				    label =
 				    <
 				        <table border="0" cellspacing="0" cellborder="1">
@@ -27,7 +28,7 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 				        </table>
 				    >
 				];
-				""", uniqueIdentifier, element.getName());
+				""", uniqueIdentifier, element.isViolation() ? "color = red;" : "", element.getName());
 
 		this.setDrawResult(result);
 		return null;
@@ -42,6 +43,7 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 		result += String.format("""
 				"%s" [
 				    shape = none;margin=0;padding=0;
+				    %s
 				    label =
 				    <
 				        <table border="1" cellspacing="0" cellborder="1">
@@ -54,7 +56,7 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 				        </table>
 				    >
 				];
-				""", uniqueIdentifier, element.getName());
+				""", uniqueIdentifier, element.isViolation() ? "color = red;" : "", element.getName());
 
 		this.setDrawResult(result);
 		return null;

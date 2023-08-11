@@ -4,8 +4,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.palladiosimulator.dataflow.confidentiality.analysis.DataFlowConfidentialityAnalysis;
 import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.CharacteristicValue;
 import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.DataFlowVariable;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
@@ -22,31 +24,41 @@ import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCha
 public class PCMGraphProcessor {
 	private final PCMDataFlowElementFactory elementCreator;
 	private final DataFlowNodeManager nodeManager;
+	private final Predicate<? super AbstractActionSequenceElement<?>> condition;
 
-	public PCMGraphProcessor(PCMDataFlowElementFactory elementCreator) {
+	public PCMGraphProcessor(PCMDataFlowElementFactory elementCreator,
+			Predicate<? super AbstractActionSequenceElement<?>> condition) {
 		this.elementCreator = elementCreator;
 		this.nodeManager = new DataFlowNodeManager();
+		this.condition = condition;
 	}
 
-	public List<DataFlowNode> processActionSequences(List<ActionSequence> actionSequences) {
+	public List<DataFlowNode> processActionSequences(List<ActionSequence> actionSequences,
+			DataFlowConfidentialityAnalysis analysis) {
 		List<DataFlowNode> dataFlowNodes = new ArrayList<>();
 
 		for (ActionSequence actionSequence : actionSequences) {
-			processActionSequence(actionSequence, dataFlowNodes);
+			processActionSequence(actionSequence, dataFlowNodes, analysis);
 		}
 
 		return dataFlowNodes;
 	}
 
-	private void processActionSequence(ActionSequence actionSequence, List<DataFlowNode> dataFlowNodes) {
+	private void processActionSequence(ActionSequence actionSequence, List<DataFlowNode> dataFlowNodes,
+			DataFlowConfidentialityAnalysis analysis) {
 		DataFlowNode previousNode = null;
 		GeneratorOptions options = GeneratorOptions.getInstance();
 
+		List<AbstractActionSequenceElement<?>> violations = analysis.queryDataFlow(actionSequence, this.condition);
+		var i = 1;
+
 		for (AbstractActionSequenceElement<?> actionSequenceElement : actionSequence.getElements()) {
+			boolean isViolation = violations.contains(actionSequenceElement);
+
 			List<DataFlowElementVariable> variables = createDataFlowElementVariables(actionSequenceElement);
 			List<DataFlowLiteral> literals = createDataFlowLiterals(actionSequenceElement);
 			List<DataFlowElement> dataFlowElements = elementCreator
-					.createDataFlowElementsForActionSequenceElement(actionSequenceElement);
+					.createDataFlowElementsForActionSequenceElement(actionSequenceElement, isViolation);
 			Map<DataFlowElement, DataFlowNode> existingMap = nodeManager.createDataFlowElementNodeMap(dataFlowElements,
 					dataFlowNodes);
 

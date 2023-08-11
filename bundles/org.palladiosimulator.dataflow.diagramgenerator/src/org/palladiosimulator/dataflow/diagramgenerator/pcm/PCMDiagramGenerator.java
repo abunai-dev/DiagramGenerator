@@ -50,7 +50,7 @@ public class PCMDiagramGenerator implements DiagramGenerator<PCMGraphProcessor> 
 	public void generateDataFlowDiagram(DrawingStrategy drawer, PCMGraphProcessor graphProcessor) {
 		List<ActionSequence> actionSequences = getActionSequences();
 
-		List<DataFlowNode> dataFlowNodes = graphProcessor.processActionSequences(actionSequences);
+		List<DataFlowNode> dataFlowNodes = graphProcessor.processActionSequences(actionSequences, analysis);
 		System.out.println("Model translation finished!");
 
 		drawer.generate(dataFlowNodes);

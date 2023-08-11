@@ -7,13 +7,15 @@ import java.util.Objects;
 public abstract class DataFlowElement {
 	private String id;
 	private Boolean isCalling;
+	private boolean isViolation;
 	private String name;
 	private List<String> parameters;
 	private boolean isControlFlow;
 
-	protected DataFlowElement(String id, Boolean isCalling, String name) {
+	protected DataFlowElement(String id, Boolean isCalling, boolean isViolation, String name) {
 		this.id = id;
 		this.isCalling = isCalling;
+		this.isViolation = isViolation;
 		this.name = name;
 		this.parameters = new ArrayList<>();
 		this.isControlFlow = false;
@@ -23,6 +25,10 @@ public abstract class DataFlowElement {
 
 	public List<String> getParameters() {
 		return parameters;
+	}
+	
+	public boolean isViolation() {
+		return this.isViolation;
 	}
 
 	public void addParameter(String parameter) {
