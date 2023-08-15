@@ -10,21 +10,31 @@ public class DataFlowNode {
 	private List<DataFlowNode> children;
 	private List<DataFlowLiteral> literals;
 	private List<DataFlowElementVariable> variables;
+	private int id;
 
-	public DataFlowNode(OriginalSourceElement<?> originalSource, DataFlowElement element) {
+	public DataFlowNode(OriginalSourceElement<?> originalSource, DataFlowElement element, int id) {
 		this.element = element;
 		this.originalSource = originalSource;
 		this.parents = new ArrayList<>();
 		this.children = new ArrayList<>();
 		this.literals = new ArrayList<>();
 		this.variables = new ArrayList<>();
+		this.id = id;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public DataFlowElement getElement() {
 		return element;
 	}
 
-	public OriginalSourceElement<?> getOritignalSource() {
+	public OriginalSourceElement<?> getOriginalSource() {
 		return this.originalSource;
 	}
 

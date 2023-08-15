@@ -17,7 +17,7 @@ public class PlantUMLDataFlowEdgeDrawingVisitor implements DataFlowNodeVisitor {
 
 		if (node.getParents().size() > 0) {
 			GeneratorOptions options = GeneratorOptions.getInstance();
-			
+
 			String currentUID = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(node.getElement());
 
 			String parameterString = "";
@@ -33,10 +33,16 @@ public class PlantUMLDataFlowEdgeDrawingVisitor implements DataFlowNodeVisitor {
 				String parentUID = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(parent.getElement());
 
 				if (parameterString.length() > 0) {
-					result += String.format("""
-							%s -> %s [label="%s"];
-							""", parentUID, currentUID, parameterString);
-				} else if (options.isDrawControlFlow()) { // CONTROL FLOW
+					if (options.isDrawParameters()) {
+						result += String.format("""
+								%s -> %s [label="%s"];
+								""", parentUID, currentUID, parameterString);
+					} else {
+						result += String.format("""
+								%s -> %s;
+								""", parentUID, currentUID);
+					}
+				} else if (options.isDrawControlFlow()) {
 					result += String.format("""
 							%s -> %s [style=dotted];
 							""", parentUID, currentUID);

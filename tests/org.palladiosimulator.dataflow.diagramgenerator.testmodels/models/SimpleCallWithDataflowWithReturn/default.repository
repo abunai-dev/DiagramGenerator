@@ -9,11 +9,11 @@
         <localVariableUsages_SetVariableAction>
           <variableCharacterisation_VariableUsage xsi:type="confidentiality:ConfidentialityVariableCharacterisation">
             <specification_VariableCharacterisation specification="false"/>
-            <lhs xsi:type="expression:LhsEnumCharacteristicReference" id="_sCCM4DgmEe6wuPntCaXN4Q">
+            <lhs xsi:type="expression:LhsEnumCharacteristicReference" id="_HYDeYDs-Ee6iIue4ZJyNFQ">
               <characteristicType xsi:type="DataDictionaryCharacterized:EnumCharacteristicType" href="default.pddc#dictionary-characteristicTypes@0"/>
               <literal href="default.pddc#dictionary-characteristicEnumerations@0.literals@0"/>
             </lhs>
-            <rhs xsi:type="expression:NamedEnumCharacteristicReference" id="_sCCM4TgmEe6wuPntCaXN4Q">
+            <rhs xsi:type="expression:NamedEnumCharacteristicReference" id="_HYDeYTs-Ee6iIue4ZJyNFQ">
               <characteristicType xsi:type="DataDictionaryCharacterized:EnumCharacteristicType" href="default.pddc#dictionary-characteristicTypes@0"/>
               <literal href="default.pddc#dictionary-characteristicEnumerations@0.literals@0"/>
               <namedReference xsi:type="stoex:VariableReference" referenceName="parameter"/>

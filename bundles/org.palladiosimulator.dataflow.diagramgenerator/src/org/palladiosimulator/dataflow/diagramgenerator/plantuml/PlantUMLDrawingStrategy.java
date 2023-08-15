@@ -43,9 +43,15 @@ public class PlantUMLDrawingStrategy implements DrawingStrategy {
 			if (options.isDrawControlFlow() || hasChildWithParameter || !node.getElement().getParameters().isEmpty()) {
 				DataFlowElement element = node.getElement();
 
-				PlantUMLDataFlowElementInitializerDrawingVisitor drawingVisitor = new PlantUMLDataFlowElementInitializerDrawingVisitor();
-				element.accept(drawingVisitor);
-				this.addToSource(drawingVisitor.getDrawResult());
+				if (options.isDrawOnlyNumbers()) {
+					PlantUMLDataFlowNodeInitializerDrawingVisitor drawingVisitor = new PlantUMLDataFlowNodeInitializerDrawingVisitor();
+					node.accept(drawingVisitor);
+					this.addToSource(drawingVisitor.getDrawResult());
+				} else {
+					PlantUMLDataFlowElementInitializerDrawingVisitor drawingVisitor = new PlantUMLDataFlowElementInitializerDrawingVisitor();
+					element.accept(drawingVisitor);
+					this.addToSource(drawingVisitor.getDrawResult());
+				}
 
 				PlantUMLDataFlowLiteralEmbeddingDrawingVisitor literalEmbeddingVisitor = new PlantUMLDataFlowLiteralEmbeddingDrawingVisitor(
 						this.source);

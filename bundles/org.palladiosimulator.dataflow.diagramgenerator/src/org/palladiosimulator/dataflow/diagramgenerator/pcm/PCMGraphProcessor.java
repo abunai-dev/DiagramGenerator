@@ -12,12 +12,12 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.C
 import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.DataFlowVariable;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
-import org.palladiosimulator.dataflow.diagramgenerator.DataFlowNodeManager;
 import org.palladiosimulator.dataflow.diagramgenerator.GeneratorOptions;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementVariable;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowLiteral;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
+import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNodeManager;
 import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.EnumCharacteristicTypeImpl;
 import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.LiteralImpl;
 
@@ -72,10 +72,12 @@ public class PCMGraphProcessor {
 				}
 
 				nodeManager.connectNodes(previousNode, dataFlowNode);
-				if (options.isDrawVariables())
-					nodeManager.addVariablesToNode(dataFlowNode, variables);
-				if (options.isDrawNodeCharacteristics())
-					nodeManager.addLiteralsToNode(dataFlowNode, literals);
+				if (!options.isDrawOnlyNumbers()) {
+					if (options.isDrawVariables())
+						nodeManager.addVariablesToNode(dataFlowNode, variables);
+					if (options.isDrawNodeCharacteristics())
+						nodeManager.addLiteralsToNode(dataFlowNode, literals);
+				}
 				previousNode = dataFlowNode;
 			}
 		}

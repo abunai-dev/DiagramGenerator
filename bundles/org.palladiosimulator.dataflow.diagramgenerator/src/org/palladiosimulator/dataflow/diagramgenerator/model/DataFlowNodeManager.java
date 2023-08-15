@@ -1,18 +1,18 @@
-package org.palladiosimulator.dataflow.diagramgenerator;
+package org.palladiosimulator.dataflow.diagramgenerator.model;
 
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
-import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementVariable;
-import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowLiteral;
-import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
-import org.palladiosimulator.dataflow.diagramgenerator.model.OriginalSourceElement;
-
 public class DataFlowNodeManager {
+	private int idCounter;
+	
+	public DataFlowNodeManager() {
+		this.idCounter = 0;
+	}
+	
 	public DataFlowNode createNewDataFlowNode(OriginalSourceElement<?> originalSource, DataFlowElement dataFlowElement) {
-		return new DataFlowNode(originalSource, dataFlowElement);
+		return new DataFlowNode(originalSource, dataFlowElement, idCounter++);
 	}
 
 	public void addLiteralsToNode(DataFlowNode dataFlowNode, List<DataFlowLiteral> literals) {

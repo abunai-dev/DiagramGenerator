@@ -9,11 +9,15 @@ public class GeneratorOptions {
 	private boolean drawNodeCharacteristics;
 	private boolean drawVariables;
 	private boolean drawControlFlow;
+	private boolean drawOnlyNumbers;
+	private boolean drawParameters;
 	
 	private GeneratorOptions() {
 		drawNodeCharacteristics = true;
 		drawVariables = true;
 		drawControlFlow = false;
+		drawOnlyNumbers = false;
+		drawParameters = true;
 	}
 	
 	public static synchronized GeneratorOptions getInstance() {
@@ -21,6 +25,22 @@ public class GeneratorOptions {
 			instance = new GeneratorOptions();
 		}
 		return instance;
+	}
+
+	public boolean isDrawParameters() {
+		return drawParameters;
+	}
+
+	public void setDrawParameters(boolean drawParameters) {
+		this.drawParameters = drawParameters;
+	}
+
+	public boolean isDrawOnlyNumbers() {
+		return drawOnlyNumbers;
+	}
+
+	public void setDrawOnlyNumbers(boolean drawOnlyNumbers) {
+		this.drawOnlyNumbers = drawOnlyNumbers;
 	}
 
 	public String getCharacteristicsPath() {

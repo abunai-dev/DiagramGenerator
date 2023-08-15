@@ -1,6 +1,6 @@
 dictionary id "dictionary"
 
-enum Test {
+enum Test { 
 	A
 	B
 }

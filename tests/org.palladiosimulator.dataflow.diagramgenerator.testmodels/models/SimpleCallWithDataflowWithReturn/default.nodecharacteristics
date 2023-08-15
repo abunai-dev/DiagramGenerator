@@ -1,10 +1,6 @@
 <?xml version="1.0" encoding="ASCII"?>
-<nodecharacteristics:Assignments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:DataDictionaryCharacterized="http://palladiosimulator.org/dataflow/dictionary/characterized/1.0" xmlns:nodecharacteristics="http://www.example.org/nodeCharacteristics">
+<nodecharacteristics:Assignments xmi:version="2.0" xmlns:xmi="http://www.omg.org/XMI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:nodecharacteristics="http://www.example.org/nodeCharacteristics">
   <assignee xsi:type="nodecharacteristics:RessourceAssignee">
-    <characteristics id="_0v2cIDgnEe6wuPntCaXN4Q">
-      <type xsi:type="DataDictionaryCharacterized:EnumCharacteristicType" href="default.pddc#dictionary-characteristicTypes@0"/>
-      <values href="default.pddc#dictionary-characteristicEnumerations@0.literals@0"/>
-    </characteristics>
     <resourcecontainer href="default.resourceenvironment#_nWW7MDgWEe6wuPntCaXN4Q"/>
   </assignee>
 </nodecharacteristics:Assignments>
