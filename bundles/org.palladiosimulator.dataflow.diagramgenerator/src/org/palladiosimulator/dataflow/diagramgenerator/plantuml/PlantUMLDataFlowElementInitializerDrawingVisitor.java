@@ -28,7 +28,11 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 				        </table>
 				    >
 				];
-				""", uniqueIdentifier, element.isViolation() ? "color = red;" : "", element.getName());
+				""", uniqueIdentifier,
+				element.isViolation()
+						? "color = \"1.000 0.79 0.635\";\n    fontcolor = \"1.000 0.79 0.635\";\n    penwidth = 5.0;"
+						: "",
+				element.getName());
 
 		this.setDrawResult(result);
 		return null;
@@ -56,7 +60,11 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 				        </table>
 				    >
 				];
-				""", uniqueIdentifier, element.isViolation() ? "color = red;" : "", element.getName());
+				""", uniqueIdentifier,
+				element.isViolation()
+						? "color = \"1.000 0.79 0.635\";\n    fontcolor = \"1.000 0.79 0.635\";\n    penwidth = 5.0;"
+						: "",
+				element.getName());
 
 		this.setDrawResult(result);
 		return null;
@@ -84,7 +92,11 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 				            </table>
 				        >
 				    ];
-								""", uniqueIdentifier, element.isViolation() ? "color = red;" : "", element.getName());
+								""", uniqueIdentifier,
+				element.isViolation()
+						? "color = \"1.000 0.79 0.635\";\n    fontcolor = \"1.000 0.79 0.635\";\n    penwidth = 5.0;"
+						: "",
+				element.getName());
 
 		this.setDrawResult(result);
 		return null;

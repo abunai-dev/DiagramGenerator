@@ -32,8 +32,8 @@ public class TestBase {
 		options.setDrawControlFlow(true);
 		options.setDrawNodeCharacteristics(true);
 		options.setDrawVariables(true);
-		options.setDrawOnlyNumbers(true);
-		options.setDrawParameters(false);
+		options.setDrawOnlyNumbers(false);
+		options.setDrawParameters(true);
 
 		PCMDiagramGenerator diagramGenerator = new PCMDiagramGenerator(options, Activator.class);
 

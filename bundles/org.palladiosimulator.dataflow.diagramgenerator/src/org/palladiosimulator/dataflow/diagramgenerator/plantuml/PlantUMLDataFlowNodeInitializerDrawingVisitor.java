@@ -27,7 +27,11 @@ public class PlantUMLDataFlowNodeInitializerDrawingVisitor extends PlantUMLDataF
 				        </table>
 				    >
 				];
-				""", uniqueIdentifier, isViolation ? "color = red;" : "", node.getId());
+				""", uniqueIdentifier,
+				isViolation
+						? "color = \"1.000 0.79 0.635\";\n    fontcolor = \"1.000 0.79 0.635\";\n    penwidth = 5.0;"
+						: "",
+				node.getId());
 
 		this.setDrawResult(result);
 	}
