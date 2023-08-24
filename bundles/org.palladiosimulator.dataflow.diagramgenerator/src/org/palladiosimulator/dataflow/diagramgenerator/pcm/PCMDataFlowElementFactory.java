@@ -43,13 +43,16 @@ public class PCMDataFlowElementFactory extends DataFlowElementFactory {
 	 * @throws UnsupportedOperationException if the element type is not supported.
 	 */
 	public List<DataFlowElement> createDataFlowElementsForActionSequenceElement(
-			AbstractActionSequenceElement<?> element, boolean isViolation) {
+			AbstractActionSequenceElement<?> element, boolean isViolation, String returnParameter) {
 		List<DataFlowElement> dataFlowElements = new ArrayList<>();
 
 		String id = PCMEntityUtility.getEntityId(element);
 		String name = PCMEntityUtility.getEntityName(element);
 		Boolean isCalling = PCMEntityUtility.getIsCalling(element);
 		List<String> parameters = PCMEntityUtility.getParameters(element);
+		if (returnParameter != null) {
+			parameters.add(returnParameter);
+		}
 		String actorName = PCMEntityUtility.getActorName(element);
 		boolean isBranch = PCMEntityUtility.isBranch(element);
 
@@ -57,9 +60,9 @@ public class PCMDataFlowElementFactory extends DataFlowElementFactory {
 			if (element instanceof CallingUserActionSequenceElement) {
 				createExternalEntityDataFlowElement(dataFlowElements, actorName, isViolation);
 			} else if (element instanceof SEFFActionSequenceElement) {
-				createProcessDataFlowElement(dataFlowElements, id, isCalling, name, parameters, isViolation);
+				createProcessDataFlowElement(dataFlowElements, id, isCalling, name, isViolation);
 			} else if (element instanceof DatabaseActionSequenceElement<?>) {
-				createDataStoreDataFlowElement(dataFlowElements, id, isCalling, name, parameters, isViolation);
+				createDataStoreDataFlowElement(dataFlowElements, id, isCalling, name, isViolation);
 			} else {
 				throw new UnsupportedOperationException("Element type not supported");
 			}
@@ -71,29 +74,23 @@ public class PCMDataFlowElementFactory extends DataFlowElementFactory {
 	private void createExternalEntityDataFlowElement(List<DataFlowElement> dataFlowElements, String actorName,
 			boolean isViolation) {
 		if (actorName != null) {
-			ExternalEntityDataFlowElement terminator = new ExternalEntityDataFlowElement(actorName, true, isViolation,
-					actorName);
-			dataFlowElements.add(terminator);
+			ExternalEntityDataFlowElement externalEntity = new ExternalEntityDataFlowElement(actorName, true,
+					isViolation, actorName);
+			dataFlowElements.add(externalEntity);
 		}
 	}
 
 	private void createProcessDataFlowElement(List<DataFlowElement> dataFlowElements, String id, Boolean isCalling,
-			String name, List<String> parameters, boolean isViolation) {
+			String name, boolean isViolation) {
 		ProcessDataFlowElement process = new ProcessDataFlowElement(id, isCalling, isViolation, name);
-		process.addParameters(parameters);
-		if (parameters.isEmpty()) {
-			process.setControlFlow(true);
-		}
+
 		dataFlowElements.add(process);
 	}
 
 	private void createDataStoreDataFlowElement(List<DataFlowElement> dataStoreElements, String id, Boolean isCalling,
-			String name, List<String> parameters, boolean isViolation) {
+			String name, boolean isViolation) {
 		DataStoreDataFlowElement dataStore = new DataStoreDataFlowElement(id, isCalling, isViolation, name);
-		dataStore.addParameters(parameters);
-		if (parameters.isEmpty()) {
-			dataStore.setControlFlow(true);
-		}
+
 		dataStoreElements.add(dataStore);
 	}
 }

@@ -18,6 +18,9 @@ import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementVari
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowLiteral;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNodeManager;
+import org.palladiosimulator.dataflow.diagramgenerator.model.OriginalSourceElement;
+import org.palladiosimulator.dataflow.diagramgenerator.plantuml.PlantUMLDataFlowElementUtils;
+import org.palladiosimulator.dataflow.diagramgenerator.plantuml.PlantUMLDrawingStrategy;
 import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.EnumCharacteristicTypeImpl;
 import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.LiteralImpl;
 
@@ -55,23 +58,34 @@ public class PCMGraphProcessor {
 		for (AbstractActionSequenceElement<?> actionSequenceElement : actionSequence.getElements()) {
 			boolean isViolation = violations.contains(actionSequenceElement);
 
+			String name = PCMEntityUtility.getEntityName(actionSequenceElement);
+
 			List<DataFlowElementVariable> variables = createDataFlowElementVariables(actionSequenceElement);
 			List<DataFlowLiteral> literals = createDataFlowLiterals(actionSequenceElement);
-			List<DataFlowElement> dataFlowElements = elementCreator
-					.createDataFlowElementsForActionSequenceElement(actionSequenceElement, isViolation);
+			AbstractActionSequenceElement<?> prevElement = null;
+			if (previousNode != null) {
+				PCMOriginalSourceElement prevSource = (PCMOriginalSourceElement) previousNode.getOriginalSource();
+				prevElement = prevSource.getOriginalElement();
+				var x = 1;
+			}
+
+			List<String> parameters = PCMEntityUtility.getParameters(actionSequenceElement);
+			String returnParameter = PCMEntityUtility.getRETURNParameter(prevElement);
+			if (returnParameter != null)
+				parameters.add(returnParameter);
+			
+			List<DataFlowElement> dataFlowElements = elementCreator.createDataFlowElementsForActionSequenceElement(
+					actionSequenceElement, isViolation, returnParameter);
 			Map<DataFlowElement, DataFlowNode> existingMap = nodeManager.createDataFlowElementNodeMap(dataFlowElements,
 					dataFlowNodes);
 
 			for (Entry<DataFlowElement, DataFlowNode> dataFlowEntry : existingMap.entrySet()) {
 				DataFlowNode dataFlowNode = dataFlowEntry.getValue();
 
-				if (dataFlowNode == null) {
-					PCMOriginalSourceElement originalSource = new PCMOriginalSourceElement(actionSequenceElement);
-					dataFlowNode = nodeManager.createNewDataFlowNode(originalSource, dataFlowEntry.getKey());
-					nodeManager.addNodeToListIfNotExists(dataFlowNode, dataFlowNodes);
-				}
+				PCMOriginalSourceElement originalSource = new PCMOriginalSourceElement(actionSequenceElement);
+				dataFlowNode.setOriginalSource(originalSource);
 
-				nodeManager.connectNodes(previousNode, dataFlowNode);
+				nodeManager.connectNodes(previousNode, dataFlowNode, parameters);
 				if (!options.isDrawOnlyNumbers()) {
 					if (options.isDrawVariables())
 						nodeManager.addVariablesToNode(dataFlowNode, variables);

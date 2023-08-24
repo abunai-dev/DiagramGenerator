@@ -29,11 +29,11 @@ public class TestBase {
 		options.setUsageModelPath(USAGE_MODEL_PATH);
 		options.setAllocationPath(ALLOCATION_PATH);
 		options.setCharacteristicsPath(CHARACTERISTICS_PATH);
-		options.setDrawControlFlow(true);
+		options.setDrawControlFlow(false);
 		options.setDrawNodeCharacteristics(true);
 		options.setDrawVariables(true);
-		options.setDrawOnlyNumbers(false);
-		options.setDrawParameters(true);
+		options.setDrawOnlyNumbers(true);
+		options.setDrawParameters(false);
 
 		PCMDiagramGenerator diagramGenerator = new PCMDiagramGenerator(options, Activator.class);
 

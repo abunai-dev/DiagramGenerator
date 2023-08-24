@@ -9,34 +9,28 @@ public abstract class DataFlowElement {
 	private Boolean isCalling;
 	private boolean isViolation;
 	private String name;
-	private List<String> parameters;
-	private boolean isControlFlow;
+	private boolean hasRETURN;
 
 	protected DataFlowElement(String id, Boolean isCalling, boolean isViolation, String name) {
 		this.id = id;
 		this.isCalling = isCalling;
 		this.isViolation = isViolation;
 		this.name = name;
-		this.parameters = new ArrayList<>();
-		this.isControlFlow = false;
+		this.hasRETURN = false;
 	}
 
 	public abstract Object accept(DataFlowElementVisitor<?> visitor);
 
-	public List<String> getParameters() {
-		return parameters;
+	public boolean isHasRETURN() {
+		return hasRETURN;
+	}
+
+	public void setHasRETURN(boolean hasRETURN) {
+		this.hasRETURN = hasRETURN;
 	}
 	
 	public boolean isViolation() {
 		return this.isViolation;
-	}
-
-	public void addParameter(String parameter) {
-		this.parameters.add(parameter);
-	}
-
-	public void addParameters(List<String> parameters) {
-		this.parameters.addAll(parameters);
 	}
 
 	public String getId() {
@@ -66,13 +60,5 @@ public abstract class DataFlowElement {
 			return false;
 		DataFlowElement other = (DataFlowElement) obj;
 		return Objects.equals(id, other.id) && Objects.equals(isCalling, other.isCalling);
-	}
-
-	public boolean isControlFlow() {
-		return isControlFlow;
-	}
-
-	public void setControlFlow(boolean isControlFlow) {
-		this.isControlFlow = isControlFlow;
 	}
 }

@@ -23,10 +23,19 @@ public class DataFlowNodeManager {
 		variables.forEach(dataFlowNode::addVariable);
 	}
 
-	public void connectNodes(DataFlowNode previousNode, DataFlowNode dataFlowNode) {
+	public void connectNodes(DataFlowNode previousNode, DataFlowNode dataFlowNode, List<String> parameters) {
 		if (previousNode != null) {
-			previousNode.addChild(dataFlowNode);
-			dataFlowNode.addParent(previousNode);
+			Flow flow = null;
+			if (parameters.size() > 0) {
+				flow = new DataFlow(previousNode, dataFlowNode);
+			} else {
+				flow = new ControlFlow(previousNode, dataFlowNode);
+			}
+			
+			flow.setParameters(parameters);
+			
+			previousNode.addChildFlow(flow);
+			dataFlowNode.addParentFlow(flow);
 		}
 	}
 
