@@ -18,9 +18,9 @@ import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCha
 
 public class TestBase {
 	public static String PROJECT_NAME = "org.palladiosimulator.dataflow.diagramgenerator.testmodels";
-	public static String USAGE_MODEL_PATH = "models/TravelPlannerNew/travelPlanner.usagemodel";
-	public static String ALLOCATION_PATH = "models/TravelPlannerNew/travelPlanner.allocation";
-	public static String CHARACTERISTICS_PATH = "models/TravelPlannerNew/travelPlanner.nodecharacteristics";
+	public static String USAGE_MODEL_PATH = "models/CoronaWarnApp_UncertaintyScenario1/default.usagemodel";
+	public static String ALLOCATION_PATH = "models/CoronaWarnApp_UncertaintyScenario1/default.allocation";
+	public static String CHARACTERISTICS_PATH = "models/CoronaWarnApp_UncertaintyScenario1/default.nodecharacteristics";
 
 	@Test
 	void runGeneratorWithModel() {
@@ -29,11 +29,11 @@ public class TestBase {
 		options.setUsageModelPath(USAGE_MODEL_PATH);
 		options.setAllocationPath(ALLOCATION_PATH);
 		options.setCharacteristicsPath(CHARACTERISTICS_PATH);
-		options.setDrawControlFlow(false);
+		options.setDrawControlFlow(true);
 		options.setDrawNodeCharacteristics(true);
 		options.setDrawVariables(true);
-		options.setDrawOnlyNumbers(true);
-		options.setDrawParameters(false);
+		options.setDrawOnlyNumbers(false);
+		options.setDrawParameters(true);
 
 		PCMDiagramGenerator diagramGenerator = new PCMDiagramGenerator(options, Activator.class);
 

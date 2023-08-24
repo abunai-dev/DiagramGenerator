@@ -12,13 +12,17 @@ import org.palladiosimulator.dataflow.diagramgenerator.GeneratorOptions;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DrawingStrategy;
 
+import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysisBuilder;
+import dev.abunai.impact.analysis.StandalonePCMUncertaintyImpactAnalysis;
+import dev.abunai.impact.analysis.model.UncertaintyImpactCollection;
+
 /**
  * The StandaloneDiagramGenerator class is responsible for generating a data
  * flow diagram based on the provided GeneratorOptions.
  */
 public class PCMDiagramGenerator implements DiagramGenerator<PCMGraphProcessor> {
 	private GeneratorOptions options;
-	private DataFlowConfidentialityAnalysis analysis;
+	private StandalonePCMUncertaintyImpactAnalysis analysis;
 	private Class<? extends Plugin> activatorClass;
 
 	/**
@@ -50,6 +54,8 @@ public class PCMDiagramGenerator implements DiagramGenerator<PCMGraphProcessor> 
 	public void generateDataFlowDiagram(DrawingStrategy drawer, PCMGraphProcessor graphProcessor) {
 		List<ActionSequence> actionSequences = getActionSequences();
 
+		UncertaintyImpactCollection analysisResult = analysis.propagate();
+
 		List<DataFlowNode> dataFlowNodes = graphProcessor.processActionSequences(actionSequences, analysis);
 		System.out.println("Model translation finished!");
 
@@ -72,7 +78,8 @@ public class PCMDiagramGenerator implements DiagramGenerator<PCMGraphProcessor> 
 		this.analysis = new DataFlowAnalysisBuilder().standalone().modelProjectName(projectName)
 				.useBuilder(new PCMDataFlowConfidentialityAnalysisBuilder()).usePluginActivator(this.activatorClass)
 				.useUsageModel(usageModelPath).useAllocationModel(allocationPath)
-				.useNodeCharacteristicsModel(characteristicsPath).build();
+				.useNodeCharacteristicsModel(characteristicsPath).useBuilder(new PCMUncertaintyImpactAnalysisBuilder())
+				.build();
 
 		try {
 			analysis.initializeAnalysis();
@@ -80,7 +87,7 @@ public class PCMDiagramGenerator implements DiagramGenerator<PCMGraphProcessor> 
 			this.analysis = new DataFlowAnalysisBuilder().standalone().modelProjectName(projectName)
 					.useBuilder(new PCMDataFlowConfidentialityAnalysisBuilder()).legacy()
 					.usePluginActivator(this.activatorClass).useUsageModel(usageModelPath)
-					.useAllocationModel(allocationPath).build();
+					.useAllocationModel(allocationPath).useBuilder(new PCMUncertaintyImpactAnalysisBuilder()).build();
 			analysis.initializeAnalysis();
 		}
 
