@@ -38,8 +38,9 @@ public class TestBase {
 		options.setDrawControlFlow(true);
 		options.setDrawNodeCharacteristics(true);
 		options.setDrawVariables(true);
-		options.setDrawOnlyNumbers(false);
 		options.setDrawParameters(true);
+		options.setDrawViolations(true);
+		options.setDrawUncertainty(true);
 
 		String projectName = options.getProjectName();
 		String usageModelPath = options.getUsageModelPath();

@@ -1,5 +1,7 @@
 package org.palladiosimulator.dataflow.diagramgenerator.plantuml;
 
+import org.palladiosimulator.dataflow.diagramgenerator.GeneratorOptions;
+import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
 
 public class PlantUMLDataFlowNodeInitializerDrawingVisitor extends PlantUMLDataFlowNodeDrawingVisitor {
@@ -10,11 +12,6 @@ public class PlantUMLDataFlowNodeInitializerDrawingVisitor extends PlantUMLDataF
 
 		String uniqueIdentifier = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(node.getElement());
 		boolean isViolation = node.getElement().isViolation();
-
-		String colorAddon = "";
-		if (isViolation) {
-			colorAddon = "color = \"0.877 0.9 0.64\";\n    fontcolor = \"1.000 0.79 0.635\";\n    penwidth = 5.0;";
-		}
 
 		result += String.format("""
 				"%s" [
@@ -32,8 +29,21 @@ public class PlantUMLDataFlowNodeInitializerDrawingVisitor extends PlantUMLDataF
 				        </table>
 				    >
 				];
-				""", uniqueIdentifier, colorAddon, node.getId());
+				""", uniqueIdentifier, this.getColorAddon(node.getElement()), node.getId());
 
 		this.setDrawResult(result);
+	}
+
+	private String getColorAddon(DataFlowElement element) {
+		GeneratorOptions options = GeneratorOptions.getInstance();
+		if (element.isHasUncertainty() && options.isDrawUncertainty()) {
+			return "color = \"0.877 0.9 0.64\";\n    fontcolor = \"0.877 0.9 0.64\";\n    penwidth = 5.0;";
+		} else {
+			if (element.isViolation() && options.isDrawViolations()) {
+				return "color = \"1.000 0.79 0.635\";\n    fontcolor = \"1.000 0.79 0.635\";\n    penwidth = 5.0;";
+			}
+		}
+
+		return "";
 	}
 }

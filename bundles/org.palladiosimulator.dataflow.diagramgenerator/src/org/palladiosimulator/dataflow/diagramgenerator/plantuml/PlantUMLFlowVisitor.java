@@ -57,7 +57,9 @@ public class PlantUMLFlowVisitor implements FlowVisitor<String> {
 	}
 
 	private String getColorAddon(Flow flow) {
-		if (flow.getParent().getElement().isHasUncertainty()) {
+		GeneratorOptions options = GeneratorOptions.getInstance();
+
+		if (flow.getParent().getElement().isHasUncertainty() && options.isDrawUncertainty()) {
 			return "color = \"0.877 0.9 0.64\";fontcolor = \"0.877 0.9 0.64\";penwidth = 5.0;";
 		}
 

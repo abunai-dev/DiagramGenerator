@@ -11,6 +11,8 @@ public class GeneratorOptions {
 	private boolean drawControlFlow;
 	private boolean drawOnlyNumbers;
 	private boolean drawParameters;
+	private boolean drawViolations;
+	private boolean drawUncertainty;
 	
 	private GeneratorOptions() {
 		drawNodeCharacteristics = true;
@@ -18,8 +20,28 @@ public class GeneratorOptions {
 		drawControlFlow = false;
 		drawOnlyNumbers = false;
 		drawParameters = true;
+		drawViolations = false;
+		drawUncertainty = false;
 	}
 	
+	public boolean isDrawUncertainty() {
+		return drawUncertainty;
+	}
+
+	public boolean isDrawViolations() {
+		return drawViolations;
+	}
+
+	public void setDrawViolations(boolean drawViolations) {
+		this.drawViolations = drawViolations;
+	}
+
+	public void setDrawUncertainty(boolean drawUncertainty) {
+		this.drawUncertainty = drawUncertainty;
+	}
+
+
+
 	public static synchronized GeneratorOptions getInstance() {
 		if (instance == null) {
 			instance = new GeneratorOptions();
