@@ -10,6 +10,7 @@ public abstract class DataFlowElement {
 	private boolean isViolation;
 	private String name;
 	private boolean hasRETURN;
+	private boolean hasUncertainty;
 
 	protected DataFlowElement(String id, Boolean isCalling, boolean isViolation, String name) {
 		this.id = id;
@@ -17,9 +18,18 @@ public abstract class DataFlowElement {
 		this.isViolation = isViolation;
 		this.name = name;
 		this.hasRETURN = false;
+		this.hasUncertainty = false;
 	}
 
 	public abstract Object accept(DataFlowElementVisitor<?> visitor);
+	
+	public boolean isHasUncertainty() {
+		return hasUncertainty;
+	}
+
+	public void setHasUncertainty(boolean hasUncertainty) {
+		this.hasUncertainty = hasUncertainty;
+	}
 
 	public boolean isHasRETURN() {
 		return hasRETURN;

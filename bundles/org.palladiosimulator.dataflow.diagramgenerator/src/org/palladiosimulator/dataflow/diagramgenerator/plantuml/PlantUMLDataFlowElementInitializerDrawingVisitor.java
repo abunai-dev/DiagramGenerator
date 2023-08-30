@@ -2,6 +2,7 @@ package org.palladiosimulator.dataflow.diagramgenerator.plantuml;
 
 import org.palladiosimulator.dataflow.diagramgenerator.model.ExternalEntityDataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.ProcessDataFlowElement;
+import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataStoreDataFlowElement;
 
 public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDataFlowElementDrawingVisitor {
@@ -28,11 +29,7 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 				        </table>
 				    >
 				];
-				""", uniqueIdentifier,
-				element.isViolation()
-						? "color = \"1.000 0.79 0.635\";\n    fontcolor = \"1.000 0.79 0.635\";\n    penwidth = 5.0;"
-						: "",
-				element.getName());
+				""", uniqueIdentifier, this.getColorAddon(element), element.getName());
 
 		this.setDrawResult(result);
 		return null;
@@ -60,11 +57,7 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 				        </table>
 				    >
 				];
-				""", uniqueIdentifier,
-				element.isViolation()
-						? "color = \"1.000 0.79 0.635\";\n    fontcolor = \"1.000 0.79 0.635\";\n    penwidth = 5.0;"
-						: "",
-				element.getName());
+				""", uniqueIdentifier, this.getColorAddon(element), element.getName());
 
 		this.setDrawResult(result);
 		return null;
@@ -92,13 +85,21 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 				            </table>
 				        >
 				    ];
-								""", uniqueIdentifier,
-				element.isViolation()
-						? "color = \"1.000 0.79 0.635\";\n    fontcolor = \"1.000 0.79 0.635\";\n    penwidth = 5.0;"
-						: "",
-				element.getName());
+								""", uniqueIdentifier, this.getColorAddon(element), element.getName());
 
 		this.setDrawResult(result);
 		return null;
+	}
+
+	private String getColorAddon(DataFlowElement element) {
+		if (element.isHasUncertainty()) {
+			return "color = \"0.877 0.9 0.64\";\n    fontcolor = \"0.877 0.9 0.64\";\n    penwidth = 5.0;";
+		} else {
+			if (element.isViolation()) {
+				return "color = \"1.000 0.79 0.635\";\n    fontcolor = \"1.000 0.79 0.635\";\n    penwidth = 5.0;";
+			}
+		}
+
+		return "";
 	}
 }

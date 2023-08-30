@@ -4,14 +4,17 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
+
 public class DataFlowNodeManager {
 	private int idCounter;
-	
+
 	public DataFlowNodeManager() {
 		this.idCounter = 0;
 	}
-	
-	public DataFlowNode createNewDataFlowNode(OriginalSourceElement<?> originalSource, DataFlowElement dataFlowElement) {
+
+	public DataFlowNode createNewDataFlowNode(OriginalSourceElement<?> originalSource,
+			DataFlowElement dataFlowElement) {
 		return new DataFlowNode(originalSource, dataFlowElement, idCounter++);
 	}
 
@@ -31,9 +34,9 @@ public class DataFlowNodeManager {
 			} else {
 				flow = new ControlFlow(previousNode, dataFlowNode);
 			}
-			
+
 			flow.setParameters(parameters);
-			
+
 			previousNode.addChildFlow(flow);
 			dataFlowNode.addParentFlow(flow);
 		}
@@ -46,7 +49,7 @@ public class DataFlowNodeManager {
 	}
 
 	public Map<DataFlowElement, DataFlowNode> createDataFlowElementNodeMap(List<DataFlowElement> dataFlowElements,
-			List<DataFlowNode> dataFlowNodes) {
+			List<DataFlowNode> dataFlowNodes, List<UncertaintyImpact<?>> uncertaintyImpacts) {
 		Map<DataFlowElement, DataFlowNode> existingMap = new HashMap<>();
 
 		for (DataFlowElement dfe : dataFlowElements) {

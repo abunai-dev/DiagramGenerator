@@ -11,7 +11,6 @@ public class DataFlowNode {
 	private List<DataFlowLiteral> literals;
 	private List<DataFlowElementVariable> variables;
 	private int id;
-	private boolean hasUncertainty;
 
 	public DataFlowNode(OriginalSourceElement<?> originalSource, DataFlowElement element, int id) {
 		this.element = element;
@@ -21,7 +20,6 @@ public class DataFlowNode {
 		this.literals = new ArrayList<>();
 		this.variables = new ArrayList<>();
 		this.id = id;
-		this.hasUncertainty = false;
 	}
 
 	public boolean hasParentParameters() {
@@ -34,14 +32,6 @@ public class DataFlowNode {
 
 	public void setOriginalSource(OriginalSourceElement<?> originalSource) {
 		this.originalSource = originalSource;
-	}
-
-	public boolean isHasUncertainty() {
-		return hasUncertainty;
-	}
-
-	public void setHasUncertainty(boolean hasUncertainty) {
-		this.hasUncertainty = hasUncertainty;
 	}
 
 	public int getId() {
