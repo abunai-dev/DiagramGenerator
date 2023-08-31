@@ -19,8 +19,11 @@ Require-Bundle: org.eclipse.core.runtime;bundle-version="3.24.0",
  org.palladiosimulator.dataflow.confidentiality.pcm.model.profile;bundle-version="5.1.0";visibility:=reexport,
  org.palladiosimulator.mdsdprofiles.api;bundle-version="4.3.0";visibility:=reexport,
  org.palladiosimulator.dataflow.nodecharacteristics;bundle-version="0.1.0",
- edu.kit.kastel.dsis.uncertainty.impactanalysis;bundle-version="1.0.0"
+ edu.kit.kastel.dsis.uncertainty.impactanalysis;bundle-version="1.0.0",
+ mdpa.dfd.datadictionary;bundle-version="0.1.0",
+ mdpa.dfd.dataflowdiagram;bundle-version="0.1.0"
 Export-Package: org.palladiosimulator.dataflow.diagramgenerator,
+ org.palladiosimulator.dataflow.diagramgenerator.dfd,
  org.palladiosimulator.dataflow.diagramgenerator.model,
  org.palladiosimulator.dataflow.diagramgenerator.pcm,
  org.palladiosimulator.dataflow.diagramgenerator.plantuml
