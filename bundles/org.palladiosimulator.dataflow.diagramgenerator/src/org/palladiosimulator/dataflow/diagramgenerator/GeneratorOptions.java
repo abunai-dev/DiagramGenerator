@@ -9,18 +9,60 @@ public class GeneratorOptions {
 	private boolean drawNodeCharacteristics;
 	private boolean drawVariables;
 	private boolean drawControlFlow;
+	private boolean drawOnlyNumbers;
+	private boolean drawParameters;
+	private boolean drawViolations;
+	private boolean drawUncertainty;
 	
 	private GeneratorOptions() {
 		drawNodeCharacteristics = true;
 		drawVariables = true;
 		drawControlFlow = false;
+		drawOnlyNumbers = false;
+		drawParameters = true;
+		drawViolations = false;
+		drawUncertainty = false;
 	}
 	
+	public boolean isDrawUncertainty() {
+		return drawUncertainty;
+	}
+
+	public boolean isDrawViolations() {
+		return drawViolations;
+	}
+
+	public void setDrawViolations(boolean drawViolations) {
+		this.drawViolations = drawViolations;
+	}
+
+	public void setDrawUncertainty(boolean drawUncertainty) {
+		this.drawUncertainty = drawUncertainty;
+	}
+
+
+
 	public static synchronized GeneratorOptions getInstance() {
 		if (instance == null) {
 			instance = new GeneratorOptions();
 		}
 		return instance;
+	}
+
+	public boolean isDrawParameters() {
+		return drawParameters;
+	}
+
+	public void setDrawParameters(boolean drawParameters) {
+		this.drawParameters = drawParameters;
+	}
+
+	public boolean isDrawOnlyNumbers() {
+		return drawOnlyNumbers;
+	}
+
+	public void setDrawOnlyNumbers(boolean drawOnlyNumbers) {
+		this.drawOnlyNumbers = drawOnlyNumbers;
 	}
 
 	public String getCharacteristicsPath() {

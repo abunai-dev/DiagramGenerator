@@ -4,66 +4,97 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.function.Predicate;
 import java.util.stream.Collectors;
 
+import org.eclipse.emf.ecore.EObject;
+import org.palladiosimulator.dataflow.confidentiality.analysis.DataFlowConfidentialityAnalysis;
 import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.CharacteristicValue;
 import org.palladiosimulator.dataflow.confidentiality.analysis.characteristics.DataFlowVariable;
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.ActionSequence;
-import org.palladiosimulator.dataflow.diagramgenerator.DataFlowNodeManager;
 import org.palladiosimulator.dataflow.diagramgenerator.GeneratorOptions;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementVariable;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowLiteral;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
+import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNodeManager;
+import org.palladiosimulator.dataflow.diagramgenerator.model.OriginalSourceElement;
+import org.palladiosimulator.dataflow.diagramgenerator.plantuml.PlantUMLDataFlowElementUtils;
+import org.palladiosimulator.dataflow.diagramgenerator.plantuml.PlantUMLDrawingStrategy;
 import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.EnumCharacteristicTypeImpl;
 import org.palladiosimulator.dataflow.dictionary.characterized.DataDictionaryCharacterized.impl.LiteralImpl;
+
+import dev.abunai.impact.analysis.model.UncertaintyImpactCollection;
+import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
 
 public class PCMGraphProcessor {
 	private final PCMDataFlowElementFactory elementCreator;
 	private final DataFlowNodeManager nodeManager;
+	private final Predicate<? super AbstractActionSequenceElement<?>> condition;
 
-	public PCMGraphProcessor(PCMDataFlowElementFactory elementCreator) {
+	public PCMGraphProcessor(PCMDataFlowElementFactory elementCreator,
+			Predicate<? super AbstractActionSequenceElement<?>> condition) {
 		this.elementCreator = elementCreator;
 		this.nodeManager = new DataFlowNodeManager();
+		this.condition = condition;
 	}
 
-	public List<DataFlowNode> processActionSequences(List<ActionSequence> actionSequences) {
+	public List<DataFlowNode> processActionSequences(List<ActionSequence> actionSequences,
+			DataFlowConfidentialityAnalysis analysis, List<UncertaintyImpact<?>> uncertaintyImpacts) {
 		List<DataFlowNode> dataFlowNodes = new ArrayList<>();
 
 		for (ActionSequence actionSequence : actionSequences) {
-			processActionSequence(actionSequence, dataFlowNodes);
+			processActionSequence(actionSequence, dataFlowNodes, analysis, uncertaintyImpacts);
 		}
 
 		return dataFlowNodes;
 	}
 
-	private void processActionSequence(ActionSequence actionSequence, List<DataFlowNode> dataFlowNodes) {
+	private void processActionSequence(ActionSequence actionSequence, List<DataFlowNode> dataFlowNodes,
+			DataFlowConfidentialityAnalysis analysis, List<UncertaintyImpact<?>> uncertaintyImpacts) {
 		DataFlowNode previousNode = null;
 		GeneratorOptions options = GeneratorOptions.getInstance();
 
+		List<AbstractActionSequenceElement<?>> violations = analysis.queryDataFlow(actionSequence, this.condition);
+
 		for (AbstractActionSequenceElement<?> actionSequenceElement : actionSequence.getElements()) {
+			boolean isViolation = violations.contains(actionSequenceElement);
+
+			String name = PCMEntityUtility.getEntityName(actionSequenceElement);
+
 			List<DataFlowElementVariable> variables = createDataFlowElementVariables(actionSequenceElement);
 			List<DataFlowLiteral> literals = createDataFlowLiterals(actionSequenceElement);
-			List<DataFlowElement> dataFlowElements = elementCreator
-					.createDataFlowElementsForActionSequenceElement(actionSequenceElement);
+			AbstractActionSequenceElement<?> prevElement = null;
+			if (previousNode != null) {
+				PCMOriginalSourceElement prevSource = (PCMOriginalSourceElement) previousNode.getOriginalSource();
+				prevElement = prevSource.getOriginalElement();
+			}
+
+			List<String> parameters = PCMEntityUtility.getParameters(actionSequenceElement);
+			String returnParameter = PCMEntityUtility.getRETURNParameter(prevElement);
+			if (returnParameter != null)
+				parameters.add(returnParameter);
+
+			List<DataFlowElement> dataFlowElements = elementCreator.createDataFlowElementsForActionSequenceElement(
+					actionSequenceElement, isViolation, returnParameter, uncertaintyImpacts);
 			Map<DataFlowElement, DataFlowNode> existingMap = nodeManager.createDataFlowElementNodeMap(dataFlowElements,
-					dataFlowNodes);
+					dataFlowNodes, uncertaintyImpacts);
 
 			for (Entry<DataFlowElement, DataFlowNode> dataFlowEntry : existingMap.entrySet()) {
 				DataFlowNode dataFlowNode = dataFlowEntry.getValue();
 
-				if (dataFlowNode == null) {
-					PCMOriginalSourceElement originalSource = new PCMOriginalSourceElement(actionSequenceElement);
-					dataFlowNode = nodeManager.createNewDataFlowNode(originalSource, dataFlowEntry.getKey());
-					nodeManager.addNodeToListIfNotExists(dataFlowNode, dataFlowNodes);
-				}
+				PCMOriginalSourceElement originalSource = new PCMOriginalSourceElement(actionSequenceElement);
+				dataFlowNode.setOriginalSource(originalSource);
 
-				nodeManager.connectNodes(previousNode, dataFlowNode);
-				if (options.isDrawVariables())
-					nodeManager.addVariablesToNode(dataFlowNode, variables);
-				if (options.isDrawNodeCharacteristics())
-					nodeManager.addLiteralsToNode(dataFlowNode, literals);
+				nodeManager.connectNodes(previousNode, dataFlowNode, parameters);
+				if (!options.isDrawOnlyNumbers()) {
+					if (options.isDrawVariables())
+						nodeManager.addVariablesToNode(dataFlowNode, variables);
+					if (options.isDrawNodeCharacteristics())
+						nodeManager.addLiteralsToNode(dataFlowNode, literals);
+				}
 				previousNode = dataFlowNode;
 			}
 		}

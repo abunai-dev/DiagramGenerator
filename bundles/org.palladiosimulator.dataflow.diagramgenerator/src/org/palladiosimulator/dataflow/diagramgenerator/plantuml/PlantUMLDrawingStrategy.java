@@ -30,22 +30,18 @@ public class PlantUMLDrawingStrategy implements DrawingStrategy {
 		GeneratorOptions options = GeneratorOptions.getInstance();
 		// first, initialize all elements
 		for (DataFlowNode node : dataFlowNodes) {
-			// determine a boolean that is true if one of the nodes children gets a
-			// parameter
-			// from the node
-			boolean hasChildWithParameter = false;
-			for (DataFlowNode child : node.getChildren()) {
-				if (!child.getElement().getParameters().isEmpty()) {
-					hasChildWithParameter = true;
-					break;
-				}
-			}
-			if (options.isDrawControlFlow() || hasChildWithParameter || !node.getElement().getParameters().isEmpty()) {
+			if (options.isDrawControlFlow() || node.hasChildrenParameters() || node.hasParentParameters()) {
 				DataFlowElement element = node.getElement();
 
-				PlantUMLDataFlowElementInitializerDrawingVisitor drawingVisitor = new PlantUMLDataFlowElementInitializerDrawingVisitor();
-				element.accept(drawingVisitor);
-				this.addToSource(drawingVisitor.getDrawResult());
+				if (options.isDrawOnlyNumbers()) {
+					PlantUMLDataFlowNodeInitializerDrawingVisitor drawingVisitor = new PlantUMLDataFlowNodeInitializerDrawingVisitor();
+					node.accept(drawingVisitor);
+					this.addToSource(drawingVisitor.getDrawResult());
+				} else {
+					PlantUMLDataFlowElementInitializerDrawingVisitor drawingVisitor = new PlantUMLDataFlowElementInitializerDrawingVisitor();
+					element.accept(drawingVisitor);
+					this.addToSource(drawingVisitor.getDrawResult());
+				}
 
 				PlantUMLDataFlowLiteralEmbeddingDrawingVisitor literalEmbeddingVisitor = new PlantUMLDataFlowLiteralEmbeddingDrawingVisitor(
 						this.source);
@@ -61,12 +57,9 @@ public class PlantUMLDrawingStrategy implements DrawingStrategy {
 
 		// second, draw the edges inbetween
 		for (DataFlowNode node : dataFlowNodes) {
-			if (options.isDrawControlFlow() || !node.getElement().isControlFlow()) { // draw control flow only if
-																						// wanted!
-				PlantUMLDataFlowEdgeDrawingVisitor edgeVisitor = new PlantUMLDataFlowEdgeDrawingVisitor();
-				node.accept(edgeVisitor);
-				this.addToSource(edgeVisitor.getDrawResult());
-			}
+			PlantUMLDataFlowEdgeDrawingVisitor edgeVisitor = new PlantUMLDataFlowEdgeDrawingVisitor();
+			node.accept(edgeVisitor);
+			this.addToSource(edgeVisitor.getDrawResult());
 		}
 		this.finish();
 	}

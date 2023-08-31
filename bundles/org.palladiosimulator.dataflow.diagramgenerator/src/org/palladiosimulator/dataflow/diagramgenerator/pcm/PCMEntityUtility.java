@@ -10,6 +10,8 @@ import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.S
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.user.CallingUserActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.sequence.AbstractActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.pcm.model.confidentiality.repository.impl.OperationalDataStoreComponentImpl;
+import org.palladiosimulator.pcm.parameter.VariableUsage;
+import org.palladiosimulator.pcm.parameter.impl.VariableUsageImpl;
 import org.palladiosimulator.pcm.repository.Parameter;
 import org.palladiosimulator.pcm.repository.impl.OperationSignatureImpl;
 import org.palladiosimulator.pcm.repository.impl.ParameterImpl;
@@ -24,7 +26,13 @@ import org.palladiosimulator.pcm.usagemodel.impl.EntryLevelSystemCallImpl;
 import org.palladiosimulator.pcm.usagemodel.impl.ScenarioBehaviourImpl;
 import org.palladiosimulator.pcm.usagemodel.impl.UsageScenarioImpl;
 
+import de.uka.ipd.sdq.stoex.AbstractNamedReference;
+import de.uka.ipd.sdq.stoex.VariableReference;
+import de.uka.ipd.sdq.stoex.impl.VariableReferenceImpl;
+
 public class PCMEntityUtility {
+	private static final String SPECIAL_RETURN_VARIABLE = "RETURN";
+
 	public static boolean isBranch(AbstractActionSequenceElement<?> element) {
 		if (element instanceof SEFFActionSequenceElement<?> sase) {
 			if (sase.getElement() instanceof StartActionImpl sai) {
@@ -147,9 +155,34 @@ public class PCMEntityUtility {
 		return result;
 	}
 
+	public static String getRETURNParameter(AbstractActionSequenceElement<?> element) {
+
+		if (element instanceof SEFFActionSequenceElement<?> sase) {
+			if (sase.getElement() instanceof SetVariableActionImpl sva) {
+				List<VariableUsage> variableUsages = sva.getLocalVariableUsages_SetVariableAction();
+
+				for (VariableUsage vu : variableUsages) {
+					VariableReferenceImpl vr = (VariableReferenceImpl) vu.getNamedReference__VariableUsage();
+
+					String name = vr.getReferenceName();
+
+					if (name.equals(SPECIAL_RETURN_VARIABLE)) {
+						return name;
+					}
+				}
+
+			}
+		}
+		return null;
+	}
+
 	public static List<String> getParameters(AbstractActionSequenceElement<?> element) {
 		List<String> paras = new ArrayList<String>();
 		if (element instanceof SEFFActionSequenceElement<?> sase) {
+			if (sase.getElement() instanceof SetVariableActionImpl sva) {
+				List<VariableUsage> variableUsages = sva.getLocalVariableUsages_SetVariableAction();
+			}
+
 			List<Parameter> parameters = sase.getParameter();
 			for (var entry : parameters) {
 				ParameterImpl parameter = (ParameterImpl) entry;

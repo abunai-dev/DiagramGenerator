@@ -12,14 +12,19 @@ import org.palladiosimulator.dataflow.diagramgenerator.GeneratorOptions;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DrawingStrategy;
 
+import dev.abunai.impact.analysis.PCMUncertaintyImpactAnalysisBuilder;
+import dev.abunai.impact.analysis.StandalonePCMUncertaintyImpactAnalysis;
+import dev.abunai.impact.analysis.model.UncertaintyImpactCollection;
+import dev.abunai.impact.analysis.model.impact.ConnectorUncertaintyImpact;
+import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
+
 /**
  * The StandaloneDiagramGenerator class is responsible for generating a data
  * flow diagram based on the provided GeneratorOptions.
  */
 public class PCMDiagramGenerator implements DiagramGenerator<PCMGraphProcessor> {
 	private GeneratorOptions options;
-	private DataFlowConfidentialityAnalysis analysis;
-	private Class<? extends Plugin> activatorClass;
+	private StandalonePCMUncertaintyImpactAnalysis analysis;
 
 	/**
 	 * Constructs a StandaloneDiagramGenerator with the given GeneratorOptions.
@@ -27,14 +32,12 @@ public class PCMDiagramGenerator implements DiagramGenerator<PCMGraphProcessor> 
 	 * @param options The GeneratorOptions for generating the data flow diagram.
 	 * @throws IllegalArgumentException if the provided options are invalid.
 	 */
-	public PCMDiagramGenerator(GeneratorOptions options, Class<? extends Plugin> activatorClass) {
+	public PCMDiagramGenerator(GeneratorOptions options, StandalonePCMUncertaintyImpactAnalysis analysis) {
 		if (!options.isValid()) {
 			throw new IllegalArgumentException("Invalid command line options. Aborting.");
 		}
 		this.options = options;
-		this.activatorClass = activatorClass;
-
-		initializeAnalysis();
+		this.analysis = analysis;
 	}
 
 	/**
@@ -50,7 +53,11 @@ public class PCMDiagramGenerator implements DiagramGenerator<PCMGraphProcessor> 
 	public void generateDataFlowDiagram(DrawingStrategy drawer, PCMGraphProcessor graphProcessor) {
 		List<ActionSequence> actionSequences = getActionSequences();
 
-		List<DataFlowNode> dataFlowNodes = graphProcessor.processActionSequences(actionSequences);
+		UncertaintyImpactCollection uncertaintyCollection = analysis.propagate();
+		List<UncertaintyImpact<?>> uncertaintyImpacts = uncertaintyCollection.getUncertaintyImpacts();
+
+		List<DataFlowNode> dataFlowNodes = graphProcessor.processActionSequences(actionSequences, analysis,
+				uncertaintyImpacts);
 		System.out.println("Model translation finished!");
 
 		drawer.generate(dataFlowNodes);
@@ -61,29 +68,5 @@ public class PCMDiagramGenerator implements DiagramGenerator<PCMGraphProcessor> 
 	private List<ActionSequence> getActionSequences() {
 		List<ActionSequence> actionSequences = analysis.findAllSequences();
 		return analysis.evaluateDataFlows(actionSequences);
-	}
-
-	private void initializeAnalysis() {
-		String projectName = options.getProjectName();
-		String usageModelPath = options.getUsageModelPath();
-		String allocationPath = options.getAllocationPath();
-		String characteristicsPath = options.getCharacteristicsPath();
-
-		this.analysis = new DataFlowAnalysisBuilder().standalone().modelProjectName(projectName)
-				.useBuilder(new PCMDataFlowConfidentialityAnalysisBuilder()).usePluginActivator(this.activatorClass)
-				.useUsageModel(usageModelPath).useAllocationModel(allocationPath)
-				.useNodeCharacteristicsModel(characteristicsPath).build();
-
-		try {
-			analysis.initializeAnalysis();
-		} catch (Exception e) {
-			this.analysis = new DataFlowAnalysisBuilder().standalone().modelProjectName(projectName)
-					.useBuilder(new PCMDataFlowConfidentialityAnalysisBuilder()).legacy()
-					.usePluginActivator(this.activatorClass).useUsageModel(usageModelPath)
-					.useAllocationModel(allocationPath).build();
-			analysis.initializeAnalysis();
-		}
-
-		System.out.println("Initialization finished!");
 	}
 }

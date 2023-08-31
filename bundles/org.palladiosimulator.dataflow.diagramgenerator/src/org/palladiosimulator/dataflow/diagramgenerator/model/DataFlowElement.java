@@ -7,30 +7,40 @@ import java.util.Objects;
 public abstract class DataFlowElement {
 	private String id;
 	private Boolean isCalling;
+	private boolean isViolation;
 	private String name;
-	private List<String> parameters;
-	private boolean isControlFlow;
+	private boolean hasRETURN;
+	private boolean hasUncertainty;
 
-	protected DataFlowElement(String id, Boolean isCalling, String name) {
+	protected DataFlowElement(String id, Boolean isCalling, boolean isViolation, String name) {
 		this.id = id;
 		this.isCalling = isCalling;
+		this.isViolation = isViolation;
 		this.name = name;
-		this.parameters = new ArrayList<>();
-		this.isControlFlow = false;
+		this.hasRETURN = false;
+		this.hasUncertainty = false;
 	}
 
 	public abstract Object accept(DataFlowElementVisitor<?> visitor);
-
-	public List<String> getParameters() {
-		return parameters;
+	
+	public boolean isHasUncertainty() {
+		return hasUncertainty;
 	}
 
-	public void addParameter(String parameter) {
-		this.parameters.add(parameter);
+	public void setHasUncertainty(boolean hasUncertainty) {
+		this.hasUncertainty = hasUncertainty;
 	}
 
-	public void addParameters(List<String> parameters) {
-		this.parameters.addAll(parameters);
+	public boolean isHasRETURN() {
+		return hasRETURN;
+	}
+
+	public void setHasRETURN(boolean hasRETURN) {
+		this.hasRETURN = hasRETURN;
+	}
+	
+	public boolean isViolation() {
+		return this.isViolation;
 	}
 
 	public String getId() {
@@ -60,13 +70,5 @@ public abstract class DataFlowElement {
 			return false;
 		DataFlowElement other = (DataFlowElement) obj;
 		return Objects.equals(id, other.id) && Objects.equals(isCalling, other.isCalling);
-	}
-
-	public boolean isControlFlow() {
-		return isControlFlow;
-	}
-
-	public void setControlFlow(boolean isControlFlow) {
-		this.isControlFlow = isControlFlow;
 	}
 }

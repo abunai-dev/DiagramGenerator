@@ -2,6 +2,8 @@ package org.palladiosimulator.dataflow.diagramgenerator.plantuml;
 
 import org.palladiosimulator.dataflow.diagramgenerator.model.ExternalEntityDataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.ProcessDataFlowElement;
+import org.palladiosimulator.dataflow.diagramgenerator.GeneratorOptions;
+import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataStoreDataFlowElement;
 
 public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDataFlowElementDrawingVisitor {
@@ -15,6 +17,7 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 		result += String.format("""
 				"%s" [
 				    shape = Mrecord;margin=0;padding=0;
+				    %s
 				    label =
 				    <
 				        <table border="0" cellspacing="0" cellborder="1">
@@ -27,7 +30,7 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 				        </table>
 				    >
 				];
-				""", uniqueIdentifier, element.getName());
+				""", uniqueIdentifier, this.getColorAddon(element), element.getName());
 
 		this.setDrawResult(result);
 		return null;
@@ -42,6 +45,7 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 		result += String.format("""
 				"%s" [
 				    shape = none;margin=0;padding=0;
+				    %s
 				    label =
 				    <
 				        <table border="1" cellspacing="0" cellborder="1">
@@ -54,7 +58,7 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 				        </table>
 				    >
 				];
-				""", uniqueIdentifier, element.getName());
+				""", uniqueIdentifier, this.getColorAddon(element), element.getName());
 
 		this.setDrawResult(result);
 		return null;
@@ -68,7 +72,7 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 
 		result += String.format("""
 				"%s" [
-				        shape=none;margin=0;padding=0;label=
+				        shape=none;%smargin=0;padding=0;label=
 				        <
 				            <table border="1" cellspacing="0" cellborder="1">
 				                <tr>
@@ -82,9 +86,22 @@ public class PlantUMLDataFlowElementInitializerDrawingVisitor extends PlantUMLDa
 				            </table>
 				        >
 				    ];
-								""", uniqueIdentifier, element.getName());
+								""", uniqueIdentifier, this.getColorAddon(element), element.getName());
 
 		this.setDrawResult(result);
 		return null;
+	}
+
+	private String getColorAddon(DataFlowElement element) {
+		GeneratorOptions options = GeneratorOptions.getInstance();
+		if (element.isHasUncertainty() && options.isDrawUncertainty()) {
+			return "color = \"0.877 0.9 0.64\";\n    fontcolor = \"0.877 0.9 0.64\";\n    penwidth = 5.0;";
+		} else {
+			if (element.isViolation() && options.isDrawViolations()) {
+				return "color = \"1.000 0.79 0.635\";\n    fontcolor = \"1.000 0.79 0.635\";\n    penwidth = 5.0;";
+			}
+		}
+
+		return "";
 	}
 }

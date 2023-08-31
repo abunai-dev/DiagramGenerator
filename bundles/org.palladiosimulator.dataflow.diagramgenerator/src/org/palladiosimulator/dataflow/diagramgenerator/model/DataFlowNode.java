@@ -6,64 +6,113 @@ import java.util.List;
 public class DataFlowNode {
 	private DataFlowElement element;
 	private OriginalSourceElement<?> originalSource;
-	private List<DataFlowNode> parents;
-	private List<DataFlowNode> children;
+	private List<Flow> parentFlows;
+	private List<Flow> childrenFlows;
 	private List<DataFlowLiteral> literals;
 	private List<DataFlowElementVariable> variables;
+	private int id;
 
-	public DataFlowNode(OriginalSourceElement<?> originalSource, DataFlowElement element) {
+	public DataFlowNode(OriginalSourceElement<?> originalSource, DataFlowElement element, int id) {
 		this.element = element;
 		this.originalSource = originalSource;
-		this.parents = new ArrayList<>();
-		this.children = new ArrayList<>();
+		this.parentFlows = new ArrayList<>();
+		this.childrenFlows = new ArrayList<>();
 		this.literals = new ArrayList<>();
 		this.variables = new ArrayList<>();
+		this.id = id;
+	}
+
+	public boolean hasParentParameters() {
+		return this.parentFlows.stream().anyMatch(Flow::hasParameters);
+	}
+
+	public boolean hasChildrenParameters() {
+		return this.childrenFlows.stream().anyMatch(Flow::hasParameters);
+	}
+
+	public void setOriginalSource(OriginalSourceElement<?> originalSource) {
+		this.originalSource = originalSource;
+	}
+
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public DataFlowElement getElement() {
 		return element;
 	}
 
-	public OriginalSourceElement<?> getOritignalSource() {
+	public OriginalSourceElement<?> getOriginalSource() {
 		return this.originalSource;
 	}
 
-	public List<DataFlowNode> getParents() {
-		return this.parents;
+	public List<Flow> getParentFlows() {
+		return this.parentFlows;
 	}
 
-	public boolean hasParent(DataFlowNode parent) {
-		if (this.parents.contains(parent))
-			return true;
-		return false;
+	public void addParentFlow(Flow parentFlow) {
+		// only add if there is no parent flow that has the same parent and child and
+		// the
+		// same parameters. the parameters need to contain the same string values
+		boolean exists = false;
+		for (Flow comp : this.parentFlows) {
+			if (comp.getParent().equals(parentFlow.getParent()) && comp.getChild().equals(parentFlow.getChild())) {
+				if (comp.getParameters().size() == parentFlow.getParameters().size()) {
+					boolean same = true;
+					for (String param : comp.getParameters()) {
+						if (!parentFlow.getParameters().contains(param)) {
+							same = false;
+						}
+					}
+					if (same) {
+						exists = true;
+					}
+				}
+			}
+		}
+		if (!exists) {
+			this.parentFlows.add(parentFlow);
+		}
 	}
 
-	public void addParent(DataFlowNode parent) {
-		if (!this.parents.contains(parent))
-			this.parents.add(parent);
+	public void removeParentFlow(Flow parentFlow) {
+		this.parentFlows.remove(parentFlow);
 	}
 
-	public void removeParent(DataFlowNode parent) {
-		this.parents.remove(parent);
+	public List<Flow> getChildrenFlows() {
+		return this.childrenFlows;
 	}
 
-	public List<DataFlowNode> getChildren() {
-		return this.children;
+	public void addChildFlow(Flow childFlow) {
+		// only add if there is no child flow that has the same parent and child and the
+		// same parameters. the parameters need to contain the same string values
+		boolean exists = false;
+		for (Flow comp : this.childrenFlows) {
+			if (comp.getParent().equals(childFlow.getParent()) && comp.getChild().equals(childFlow.getChild())) {
+				if (comp.getParameters().size() == childFlow.getParameters().size()) {
+					boolean same = true;
+					for (String param : comp.getParameters()) {
+						if (!childFlow.getParameters().contains(param)) {
+							same = false;
+						}
+					}
+					if (same) {
+						exists = true;
+					}
+				}
+			}
+		}
+		if (!exists) {
+			this.childrenFlows.add(childFlow);
+		}
 	}
 
-	public boolean hasChild(DataFlowNode child) {
-		if (this.children.contains(child))
-			return true;
-		return false;
-	}
-
-	public void addChild(DataFlowNode child) {
-		if (!this.children.contains(child))
-			this.children.add(child);
-	}
-
-	public void removeChild(DataFlowNode child) {
-		this.children.remove(child);
+	public void removeChildFlow(Flow childFlow) {
+		this.childrenFlows.remove(childFlow);
 	}
 
 	public void accept(DataFlowNodeVisitor visitor) {

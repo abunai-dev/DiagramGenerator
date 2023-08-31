@@ -1,8 +1,8 @@
 package org.palladiosimulator.dataflow.diagramgenerator.plantuml;
 
-import org.palladiosimulator.dataflow.diagramgenerator.GeneratorOptions;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNode;
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowNodeVisitor;
+import org.palladiosimulator.dataflow.diagramgenerator.model.Flow;
 
 public class PlantUMLDataFlowEdgeDrawingVisitor implements DataFlowNodeVisitor {
 	private String drawResult;
@@ -15,32 +15,11 @@ public class PlantUMLDataFlowEdgeDrawingVisitor implements DataFlowNodeVisitor {
 	public void visit(DataFlowNode node) {
 		String result = "";
 
-		if (node.getParents().size() > 0) {
-			GeneratorOptions options = GeneratorOptions.getInstance();
-			
-			String currentUID = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(node.getElement());
+		if (node.getParentFlows().size() > 0) {
+			PlantUMLFlowVisitor visitor = new PlantUMLFlowVisitor();
 
-			String parameterString = "";
-			for (String parameter : node.getElement().getParameters()) {
-				if (parameterString.length() > 0) {
-					parameterString += ", " + parameter;
-				} else {
-					parameterString = parameter;
-				}
-			}
-
-			for (DataFlowNode parent : node.getParents()) {
-				String parentUID = PlantUMLDataFlowElementUtils.generateUniqueIdentifier(parent.getElement());
-
-				if (parameterString.length() > 0) {
-					result += String.format("""
-							%s -> %s [label="%s"];
-							""", parentUID, currentUID, parameterString);
-				} else if (options.isDrawControlFlow()) { // CONTROL FLOW
-					result += String.format("""
-							%s -> %s [style=dotted];
-							""", parentUID, currentUID);
-				}
+			for (Flow parent : node.getParentFlows()) {
+				result += parent.accept(visitor);
 			}
 		}
 

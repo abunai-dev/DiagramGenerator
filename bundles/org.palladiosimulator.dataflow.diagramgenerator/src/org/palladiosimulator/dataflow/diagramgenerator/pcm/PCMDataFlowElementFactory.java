@@ -3,6 +3,7 @@ package org.palladiosimulator.dataflow.diagramgenerator.pcm;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.AbstractPCMActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.DatabaseActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.seff.SEFFActionSequenceElement;
 import org.palladiosimulator.dataflow.confidentiality.analysis.entity.pcm.user.CallingUserActionSequenceElement;
@@ -12,6 +13,8 @@ import org.palladiosimulator.dataflow.diagramgenerator.model.DataFlowElementFact
 import org.palladiosimulator.dataflow.diagramgenerator.model.DataStoreDataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.ExternalEntityDataFlowElement;
 import org.palladiosimulator.dataflow.diagramgenerator.model.ProcessDataFlowElement;
+
+import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
 
 /**
  * The DataFlowElementFactory class is responsible for creating data flow
@@ -43,23 +46,38 @@ public class PCMDataFlowElementFactory extends DataFlowElementFactory {
 	 * @throws UnsupportedOperationException if the element type is not supported.
 	 */
 	public List<DataFlowElement> createDataFlowElementsForActionSequenceElement(
-			AbstractActionSequenceElement<?> element) {
+			AbstractActionSequenceElement<?> element, boolean isViolation, String returnParameter,
+			List<UncertaintyImpact<?>> uncertaintyImpacts) {
 		List<DataFlowElement> dataFlowElements = new ArrayList<>();
 
 		String id = PCMEntityUtility.getEntityId(element);
 		String name = PCMEntityUtility.getEntityName(element);
 		Boolean isCalling = PCMEntityUtility.getIsCalling(element);
 		List<String> parameters = PCMEntityUtility.getParameters(element);
+		if (returnParameter != null) {
+			parameters.add(returnParameter);
+		}
 		String actorName = PCMEntityUtility.getActorName(element);
 		boolean isBranch = PCMEntityUtility.isBranch(element);
+		boolean isUncertainty = false;
+
+		for (UncertaintyImpact<?> uncertaintyImpact : uncertaintyImpacts) {
+			AbstractPCMActionSequenceElement<?> ase2 = (AbstractPCMActionSequenceElement<?>) uncertaintyImpact
+					.getAffectedElement();
+			if (((AbstractPCMActionSequenceElement<?>) element).getElement().getId()
+					.equals(ase2.getElement().getId())) {
+				isUncertainty = true;
+				break;
+			}
+		}
 
 		if (!isBranch) {
 			if (element instanceof CallingUserActionSequenceElement) {
-				createExternalEntityDataFlowElement(dataFlowElements, actorName);
+				createExternalEntityDataFlowElement(dataFlowElements, actorName, isViolation, isUncertainty);
 			} else if (element instanceof SEFFActionSequenceElement) {
-				createProcessDataFlowElement(dataFlowElements, id, isCalling, name, parameters);
+				createProcessDataFlowElement(dataFlowElements, id, isCalling, name, isViolation, isUncertainty);
 			} else if (element instanceof DatabaseActionSequenceElement<?>) {
-				createDataStoreDataFlowElement(dataFlowElements, id, isCalling, name, parameters);
+				createDataStoreDataFlowElement(dataFlowElements, id, isCalling, name, isViolation, isUncertainty);
 			} else {
 				throw new UnsupportedOperationException("Element type not supported");
 			}
@@ -68,30 +86,27 @@ public class PCMDataFlowElementFactory extends DataFlowElementFactory {
 		return dataFlowElements;
 	}
 
-	private void createExternalEntityDataFlowElement(List<DataFlowElement> dataFlowElements, String actorName) {
+	private void createExternalEntityDataFlowElement(List<DataFlowElement> dataFlowElements, String actorName,
+			boolean isViolation, boolean isUncertainty) {
 		if (actorName != null) {
-			ExternalEntityDataFlowElement terminator = new ExternalEntityDataFlowElement(actorName, true, actorName);
-			dataFlowElements.add(terminator);
+			ExternalEntityDataFlowElement externalEntity = new ExternalEntityDataFlowElement(actorName, true,
+					isViolation, actorName);
+			externalEntity.setHasUncertainty(isUncertainty);
+			dataFlowElements.add(externalEntity);
 		}
 	}
 
 	private void createProcessDataFlowElement(List<DataFlowElement> dataFlowElements, String id, Boolean isCalling,
-			String name, List<String> parameters) {
-		ProcessDataFlowElement process = new ProcessDataFlowElement(id, isCalling, name);
-		process.addParameters(parameters);
-		if (parameters.isEmpty()) {
-			process.setControlFlow(true);
-		}
+			String name, boolean isViolation, boolean isUncertainty) {
+		ProcessDataFlowElement process = new ProcessDataFlowElement(id, isCalling, isViolation, name);
+		process.setHasUncertainty(isUncertainty);
 		dataFlowElements.add(process);
 	}
 
 	private void createDataStoreDataFlowElement(List<DataFlowElement> dataStoreElements, String id, Boolean isCalling,
-			String name, List<String> parameters) {
-		DataStoreDataFlowElement dataStore = new DataStoreDataFlowElement(id, isCalling, name);
-		dataStore.addParameters(parameters);
-		if (parameters.isEmpty()) {
-			dataStore.setControlFlow(true);
-		}
+			String name, boolean isViolation, boolean isUncertainty) {
+		DataStoreDataFlowElement dataStore = new DataStoreDataFlowElement(id, isCalling, isViolation, name);
+		dataStore.setHasUncertainty(isUncertainty);
 		dataStoreElements.add(dataStore);
 	}
 }
