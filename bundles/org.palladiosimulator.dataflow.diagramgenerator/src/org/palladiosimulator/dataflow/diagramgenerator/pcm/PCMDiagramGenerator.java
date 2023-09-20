@@ -1,5 +1,6 @@
 package org.palladiosimulator.dataflow.diagramgenerator.pcm;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.Plugin;
@@ -24,7 +25,7 @@ import dev.abunai.impact.analysis.model.impact.UncertaintyImpact;
  */
 public class PCMDiagramGenerator implements DiagramGenerator<PCMGraphProcessor> {
 	private GeneratorOptions options;
-	private StandalonePCMUncertaintyImpactAnalysis analysis;
+	private DataFlowConfidentialityAnalysis analysis;
 
 	/**
 	 * Constructs a StandaloneDiagramGenerator with the given GeneratorOptions.
@@ -32,7 +33,7 @@ public class PCMDiagramGenerator implements DiagramGenerator<PCMGraphProcessor> 
 	 * @param options The GeneratorOptions for generating the data flow diagram.
 	 * @throws IllegalArgumentException if the provided options are invalid.
 	 */
-	public PCMDiagramGenerator(GeneratorOptions options, StandalonePCMUncertaintyImpactAnalysis analysis) {
+	public PCMDiagramGenerator(GeneratorOptions options, DataFlowConfidentialityAnalysis analysis) {
 		if (!options.isValid()) {
 			throw new IllegalArgumentException("Invalid command line options. Aborting.");
 		}
@@ -53,8 +54,15 @@ public class PCMDiagramGenerator implements DiagramGenerator<PCMGraphProcessor> 
 	public void generateDataFlowDiagram(DrawingStrategy drawer, PCMGraphProcessor graphProcessor) {
 		List<ActionSequence> actionSequences = getActionSequences();
 
-		UncertaintyImpactCollection uncertaintyCollection = analysis.propagate();
-		List<UncertaintyImpact<?>> uncertaintyImpacts = uncertaintyCollection.getUncertaintyImpacts();
+		UncertaintyImpactCollection uncertaintyCollection = null;
+		if (this.analysis instanceof StandalonePCMUncertaintyImpactAnalysis uncertaintyAnalysis) {
+			uncertaintyCollection = uncertaintyAnalysis.propagate();
+		}
+		
+		List<UncertaintyImpact<?>> uncertaintyImpacts = new ArrayList<>();
+		if (uncertaintyCollection != null) {
+			uncertaintyImpacts = uncertaintyCollection.getUncertaintyImpacts();
+		}
 
 		List<DataFlowNode> dataFlowNodes = graphProcessor.processActionSequences(actionSequences, analysis,
 				uncertaintyImpacts);
