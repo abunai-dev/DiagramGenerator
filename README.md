@@ -1,5 +1,5 @@
 # DiagramGenerator
-This generator creates beautiful data flow diagrams based on Palladio software architecture models.
+This generator creates beautiful data flow diagrams based on Palladio software architecture models by using PlantUML.
 
 ## Installation
 
@@ -11,8 +11,12 @@ This generator creates beautiful data flow diagrams based on Palladio software a
 
 ## Usage
 
-- The bundle `org.palladiosimulator.dataflow.diagramgenerator.tests` contains several test cases to test the functionality and to run the generator
+- The bundle `org.palladiosimulator.dataflow.diagramgenerator.tests` contains test cases to test the functionality and to run the generator
 - The bundle `org.palladiosimulator.dataflow.diagramgenerator.testmodels` contains PCM models for testing and evaluation
   - If you wish to use your own PCM models, you can create the models inside this bundle and adapt the test cases accordingly (or create a new one)
 - The tests demonstrate how to use the generator to generate diagrams as SVG files using PlantUML as a drawing engine
 - Output files are generated in the `output` folder of the `org.palladiosimulator.dataflow.diagramgenerator.tests` bundle
+
+## Documentation
+
+Please refer to [this page](./documentation/README.md) for more information about the software documentation.
