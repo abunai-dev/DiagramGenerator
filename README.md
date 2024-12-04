@@ -1,3 +1,7 @@
+> [!WARNING]  
+> This repository is archived as the web-based [data flow analysis editor](https://editor.dataflowanalysis.org) now provides similar functionality.
+> For further information, please see [this](https://github.com/DataFlowAnalysis) organization.
+
 # DiagramGenerator
 This generator creates beautiful data flow diagrams based on Palladio software architecture models by using PlantUML.
 
